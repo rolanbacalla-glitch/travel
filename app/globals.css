@@ -13,7 +13,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -22,7 +22,7 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Skip link for keyboard navigation */

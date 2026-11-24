@@ -240,7 +240,7 @@ export function TravelCrewHub({
           </div>
 
           {/* Island Hub Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+          <div className="flex flex-wrap items-center gap-2">
             {HUBS.map((hub) => (
               <button
                 key={hub.id}

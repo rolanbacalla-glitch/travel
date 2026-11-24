@@ -126,22 +126,19 @@ export function DestinationsSection() {
             </button>
           )}
 
-          <div
-            ref={scrollRef}
-            className="overflow-x-auto scrollbar-hide scroll-smooth -mx-6 px-6"
-          >
-            <div className="flex gap-8 pb-12 w-max">
+          <div ref={scrollRef} className="w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
               {destinations.map((place) => (
                 <Link
                   key={place.id}
                   href={`/destinations/${place.id}`}
-                  className="group relative w-[320px] md:w-[400px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl focus-ring"
+                  className="group relative w-full aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl focus-ring"
                 >
                   <Image
                     src={place.image}
                     alt={place.title}
                     fill
-                    sizes="(max-width: 768px) 320px, 400px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />

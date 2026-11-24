@@ -174,7 +174,7 @@ export default function GuidesPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+            <div className="flex flex-wrap gap-2 w-full md:w-auto">
               {["all", "beach", "adventure", "social"].map((tab) => (
                 <button
                   key={tab}

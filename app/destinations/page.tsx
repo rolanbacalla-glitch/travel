@@ -245,7 +245,7 @@ export default function DestinationsPage() {
         {/* Filters & Grid */}
         <div className="max-w-7xl mx-auto px-6 pt-8 pb-32">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
-            <div className="flex items-center gap-2 overflow-x-auto pb-4 md:pb-0 no-scrollbar">
+            <div className="flex flex-wrap items-center gap-2">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
