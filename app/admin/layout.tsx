@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { LayoutDashboard, Map, Settings, Users, Loader2, LogOut } from "lucide-react";
+import { LayoutDashboard, Map, Settings, Users, Loader2, LogOut, ArrowLeft, ExternalLink } from "lucide-react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -112,12 +112,26 @@ export default function AdminLayout({
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 space-y-2">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl bg-white/10 text-white hover:bg-sunset hover:text-white transition-colors font-bold text-sm tracking-wide"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Dashboard</span>
+          </Link>
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-colors font-bold text-sm tracking-wide"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span>View Live Site</span>
+          </Link>
           <button 
             onClick={() => auth.signOut()}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-colors text-left"
+            className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors text-left"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             <span className="font-bold text-sm tracking-wide">Sign Out</span>
           </button>
         </div>
