@@ -36,6 +36,8 @@ export function SafetyDashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [checkedInAt, setCheckedInAt] = useState<string | null>(null);
   const [practiceAlert, setPracticeAlert] = useState<boolean>(false);
+  const [autoSosEnabled, setAutoSosEnabled] = useState<boolean>(true);
+  const [pulseFrequency, setPulseFrequency] = useState<"12h" | "24h" | "48h">("12h");
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSOSActive = Object.values(store.sessions).some(s => s.isSOSActive);
@@ -84,10 +86,14 @@ export function SafetyDashboard() {
               <div className="p-8 space-y-10 pb-20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-serif font-bold text-slate">Safety Settings</h2>
-                    <p className="text-sm font-medium text-slate/50">Manage your protection and privacy</p>
+                    <h2 className="text-2xl font-sans font-bold tracking-tight text-slate">Safety Settings</h2>
+                    <p className="text-sm font-medium text-slate/70">Manage your protection and privacy</p>
                   </div>
-                  <button onClick={() => setShowSettings(false)} className="p-3 bg-slate/5 rounded-full hover:bg-slate/10 transition-colors">
+                  <button
+                    onClick={() => setShowSettings(false)}
+                    aria-label="Close safety settings"
+                    className="p-3 bg-slate/5 rounded-full hover:bg-slate/10 transition-colors"
+                  >
                     <X className="w-5 h-5 text-slate" />
                   </button>
                 </div>
@@ -103,11 +109,24 @@ export function SafetyDashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-bold text-slate">Auto-SOS Alerts</p>
-                          <p className="text-xs font-medium text-slate/50">Notify contacts when SOS is triggered</p>
+                          <p className="text-xs font-medium text-slate/70">Notify contacts when SOS is triggered</p>
                         </div>
-                        <div className="w-10 h-6 bg-green-500 rounded-full relative cursor-pointer">
-                          <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
-                        </div>
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={autoSosEnabled}
+                          aria-label="Toggle Auto-SOS Alerts"
+                          onClick={() => setAutoSosEnabled((v) => !v)}
+                          className={`w-11 h-6 rounded-full relative cursor-pointer transition-colors ${
+                            autoSosEnabled ? "bg-green-600" : "bg-slate/20"
+                          }`}
+                        >
+                          <div
+                            className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${
+                              autoSosEnabled ? "right-1" : "left-1"
+                            }`}
+                          />
+                        </button>
                       </div>
                       <div className="pt-3 border-t border-slate/10">
                         <button className="text-xs font-bold text-ocean hover:text-ocean/80 transition-colors">Manage 3 Contacts &rarr;</button>
@@ -117,18 +136,29 @@ export function SafetyDashboard() {
 
                   {/* Automation */}
                   <section className="space-y-4">
-                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-sunset">
+                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-amber-700">
                       <Clock className="w-4 h-4" />
                       <h3>Check-in Automation</h3>
                     </div>
                     <div className="p-5 border border-slate/10 rounded-3xl space-y-4">
                       <div>
                         <p className="text-sm font-bold text-slate">Pulse Frequency</p>
-                        <p className="text-xs font-medium text-slate/50">How often we ping your trusted circle</p>
+                        <p className="text-xs font-medium text-slate/70">How often we ping your trusted circle</p>
                       </div>
                       <div className="grid grid-cols-3 gap-2">
-                        {['12h', '24h', '48h'].map(t => (
-                          <button key={t} className={`py-2 rounded-xl text-xs font-bold transition-colors ${t === '12h' ? 'bg-slate text-white shadow-md' : 'bg-slate/5 text-slate hover:bg-slate/10'}`}>{t}</button>
+                        {(["12h", "24h", "48h"] as const).map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => setPulseFrequency(t)}
+                            className={`py-2 rounded-xl text-xs font-bold transition-colors ${
+                              pulseFrequency === t
+                                ? "bg-slate text-white shadow-md"
+                                : "bg-slate/5 text-slate hover:bg-slate/10"
+                            }`}
+                          >
+                            {t}
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -200,62 +230,113 @@ export function SafetyDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="max-w-5xl mx-auto space-y-12">
-        {/* Header Info */}
+      <div className="max-w-5xl mx-auto space-y-10">
+        {/* Header Info (Utility Mode — Crisp Sans Hierarchy) */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-3 text-slate font-bold tracking-widest text-xs uppercase bg-slate/5 rounded-full px-4 py-1.5 w-fit border border-slate/10 shadow-sm">
-              <Shield className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2.5 text-slate font-bold tracking-widest text-xs uppercase bg-slate/5 rounded-full px-4 py-1.5 w-fit border border-slate/10 shadow-sm">
+              <Shield className="w-3.5 h-3.5 text-green-600" />
               Safety Centre
             </div>
-            <h2 className="text-4xl font-serif text-slate font-bold">Your Safety Ring</h2>
-            <p className="text-slate/60 font-medium">Active protection across the Philippines &amp; Southeast Asia.</p>
+            <h2 className="text-3xl md:text-4xl font-sans tracking-tight text-slate font-extrabold">Your Safety Ring</h2>
+            <p className="text-slate/70 font-medium">Active protection across the Philippines &amp; Southeast Asia.</p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-white border border-slate/5 rounded-3xl shadow-sm hidden sm:flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs font-bold text-slate uppercase tracking-widest">GPS Live</span>
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-3 bg-white border border-slate/10 rounded-2xl shadow-sm hidden sm:flex items-center gap-2.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-green-600 animate-pulse" />
+              <span className="text-xs font-bold text-slate uppercase tracking-wider">GPS Live</span>
             </div>
-            <div className="p-4 bg-white border border-slate/5 rounded-3xl shadow-sm hidden sm:flex items-center gap-3">
-              <Zap className="w-4 h-4 text-sunset" />
-              <span className="text-xs font-bold text-slate uppercase tracking-widest">88% Battery</span>
+            <div className="px-4 py-3 bg-white border border-slate/10 rounded-2xl shadow-sm hidden sm:flex items-center gap-2.5">
+              <Zap className="w-4 h-4 text-amber-600" />
+              <span className="text-xs font-bold text-slate uppercase tracking-wider">88% Battery</span>
             </div>
             <button
               onClick={() => setShowSettings(true)}
-              className="p-4 bg-white border border-slate/5 rounded-3xl shadow-sm flex items-center justify-center hover:bg-slate/5 transition-colors cursor-pointer group"
+              aria-label="Open safety settings"
+              className="p-3.5 bg-white border border-slate/10 rounded-2xl shadow-sm flex items-center justify-center hover:bg-slate/5 transition-colors cursor-pointer group"
             >
               <Settings className="w-5 h-5 text-slate group-hover:rotate-45 transition-transform duration-300" />
             </button>
           </div>
         </div>
 
+        {/* Preventative Trust Layer: Kin Trust Score & Live Zone Status */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="p-5 bg-white border border-slate/10 rounded-3xl shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-green-50 rounded-2xl text-green-700">
+              <UserCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Kin Trust Score</p>
+              <p className="text-lg font-sans font-extrabold text-slate">94 / 100 <span className="text-xs font-bold text-green-700">· Verified</span></p>
+            </div>
+          </div>
+          <div className="p-5 bg-white border border-slate/10 rounded-3xl shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-ocean/10 rounded-2xl text-ocean">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Trusted Circle</p>
+              <p className="text-lg font-sans font-extrabold text-slate">3 Contacts <span className="text-xs font-bold text-slate/60">· {autoSosEnabled ? "Auto-SOS On" : "Manual"}</span></p>
+            </div>
+          </div>
+          <div className="p-5 bg-white border border-slate/10 rounded-3xl shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-green-50 rounded-2xl text-green-700">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Local Zone Pulse</p>
+              <p className="text-lg font-sans font-extrabold text-slate">General Luna <span className="text-xs font-bold text-green-700">· Low Risk</span></p>
+            </div>
+          </div>
+        </div>
+
         {/* Primary Emergency Controls */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* The SOS Button - High Emotional Impact */}
-          <div className="lg:col-span-2 relative p-12 bg-slate text-white rounded-[50px] shadow-2xl overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate via-slate to-red-950 opacity-50" />
-            <div className="absolute -top-32 -right-32 w-80 h-80 bg-red-500/10 blur-[100px] group-hover:bg-red-500/20 transition-all duration-700" />
+          {/* The SOS Button - High Contrast Semantic Alert */}
+          <div className="lg:col-span-2 relative p-10 md:p-12 bg-slate text-white rounded-[40px] shadow-2xl overflow-hidden group border border-red-500/20">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate via-slate to-red-950/80" />
+            <div className="absolute -top-32 -right-32 w-80 h-80 bg-red-600/15 blur-[100px] group-hover:bg-red-600/25 transition-all duration-700" />
 
             <div className="relative z-10 h-full flex flex-col justify-between space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-4xl font-serif font-bold leading-tight">Instant SOS Broadcast</h3>
-                <p className="text-white/50 font-medium max-w-sm leading-relaxed">Alert your emergency ring, local authorities, and nearby verified Kins in one silent tap.</p>
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/30 text-red-200 text-[11px] font-bold uppercase tracking-wider">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Emergency Broadcast
+                </div>
+                <h3 className="text-3xl md:text-4xl font-sans tracking-tight font-extrabold leading-tight">Instant SOS Broadcast</h3>
+                <p className="text-white/80 font-medium max-w-md leading-relaxed">
+                  Alert your emergency ring, local authorities, and nearby verified Kins in one silent hold.
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <div className="relative w-full sm:w-auto">
                   <button
+                    type="button"
+                    aria-label={isSOSActive ? "SOS Broadcast Active" : "Hold to trigger SOS emergency alert"}
                     onMouseDown={() => !isSOSActive && setIsHolding(true)}
                     onMouseUp={() => setIsHolding(false)}
                     onMouseLeave={() => setIsHolding(false)}
                     onTouchStart={() => !isSOSActive && setIsHolding(true)}
                     onTouchEnd={() => setIsHolding(false)}
+                    onKeyDown={(e) => {
+                      if ((e.key === " " || e.key === "Enter") && !isSOSActive) {
+                        e.preventDefault();
+                        setIsHolding(true);
+                      }
+                    }}
+                    onKeyUp={(e) => {
+                      if (e.key === " " || e.key === "Enter") {
+                        setIsHolding(false);
+                      }
+                    }}
                     className={cn(
-                      "w-full sm:w-auto px-12 py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 text-sm relative z-10 overflow-hidden",
+                      "w-full sm:w-auto px-12 py-6 rounded-[2rem] font-black uppercase tracking-[0.18em] shadow-xl transition-all active:scale-95 text-sm relative z-10 overflow-hidden focus:outline-none focus:ring-4 focus:ring-red-400/50",
                       isSOSActive
-                        ? "bg-white text-red-600 cursor-default"
+                        ? "bg-white text-red-700 cursor-default"
                         : "bg-red-600 text-white hover:bg-red-500 shadow-red-600/40"
                     )}
                   >
@@ -264,7 +345,7 @@ export function SafetyDashboard() {
                     {/* Progress Bar Overlay */}
                     {!isSOSActive && (
                       <motion.div
-                        className="absolute inset-0 bg-white/20"
+                        className="absolute inset-0 bg-white/25"
                         initial={{ width: 0 }}
                         animate={{ width: `${sosProgress}%` }}
                       />
@@ -272,16 +353,16 @@ export function SafetyDashboard() {
                   </button>
                 </div>
                 <div className="flex flex-col gap-2 text-center sm:text-left">
-                  <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">
-                    {isSOSActive ? "Broadcasting to local Ring..." : "Long-press to avoid accidental trigger"}
+                  <p className="text-xs text-white/80 font-bold uppercase tracking-wider">
+                    {isSOSActive ? "Broadcasting to local Ring..." : "Hold for 1.5s to prevent accidental trigger"}
                   </p>
                   {!isSOSActive && (
                     <button
                       type="button"
                       onClick={() => setPracticeAlert((v) => !v)}
-                      className="text-[10px] text-white/50 hover:text-white/80 transition-colors w-fit mx-auto sm:mx-0 flex items-center gap-1 group"
+                      className="text-xs text-white/75 hover:text-white transition-colors w-fit mx-auto sm:mx-0 flex items-center gap-1.5 group font-semibold"
                     >
-                      <AlertTriangle className="w-3 h-3 group-hover:rotate-12 transition-transform" />
+                      <AlertTriangle className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform text-amber-300" />
                       {practiceAlert ? "Practice Drill Verified (0.4s latency)" : "Try Practice Mode"}
                     </button>
                   )}
@@ -291,24 +372,24 @@ export function SafetyDashboard() {
           </div>
 
           {/* Safety Pulse */}
-          <div className="p-10 bg-white border border-slate/5 rounded-[50px] shadow-xl shadow-slate/5 flex flex-col justify-between border-t-4 border-t-green-500">
+          <div className="p-8 md:p-10 bg-white border border-slate/10 rounded-[40px] shadow-xl shadow-slate/5 flex flex-col justify-between border-t-4 border-t-green-600">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="p-4 bg-green-50 rounded-2xl">
-                  <CheckCircle2 className="w-6 h-6 text-green-500" />
+              <div className="flex items-center justify-between gap-2">
+                <div className="p-3.5 bg-green-50 rounded-2xl">
+                  <CheckCircle2 className="w-6 h-6 text-green-600" />
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowSettings(true)}
-                  className="group flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-green-600 bg-green-50/50 hover:bg-green-50 border border-green-200 hover:border-green-300 px-4 py-2 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm"
+                  className="group flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-full transition-all active:scale-95 cursor-pointer"
                 >
-                  <Clock className="w-3 h-3 text-green-500 group-hover:rotate-12 transition-transform" />
-                  {checkedInAt ? `Checked in · ${checkedInAt}` : "Next pulse: 12h 00m"}
+                  <Clock className="w-3.5 h-3.5 text-green-600 group-hover:rotate-12 transition-transform" />
+                  {checkedInAt ? `Checked in · ${checkedInAt}` : `Next pulse: ${pulseFrequency}`}
                 </button>
               </div>
-              <h3 className="text-2xl font-serif font-bold text-slate">Safety Pulse</h3>
-              <p className="text-slate/60 text-sm leading-relaxed font-medium">
-                Auto-ping your trusted circle every 12 hours. Keeps your family calm without the &ldquo;where are you?&rdquo; texts.
+              <h3 className="text-2xl font-sans tracking-tight font-extrabold text-slate">Safety Pulse</h3>
+              <p className="text-slate/70 text-sm leading-relaxed font-medium">
+                Auto-ping your trusted circle every {pulseFrequency}. Keeps your family calm without the &ldquo;where are you?&rdquo; texts.
               </p>
             </div>
             <button
@@ -318,10 +399,10 @@ export function SafetyDashboard() {
                   new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
                 )
               }
-              className={`mt-8 py-5 border rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-sm active:scale-95 ${
+              className={`mt-8 py-4 border rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-sm active:scale-95 ${
                 checkedInAt
-                  ? "bg-green-500 text-white border-green-500 shadow-green-500/20"
-                  : "bg-[#F9F8F6] text-slate border-slate/5 hover:bg-green-500 hover:text-white hover:border-green-500"
+                  ? "bg-green-600 text-white border-green-600 shadow-green-600/20"
+                  : "bg-[#F9F8F6] text-slate border-slate/10 hover:bg-green-600 hover:text-white hover:border-green-600"
               }`}
             >
               {checkedInAt ? "Safe Check-In Broadcast Sent" : "Check-in as Safe"}

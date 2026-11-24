@@ -17,7 +17,12 @@ import {
   TreePine,
   ArrowRight,
   Share2,
-  Heart
+  Heart,
+  Sparkles,
+  Wifi,
+  PhoneCall,
+  AlertCircle,
+  Compass
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
@@ -36,6 +41,7 @@ export default function DestinationDetail() {
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"vibe" | "logistics">("vibe");
 
   const navLinks = ["Destinations", "Crew", "Guides", "Safety"];
 
@@ -191,7 +197,93 @@ export default function DestinationDetail() {
         </section>
 
         {/* Content Section */}
-        <section className="max-w-7xl mx-auto px-6 py-32 grid lg:grid-cols-3 gap-24">
+        <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+          {/* Dual-Mode Switcher: Editorial / Vibe vs Logistics & Safety */}
+          <div className="mb-14 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-slate/10">
+            <div className="inline-flex items-center p-1.5 bg-white border border-slate/10 rounded-2xl shadow-sm w-fit">
+              <button
+                type="button"
+                onClick={() => setViewMode("vibe")}
+                className={cn(
+                  "px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all",
+                  viewMode === "vibe"
+                    ? "bg-slate text-white shadow-md"
+                    : "text-slate/60 hover:text-slate"
+                )}
+              >
+                <Sparkles className="w-4 h-4 text-sunset" />
+                Editorial &amp; Vibe
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("logistics")}
+                className={cn(
+                  "px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all",
+                  viewMode === "logistics"
+                    ? "bg-slate text-white shadow-md"
+                    : "text-slate/60 hover:text-slate"
+                )}
+              >
+                <ShieldCheck className="w-4 h-4 text-green-500" />
+                Logistics &amp; Safety
+              </button>
+            </div>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate/60">
+              {viewMode === "vibe"
+                ? "Editorial story, crew chemistry & curated highlights"
+                : "Offline-ready emergency contacts, connectivity & local safety"}
+            </p>
+          </div>
+
+          {viewMode === "logistics" ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 font-sans">
+              <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
+                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-red-700">
+                  <PhoneCall className="w-4 h-4" />
+                  Emergency &amp; Medical
+                </div>
+                <h3 className="text-xl font-extrabold text-slate tracking-tight">Local Rapid Response</h3>
+                <ul className="space-y-2.5 text-sm text-slate/80 font-medium">
+                  <li className="flex justify-between"><span>National Emergency</span><span className="font-bold text-slate">911 / 112</span></li>
+                  <li className="flex justify-between"><span>Tourist Police Desk</span><span className="font-bold text-slate">24/7 English Line</span></li>
+                  <li className="flex justify-between"><span>Nearest 24h Clinic</span><span className="font-bold text-slate">Within 15 mins</span></li>
+                </ul>
+                <Link
+                  href="/dashboard?tab=safety"
+                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-red-700 hover:text-red-800 pt-2"
+                >
+                  Open Safety Centre &rarr;
+                </Link>
+              </div>
+
+              <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
+                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-ocean">
+                  <Wifi className="w-4 h-4" />
+                  Connectivity &amp; Money
+                </div>
+                <h3 className="text-xl font-extrabold text-slate tracking-tight">Practical Essentials</h3>
+                <ul className="space-y-2.5 text-sm text-slate/80 font-medium">
+                  <li><strong>eSIM / 4G:</strong> Strong coverage in town centres; download offline maps before island-hopping.</li>
+                  <li><strong>Cash &amp; ATMs:</strong> Keep small local notes for ferries, tricycles, and street stalls.</li>
+                  <li><strong>Verified Crew Nearby:</strong> {soloStats.activeKinsCount} ID-verified Kins active this week.</li>
+                </ul>
+              </div>
+
+              <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
+                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-amber-700">
+                  <AlertCircle className="w-4 h-4" />
+                  Transport &amp; Scam Awareness
+                </div>
+                <h3 className="text-xl font-extrabold text-slate tracking-tight">Smart Local Transit</h3>
+                <ul className="space-y-2.5 text-sm text-slate/80 font-medium">
+                  <li>Agree on boat/scooter fares upfront or book through verified Kin guides.</li>
+                  <li>Use official port counters for island transfers and check weather advisories each morning.</li>
+                  <li>Share your live Safety Pulse check-in before late-evening transit.</li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <div className="grid lg:grid-cols-3 gap-24">
           <div className="lg:col-span-2 space-y-24">
             {/* Overview */}
             <div className="space-y-12">
@@ -404,6 +496,8 @@ export default function DestinationDetail() {
               </div>
             </div>
           </div>
+            </div>
+          )}
         </section>
 
         {/* Similar Destinations */}
