@@ -223,7 +223,7 @@ export default function DashboardPage() {
       <div className="hidden md:block w-72 flex-shrink-0" />
 
       {/* ── Main Content Area ── */}
-      <main className="flex-1 overflow-y-auto min-h-screen">
+      <main className="flex-1 min-h-screen">
         {/* Header */}
         <header className="px-6 md:px-12 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/50 backdrop-blur-xl border-b border-slate/5 sticky top-0 z-20">
           <div className="space-y-1">

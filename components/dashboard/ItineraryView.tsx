@@ -205,7 +205,7 @@ export function ItineraryView() {
   const activeStop = items.find((i) => i.id === selectedStopId) || items[0];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-12 pb-20">
+    <div className="max-w-6xl mx-auto space-y-8 pb-20">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2">
@@ -213,7 +213,7 @@ export function ItineraryView() {
             <Calendar className="w-3.5 h-3.5" />
             Wanderlog-Synced Co-Planner
           </div>
-          <h2 className="text-4xl font-serif text-slate font-bold">Today in Siargao</h2>
+          <h2 className="text-3xl md:text-4xl font-serif text-slate font-bold">Today in Siargao</h2>
           <p className="text-slate/60 font-medium">
             Coordinate route stops, upvote crew suggestions, and synchronise your island loop.
           </p>
@@ -236,116 +236,6 @@ export function ItineraryView() {
           </button>
         </div>
       </div>
-
-      {/* Wanderlog-Inspired Interactive Route Board */}
-      <AnimatePresence>
-        {showRouteMap && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            className="bg-slate text-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl border border-slate/10 grid lg:grid-cols-3 gap-8 items-center relative overflow-hidden"
-          >
-            <div className="lg:col-span-2 relative h-72 rounded-3xl bg-gradient-to-br from-[#0F293A] via-[#133B52] to-[#1E293B] border border-white/10 overflow-hidden p-6">
-              {/* Topographic / Coastal SVG Grid & Route Line */}
-              <svg className="absolute inset-0 w-full h-full opacity-80" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="kinRouteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#0077B6" />
-                    <stop offset="100%" stopColor="#FF8C42" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 10,80 Q 30,25 55,45 T 90,20"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeWidth="8"
-                />
-                <polyline
-                  fill="none"
-                  stroke="url(#kinRouteGrad)"
-                  strokeWidth="1.2"
-                  strokeDasharray="2.5 1.5"
-                  points={items.map((item) => `${item.coords.x},${item.coords.y}`).join(" ")}
-                />
-              </svg>
-
-              <div className="relative z-10 flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-sunset border border-white/10">
-                  Live Crew Route · 4 Stops
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">
-                  General Luna → Maasin → Malinao
-                </span>
-              </div>
-
-              {/* Interactive Numbered Stop Pins */}
-              {items.map((item, idx) => {
-                const isSelected = item.id === activeStop?.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelectedStopId(item.id)}
-                    style={{ left: `${item.coords.x}%`, top: `${item.coords.y}%` }}
-                    className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 transition-all ${
-                      isSelected ? "scale-110" : "opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 border-white transition-colors ${
-                        item.isDone
-                          ? "bg-green-500 text-white"
-                          : isSelected
-                          ? "bg-sunset text-white ring-4 ring-sunset/30"
-                          : "bg-ocean text-white"
-                      }`}
-                    >
-                      {idx + 1}
-                    </span>
-                    <span className="hidden sm:inline-block px-2.5 py-1 rounded-lg bg-slate/90 backdrop-blur-md text-[10px] font-bold text-white border border-white/15 whitespace-nowrap">
-                      {item.time}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Selected Stop Detail Panel */}
-            {activeStop && (
-              <div className="space-y-4 bg-white/5 rounded-3xl p-6 border border-white/10">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-sunset">
-                    Selected Waypoint
-                  </span>
-                  <span className="text-[10px] font-bold text-white/50">
-                    {activeStop.coords.lat} · {activeStop.coords.lng}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-serif font-bold text-white leading-snug">
-                  {activeStop.title}
-                </h3>
-                <p className="text-xs font-semibold text-white/70 flex items-center gap-2">
-                  <Navigation className="w-3.5 h-3.5 text-ocean" />
-                  {activeStop.location} · {activeStop.time}
-                </p>
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                  <span className="text-xs text-white/60">
-                    Suggested by <strong className="text-white">{activeStop.suggestedBy}</strong>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleVote(activeStop.id)}
-                    className="px-4 py-2 rounded-xl bg-sunset text-white text-[10px] font-black uppercase tracking-widest hover:bg-sunset/90 transition-all"
-                  >
-                    Upvote ({activeStop.votes})
-                  </button>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {isAdding && (
@@ -475,62 +365,74 @@ export function ItineraryView() {
         ))}
       </div>
 
-      {/* Timeline List */}
-      <div className="relative space-y-8 pl-4 md:pl-0">
-        {/* Timeline connecting line */}
-        <div className="absolute left-10 md:left-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-ocean/20 via-sunset/20 to-transparent md:-translate-x-1/2 hidden md:block" />
+      {/* Split-Pane Itinerary + Sticky Route Map */}
+      <div className={showRouteMap ? "grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" : "space-y-6"}>
+        {/* Left Column: Clean Single-Rail Vertical Timeline */}
+        <div className={showRouteMap ? "lg:col-span-7 relative space-y-5" : "relative space-y-5"}>
+          {/* Subtle left vertical guide rail */}
+          <div className="absolute left-5 top-6 bottom-6 w-px bg-gradient-to-b from-ocean/30 via-sunset/30 to-transparent hidden sm:block" />
 
-        {items.map((item, index) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => setSelectedStopId(item.id)}
-            className={`flex flex-col md:flex-row items-center gap-8 cursor-pointer ${
-              index % 2 === 0 ? "md:flex-row-reverse" : ""
-            }`}
-          >
-            {/* Content Card */}
-            <div className={`w-full md:w-5/12 ${item.isDone ? "opacity-50 grayscale" : ""}`}>
+          {items.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              onClick={() => setSelectedStopId(item.id)}
+              className="relative sm:pl-14 cursor-pointer"
+            >
+              {/* Stop Number Node on Left Rail */}
               <div
-                className={`group relative p-8 bg-white border rounded-[40px] shadow-lg shadow-slate/5 hover:shadow-xl hover:shadow-slate/10 transition-all duration-500 overflow-hidden ${
-                  selectedStopId === item.id ? "border-ocean/40 ring-2 ring-ocean/10" : "border-slate/5"
+                className={`hidden sm:flex absolute left-1 top-6 z-10 w-8 h-8 rounded-full items-center justify-center text-xs font-black border-2 border-white shadow-md transition-colors ${
+                  item.isDone
+                    ? "bg-green-500 text-white"
+                    : selectedStopId === item.id
+                    ? "bg-sunset text-white ring-4 ring-sunset/20"
+                    : "bg-slate text-white"
                 }`}
               >
-                {/* Category Badge */}
-                <div
-                  className={`absolute top-6 right-6 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${getCategoryColor(
-                    item.category
-                  )}`}
-                >
-                  Stop #{index + 1} · {item.category}
-                </div>
+                {index + 1}
+              </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-2xl ${getCategoryColor(item.category)}`}>
-                      {getIcon(item.category)}
+              {/* Compact, Scannable Stop Card */}
+              <div className={item.isDone ? "opacity-60 grayscale" : ""}>
+                <div
+                  className={`group relative p-6 bg-white border rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden ${
+                    selectedStopId === item.id ? "border-ocean/50 ring-2 ring-ocean/10" : "border-slate/10"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-2 rounded-xl ${getCategoryColor(item.category)}`}>
+                        {getIcon(item.category)}
+                      </div>
+                      <p className="text-xs font-bold text-slate/70">{item.time}</p>
+                      {item.splitCost && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-ocean/10 text-ocean text-[10px] font-black uppercase tracking-wider">
+                          {item.splitCost}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm font-bold text-slate/60">{item.time}</p>
-                    {item.splitCost && (
-                      <span className="px-2.5 py-1 rounded-full bg-ocean/10 text-ocean text-[10px] font-black uppercase tracking-widest">
-                        {item.splitCost}
-                      </span>
-                    )}
+                    <span
+                      className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${getCategoryColor(
+                        item.category
+                      )}`}
+                    >
+                      Stop #{index + 1} · {item.category}
+                    </span>
                   </div>
 
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-serif font-bold text-slate mb-1 group-hover:text-ocean transition-colors">
+                  <div className="mb-4">
+                    <h3 className="text-lg md:text-xl font-sans tracking-tight font-bold text-slate mb-1 group-hover:text-ocean transition-colors">
                       {item.title}
                     </h3>
-                    <div className="flex items-center gap-2 text-slate/60">
-                      <MapPin className="w-4 h-4 text-sunset" />
+                    <div className="flex items-center gap-1.5 text-slate/60">
+                      <MapPin className="w-3.5 h-3.5 text-sunset flex-shrink-0" />
                       <p className="text-sm font-medium">{item.location}</p>
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-slate/5 flex items-center justify-between">
+                  <div className="pt-4 border-t border-slate/5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-sunset flex items-center justify-center text-[10px] font-bold text-white uppercase">
                         {item.suggestedBy[0]}
@@ -539,7 +441,7 @@ export function ItineraryView() {
                         Suggested by <span className="text-slate font-bold">{item.suggestedBy}</span>
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -547,7 +449,7 @@ export function ItineraryView() {
                           e.stopPropagation();
                           toggleVote(item.id);
                         }}
-                        className="flex items-center gap-1.5 text-slate/60 hover:text-ocean bg-slate/5 px-3 py-1.5 rounded-xl transition-all cursor-pointer group"
+                        className="flex items-center gap-1.5 text-slate/70 hover:text-ocean bg-slate/5 px-3 py-1.5 rounded-xl transition-all cursor-pointer group"
                         title="Upvote this activity"
                       >
                         <ThumbsUp className="w-4 h-4 group-hover:fill-ocean/20 transition-all" />
@@ -559,8 +461,8 @@ export function ItineraryView() {
                           toggleDone(item.id);
                         }}
                         title={item.isDone ? "Mark as active" : "Mark as completed"}
-                        className={`p-2 transition-all cursor-pointer active:scale-90 ${
-                          item.isDone ? "text-green-500" : "text-slate/20 hover:text-green-500"
+                        className={`p-1.5 transition-all cursor-pointer active:scale-90 ${
+                          item.isDone ? "text-green-600" : "text-slate/30 hover:text-green-600"
                         }`}
                       >
                         <CheckCircle2 className="w-5 h-5" />
@@ -568,35 +470,107 @@ export function ItineraryView() {
                     </div>
                   </div>
                 </div>
-
-                {item.isDone && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/10 pointer-events-none">
-                    <div className="flex items-center gap-2 px-6 py-3 bg-white shadow-2xl rounded-2xl border border-slate/10 transform -rotate-6">
-                      <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      <span className="text-sm font-black uppercase tracking-tighter text-slate">
-                        Completed
-                      </span>
-                    </div>
-                  </div>
-                )}
               </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Right Column: Sticky Interactive Route Map & Active Waypoint */}
+        {showRouteMap && (
+          <aside className="lg:col-span-5 lg:sticky lg:top-28 self-start bg-slate text-white rounded-3xl p-5 shadow-xl border border-slate/10 space-y-5">
+            <div className="relative h-64 rounded-2xl bg-gradient-to-br from-[#0F293A] via-[#133B52] to-[#1E293B] border border-white/10 overflow-hidden p-4">
+              <svg className="absolute inset-0 w-full h-full opacity-80" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="kinRouteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#0077B6" />
+                    <stop offset="100%" stopColor="#FF8C42" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 10,80 Q 30,25 55,45 T 90,20"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth="8"
+                />
+                <polyline
+                  fill="none"
+                  stroke="url(#kinRouteGrad)"
+                  strokeWidth="1.4"
+                  strokeDasharray="2.5 1.5"
+                  points={items.map((item) => `${item.coords.x},${item.coords.y}`).join(" ")}
+                />
+              </svg>
+
+              <div className="relative z-10 flex items-center justify-between gap-2">
+                <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-sunset border border-white/10">
+                  Live Route · {items.length} Stops
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white/60 truncate">
+                  General Luna → Malinao
+                </span>
+              </div>
+
+              {items.map((item, idx) => {
+                const isSelected = item.id === activeStop?.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelectedStopId(item.id)}
+                    style={{ left: `${item.coords.x}%`, top: `${item.coords.y}%` }}
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1.5 transition-all ${
+                      isSelected ? "scale-110" : "opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    <span
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 border-white transition-colors ${
+                        item.isDone
+                          ? "bg-green-500 text-white"
+                          : isSelected
+                          ? "bg-sunset text-white ring-4 ring-sunset/30"
+                          : "bg-ocean text-white"
+                      }`}
+                    >
+                      {idx + 1}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Timeline Dot (Desktop only) */}
-            <div className="hidden md:flex relative z-10 w-12 h-12 rounded-full bg-white border-4 border-slate/5 items-center justify-center shadow-xl">
-              <div
-                className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                  item.isDone
-                    ? "bg-slate/20"
-                    : "bg-ocean shadow-[0_0_12px_rgba(0,119,182,0.4)] animate-pulse"
-                }`}
-              />
-            </div>
-
-            {/* Spacer for layout */}
-            <div className="hidden md:block w-5/12" />
-          </motion.div>
-        ))}
+            {activeStop && (
+              <div className="space-y-3 bg-white/5 rounded-2xl p-5 border border-white/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-sunset">
+                    Selected Waypoint
+                  </span>
+                  <span className="text-[10px] font-bold text-white/60">
+                    {activeStop.coords.lat} · {activeStop.coords.lng}
+                  </span>
+                </div>
+                <h3 className="text-lg font-sans font-bold text-white leading-snug">
+                  {activeStop.title}
+                </h3>
+                <p className="text-xs font-semibold text-white/75 flex items-center gap-2">
+                  <Navigation className="w-3.5 h-3.5 text-ocean flex-shrink-0" />
+                  {activeStop.location} · {activeStop.time}
+                </p>
+                <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-xs text-white/65">
+                    By <strong className="text-white">{activeStop.suggestedBy}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleVote(activeStop.id)}
+                    className="px-4 py-2 rounded-xl bg-sunset text-white text-[10px] font-black uppercase tracking-wider hover:bg-sunset/90 transition-all"
+                  >
+                    Upvote ({activeStop.votes})
+                  </button>
+                </div>
+              </div>
+            )}
+          </aside>
+        )}
       </div>
 
       {/* Suggested for Tomorrow Section */}
