@@ -149,13 +149,18 @@ export default function DashboardPage() {
   const totalUnread = 3;
 
   return (
-    <div className="min-h-screen bg-[#F9F8F6] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row">
 
-      {/* ── Desktop Sidebar ── */}
-      <aside className="hidden md:flex w-72 bg-white border-r border-slate/5 flex-col p-8 space-y-12 shadow-[4px_0_24px_rgba(0,0,0,0.02)] fixed h-screen overflow-y-auto">
-        <Link href="/" className="text-2xl font-serif font-bold text-slate">
-          Travel <span className="text-sunset">Kin</span>
-        </Link>
+      {/* ── Desktop Sidebar (Mindtrip-inspired slim rail) ── */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate/10 flex-col p-6 space-y-8 fixed h-screen overflow-y-auto">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-xl font-serif font-bold text-slate tracking-tight">
+            Travel <span className="text-sunset">Kin</span>
+          </Link>
+          <span className="px-2 py-0.5 rounded-full bg-slate/5 text-[10px] font-bold uppercase tracking-wider text-slate/60">
+            SEA
+          </span>
+        </div>
 
         <nav className="flex-1 space-y-2" aria-label="Primary navigation">
           <SidebarItem
@@ -220,29 +225,43 @@ export default function DashboardPage() {
       </aside>
 
       {/* Sidebar Spacer for Fixed Aside */}
-      <div className="hidden md:block w-72 flex-shrink-0" />
+      <div className="hidden md:block w-64 flex-shrink-0" />
 
       {/* ── Main Content Area ── */}
       <main className="flex-1 min-h-screen">
-        {/* Header */}
-        <header className="px-6 md:px-12 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/50 backdrop-blur-xl border-b border-slate/5 sticky top-0 z-20">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-serif text-slate font-bold">Welcome back, {profile.name.split(" ")[0]}</h1>
-            <p className="text-slate/60 text-sm font-medium">You have 12 matches in Chiang Mai today.</p>
-          </div>
+        {/* Compact Mindtrip / Airbnb-inspired Header */}
+        <header className="px-6 md:px-10 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/90 backdrop-blur-xl border-b border-slate/10 sticky top-0 z-20">
           <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-xl md:text-2xl font-sans tracking-tight text-slate font-extrabold">
+                Welcome back, {profile.name.split(" ")[0]}
+              </h1>
+              <p className="text-slate/60 text-xs font-medium">
+                12 verified Kins nearby · Chiang Mai &amp; Siargao
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Segmented Pill Context Bar (Mindtrip / Airbnb pattern) */}
+            <div className="hidden xl:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate shadow-sm">
+              <span className="px-3 py-1">Siargao</span>
+              <span className="px-3 py-1 text-slate/70">Today</span>
+              <span className="px-3 py-1 text-ocean font-bold">8 Kins</span>
+            </div>
+
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/50" />
               <input
-                placeholder="Search travellers..."
-                className="p-4 pl-12 bg-white border border-slate/5 rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
+                placeholder="Search travellers or spots..."
+                className="py-2.5 pl-10 pr-4 w-52 md:w-64 bg-[#F8F9FA] border border-slate/10 rounded-full text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
               />
             </div>
             <button
               aria-label="Notifications"
-              className="p-4 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
+              className="p-2.5 bg-white border border-slate/10 rounded-full shadow-sm hover:bg-slate/5 transition-all"
             >
-              <Bell className="w-5 h-5 text-slate/40" />
+              <Bell className="w-4 h-4 text-slate/60" />
             </button>
             <div className="relative">
               <button

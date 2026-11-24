@@ -17,7 +17,10 @@ import {
   X,
   Send,
   Compass,
-  Navigation
+  Navigation,
+  ChevronDown,
+  Pin,
+  UserPlus
 } from "lucide-react";
 
 export interface ItineraryItem {
@@ -95,6 +98,9 @@ export function ItineraryView() {
   const [items, setItems] = useState<ItineraryItem[]>(SAMPLE_ITEMS);
   const [selectedStopId, setSelectedStopId] = useState<string>("2");
   const [showRouteMap, setShowRouteMap] = useState<boolean>(true);
+  const [isDayExpanded, setIsDayExpanded] = useState<boolean>(true);
+  const [pinnedIds, setPinnedIds] = useState<string[]>(["2"]);
+  const [inviteCopied, setInviteCopied] = useState<boolean>(false);
   const [tomorrowVoteStatus, setTomorrowVoteStatus] = useState<"none" | "voted" | "dismissed">("none");
   const [tomorrowVotes, setTomorrowVotes] = useState<number>(19);
   const [isAdding, setIsAdding] = useState(false);
@@ -218,21 +224,35 @@ export function ItineraryView() {
             Coordinate route stops, upvote crew suggestions, and synchronise your island loop.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof navigator !== "undefined" && navigator.clipboard) {
+                navigator.clipboard.writeText(window.location.href).catch(() => {});
+              }
+              setInviteCopied(true);
+              setTimeout(() => setInviteCopied(false), 2000);
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white text-slate border border-slate/10 rounded-full shadow-sm hover:bg-slate/5 transition-all text-xs font-bold"
+          >
+            <UserPlus className="w-4 h-4 text-sunset" />
+            <span>{inviteCopied ? "Invite Link Copied" : "Invite Crew"}</span>
+          </button>
           <button
             onClick={() => setShowRouteMap((v) => !v)}
-            className="flex items-center gap-2 px-5 py-3.5 bg-white text-slate border border-slate/10 rounded-2xl shadow-sm hover:bg-slate/5 transition-all text-xs font-black uppercase tracking-widest"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white text-slate border border-slate/10 rounded-full shadow-sm hover:bg-slate/5 transition-all text-xs font-bold"
           >
             <Compass className="w-4 h-4 text-ocean" />
-            <span>{showRouteMap ? "Hide Route Map" : "Show Route Map"}</span>
+            <span>{showRouteMap ? "Hide Map" : "Show Map"}</span>
           </button>
           <button
             onClick={() => setIsAdding(true)}
             title="Suggest an activity for the crew"
-            className="flex items-center gap-2 px-6 py-3.5 bg-slate text-white rounded-2xl shadow-xl shadow-slate/10 hover:bg-slate/90 transition-all active:scale-95 group"
+            className="flex items-center gap-2 px-5 py-2.5 bg-slate text-white rounded-full shadow-md hover:bg-slate/90 transition-all active:scale-95 group text-xs font-bold"
           >
-            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-            <span className="font-semibold">Suggest Activity</span>
+            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+            <span>Suggest Activity</span>
           </button>
         </div>
       </div>
@@ -367,10 +387,36 @@ export function ItineraryView() {
 
       {/* Split-Pane Itinerary + Sticky Route Map */}
       <div className={showRouteMap ? "grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" : "space-y-6"}>
-        {/* Left Column: Clean Single-Rail Vertical Timeline */}
-        <div className={showRouteMap ? "lg:col-span-7 relative space-y-5" : "relative space-y-5"}>
-          {/* Subtle left vertical guide rail */}
-          <div className="absolute left-5 top-6 bottom-6 w-px bg-gradient-to-b from-ocean/30 via-sunset/30 to-transparent hidden sm:block" />
+        {/* Left Column: Mindtrip-Style Collapsible Day Accordion + Single-Rail Vertical Timeline */}
+        <div className={showRouteMap ? "lg:col-span-7 space-y-5" : "space-y-5"}>
+          {/* Collapsible Day Header */}
+          <button
+            type="button"
+            onClick={() => setIsDayExpanded((v) => !v)}
+            className="w-full flex items-center justify-between px-5 py-4 bg-white border border-slate/10 rounded-2xl shadow-sm hover:border-slate/20 transition-all text-left"
+          >
+            <div className="flex items-center gap-3">
+              <span className="px-2.5 py-1 rounded-lg bg-slate text-white text-xs font-bold">
+                Day 1
+              </span>
+              <div>
+                <p className="text-sm font-bold text-slate">Siargao Island Loop</p>
+                <p className="text-xs text-slate/60 font-medium">
+                  {items.length} stops · 24 km · {pinnedIds.length} pinned
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={`w-5 h-5 text-slate/50 transition-transform duration-200 ${
+                isDayExpanded ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {isDayExpanded && (
+            <div className="relative space-y-5">
+              {/* Subtle left vertical guide rail */}
+              <div className="absolute left-5 top-6 bottom-6 w-px bg-gradient-to-b from-ocean/30 via-sunset/30 to-transparent hidden sm:block" />
 
           {items.map((item, index) => (
             <motion.div
@@ -441,7 +487,26 @@ export function ItineraryView() {
                         Suggested by <span className="text-slate font-bold">{item.suggestedBy}</span>
                       </p>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPinnedIds((prev) =>
+                            prev.includes(item.id)
+                              ? prev.filter((id) => id !== item.id)
+                              : [...prev, item.id]
+                          );
+                        }}
+                        title={pinnedIds.includes(item.id) ? "Unpin stop" : "Pin stop to itinerary"}
+                        className={`p-1.5 rounded-xl transition-all cursor-pointer active:scale-90 ${
+                          pinnedIds.includes(item.id)
+                            ? "bg-sunset/10 text-sunset"
+                            : "text-slate/30 hover:text-sunset hover:bg-slate/5"
+                        }`}
+                      >
+                        <Pin className="w-4 h-4" />
+                      </button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -473,6 +538,8 @@ export function ItineraryView() {
               </div>
             </motion.div>
           ))}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Sticky Interactive Route Map & Active Waypoint */}
