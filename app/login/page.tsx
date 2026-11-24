@@ -1,19 +1,32 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signInWithPopup, 
-  GoogleAuthProvider 
-} from "firebase/auth";
-import { auth, logFirebaseEvent } from "@/lib/firebase";
+import { logFirebaseEvent } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/components/providers/AuthProvider";
-import { useProfileStore } from "@/lib/stores/useProfile";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+function formatAuthError(err: any): string {
+  const code = err?.code || "";
+  if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+    return "Incorrect email address or password. Please check your details and try again.";
+  }
+  if (code === "auth/email-already-in-use") {
+    return "An account with this email address already exists. Try signing in instead.";
+  }
+  if (code === "auth/weak-password") {
+    return "Please choose a stronger password (at least 6 characters).";
+  }
+  if (code === "auth/popup-closed-by-user") {
+    return "Sign-in popup was closed before completing. Please try again.";
+  }
+  if (code === "auth/too-many-requests") {
+    return "Too many attempts. Please wait a moment before trying again.";
+  }
+  return err?.message || "Authentication failed. Please try again.";
+}
 
 function GoogleLogoSvg() {
   return (
@@ -50,8 +63,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const router = useRouter();
-  const { user } = useAuthContext();
+  const { user, signInWithEmail, registerWithEmail, signInWithGoogle, sendResetPassword } = useAuthContext();
 
   useEffect(() => {
     if (user) {
@@ -62,6 +76,7 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setNotice("");
     if (isSignUp) {
       logFirebaseEvent("sign_up_start", { method: "email" });
     } else {
@@ -70,47 +85,50 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        await registerWithEmail(email, password);
         logFirebaseEvent("sign_up_success", { method: "email" });
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmail(email, password);
         logFirebaseEvent("login_success", { method: "email" });
       }
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(formatAuthError(err));
       if (isSignUp) {
-        logFirebaseEvent("sign_up_failure", { method: "email", error: err.message });
+        logFirebaseEvent("sign_up_failure", { method: "email", error: err?.message });
       } else {
-        logFirebaseEvent("login_failure", { method: "email", error: err.message });
+        logFirebaseEvent("login_failure", { method: "email", error: err?.message });
       }
     }
   };
 
   const handleGoogleSignIn = async () => {
     setError("");
+    setNotice("");
     logFirebaseEvent("google_login_click");
 
     try {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({
-        prompt: "select_account",
-      });
-      const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        const providerPhoto = result.user.providerData?.find((p) => p?.photoURL)?.photoURL;
-        const providerName = result.user.providerData?.find((p) => p?.displayName)?.displayName;
-        useProfileStore.getState().updateProfile({
-          name: result.user.displayName || providerName || result.user.email?.split("@")[0] || "Traveler",
-          avatar: result.user.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${result.user.uid}`,
-          username: result.user.email?.split("@")[0] || "wanderer",
-        });
-      }
+      await signInWithGoogle();
       logFirebaseEvent("google_login_success");
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
-      logFirebaseEvent("google_login_failure", { error: err.message });
+      setError(formatAuthError(err));
+      logFirebaseEvent("google_login_failure", { error: err?.message });
+    }
+  };
+
+  const handleResetPassword = async () => {
+    setError("");
+    setNotice("");
+    if (!email.trim()) {
+      setError("Please enter your email address first so we can send a reset link.");
+      return;
+    }
+    try {
+      await sendResetPassword(email);
+      setNotice("Password reset instructions have been sent to your email address.");
+    } catch (err: any) {
+      setError(formatAuthError(err));
     }
   };
 
