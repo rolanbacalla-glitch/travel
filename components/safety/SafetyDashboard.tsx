@@ -268,8 +268,8 @@ export function SafetyDashboard() {
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Kin Trust Score</p>
-              <p className="text-lg font-sans font-extrabold text-slate">94 / 100 <span className="text-xs font-bold text-green-700">· Verified</span></p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Community Trust</p>
+              <p className="text-lg font-sans font-extrabold text-slate">94% Positive <span className="text-xs font-bold text-green-700">· ID Verified</span></p>
             </div>
           </div>
           <div className="p-5 bg-white border border-slate/10 rounded-3xl shadow-sm flex items-center gap-4">

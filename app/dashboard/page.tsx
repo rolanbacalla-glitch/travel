@@ -244,7 +244,7 @@ export default function DashboardPage() {
 
           <div className="flex items-center gap-3 flex-wrap">
             {/* Segmented Pill Context Bar (Mindtrip / Airbnb pattern) */}
-            <div className="hidden xl:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate shadow-sm">
+            <div className="hidden lg:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate shadow-sm">
               <span className="px-3 py-1">Siargao</span>
               <span className="px-3 py-1 text-slate/70">Today</span>
               <span className="px-3 py-1 text-ocean font-bold">8 Kins</span>
@@ -370,7 +370,7 @@ export default function DashboardPage() {
                     )}
                   >
                     <Zap className="w-4 h-4" />
-                    Pulse Feed
+                    Local Updates
                     <span className="px-1.5 py-0.5 bg-sunset text-white text-[10px] rounded-md font-black">Live</span>
                   </button>
                 </div>
@@ -386,10 +386,10 @@ export default function DashboardPage() {
             {activeTab === "plans" && (
               <motion.div
                 key="plans"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
                 <ItineraryView />
               </motion.div>

@@ -217,7 +217,7 @@ export function ItineraryView() {
         <div className="space-y-2">
           <div className="flex items-center gap-3 text-ocean font-bold tracking-widest text-xs uppercase bg-ocean/5 rounded-full px-4 py-1.5 w-fit border border-ocean/10 shadow-sm">
             <Calendar className="w-3.5 h-3.5" />
-            Wanderlog-Synced Co-Planner
+            Shared Day Plan
           </div>
           <h2 className="text-3xl md:text-4xl font-serif text-slate font-bold">Today in Siargao</h2>
           <p className="text-slate/60 font-medium">
@@ -569,7 +569,7 @@ export function ItineraryView() {
               </svg>
 
               <div className="relative z-10 flex items-center justify-between gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-sunset border border-white/10">
+                <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-sunset border border-white/10 whitespace-nowrap flex-shrink-0">
                   Live Route · {items.length} Stops
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-white/60 truncate">

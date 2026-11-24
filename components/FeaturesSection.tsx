@@ -35,7 +35,7 @@ export function FeaturesSection() {
               </div>
             </div>
             <p className="text-[11px] text-slate/70 leading-relaxed font-bold">
-              Real-time monitoring and local rapid response in 12 SE Asian countries.
+              Always connected. One-tap local emergency support across 12 SE Asian countries.
             </p>
           </div>
           {/* Abstract blobs */}
@@ -48,7 +48,7 @@ export function FeaturesSection() {
             Why Travel Kin
           </span>
           <h2 className="text-5xl md:text-7xl font-serif font-bold mb-12 leading-tight text-balance">
-            Safety is our <span className="text-sand">North Star.</span>
+            Your peace of mind <span className="text-sand">comes first.</span>
           </h2>
 
           <div className="space-y-6">

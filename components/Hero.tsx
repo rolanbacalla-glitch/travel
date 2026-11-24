@@ -88,20 +88,20 @@ export function Hero() {
               47,000+ Verified Solo Travellers
             </span>
 
-            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
-              Solo travel, <br />
+            <h1 className="text-5xl md:text-8xl font-serif font-bold text-white mb-8 leading-[1.12] tracking-tighter">
+              Explore with confidence, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
-                better together.
+                travel with your crew.
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-              Ditch the stress of planning alone. Connect with verified companions,
-              find expert local guides, and explore Southeast Asia&apos;s hidden gems.
+            <p className="text-xl md:text-2xl text-white/85 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
+              Travel solo, never stranded. Meet ID-verified travellers, join trusted local guides,
+              and share day plans across Southeast Asia.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
-              <Link href="/dashboard" className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
+              <Link href="/onboarding" className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
                 <span className="relative z-10 flex items-center gap-2 text-lg">
                   Find Your Crew <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
