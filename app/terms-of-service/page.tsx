@@ -53,9 +53,9 @@ export default function TermsOfServicePage() {
         <div className="container mx-auto px-6 relative z-20 text-center mt-16">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-4">
             <Scale className="w-4 h-4 text-sunset" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Legal Center</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-white">Legal Centre</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-md">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
             Terms of Service
           </h1>
           <p className="text-white/80 text-sm md:text-base max-w-xl mx-auto font-medium">
@@ -80,7 +80,7 @@ export default function TermsOfServicePage() {
             
             {/* Introduction */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Compass className="w-6 h-6 text-sunset flex-shrink-0" />
                 1. Agreement to Terms
               </h2>
@@ -94,7 +94,7 @@ export default function TermsOfServicePage() {
 
             {/* UK Consumer Rights Act */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Award className="w-6 h-6 text-sunset flex-shrink-0" />
                 2. UK Consumer Rights Act 2015 Compliance
               </h2>
@@ -113,7 +113,7 @@ export default function TermsOfServicePage() {
 
             {/* Package Travel Regulations */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Users className="w-6 h-6 text-sunset flex-shrink-0" />
                 3. The Package Travel Regulations 2018
               </h2>
@@ -136,7 +136,7 @@ export default function TermsOfServicePage() {
 
             {/* Vetting & Code of Conduct */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <ShieldAlert className="w-6 h-6 text-sunset flex-shrink-0" />
                 4. User Registration, Verification, & Conduct
               </h2>
@@ -146,7 +146,7 @@ export default function TermsOfServicePage() {
               <ul className="list-disc pl-6 space-y-2 mb-4">
                 <li>Provide accurate, current, and complete registration and ID information.</li>
                 <li>Maintain the security of your password and credentials.</li>
-                <li>Respect all community safety guidelines. We have a zero-tolerance policy for harassment, discrimination, or reckless behavior.</li>
+                <li>Respect all community safety guidelines. We have a zero-tolerance policy for harassment, discrimination, or reckless behaviour.</li>
               </ul>
               <p>
                 We reserve the right, under UK civil law and platform safety principles, to suspend or terminate your account immediately if you breach our safety standards, fail verification, or put other travellers at risk.
@@ -155,7 +155,7 @@ export default function TermsOfServicePage() {
 
             {/* Limitation of Liability */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Scale className="w-6 h-6 text-sunset flex-shrink-0" />
                 5. Limitation of Liability
               </h2>
@@ -174,7 +174,7 @@ export default function TermsOfServicePage() {
 
             {/* Jurisdiction */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <FileText className="w-6 h-6 text-sunset flex-shrink-0" />
                 6. Governing Law & Dispute Resolution
               </h2>

@@ -149,7 +149,7 @@ export default function DestinationDetail() {
               className="group flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full text-white border border-white/20 hover:bg-white hover:text-slate transition-all"
             >
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Back to Explore</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Back to Explore</span>
             </Link>
 
             <div className="flex gap-4">
@@ -175,7 +175,7 @@ export default function DestinationDetail() {
                 </span>
                 {destination.tag} · {destination.subtitle}
               </span>
-              <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
+              <h1 className="text-6xl md:text-9xl font-bold text-white mb-8 leading-[1.15] tracking-tighter">
                 {firstPart ? (
                   <>
                     {firstPart}{" "}
@@ -238,7 +238,7 @@ export default function DestinationDetail() {
           {viewMode === "logistics" ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 font-sans">
               <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
-                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-red-700">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-red-700">
                   <PhoneCall className="w-4 h-4" />
                   Emergency &amp; Medical
                 </div>
@@ -250,14 +250,14 @@ export default function DestinationDetail() {
                 </ul>
                 <Link
                   href="/dashboard?tab=safety"
-                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-red-700 hover:text-red-800 pt-2"
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-700 hover:text-red-800 pt-2"
                 >
                   Open Safety Centre &rarr;
                 </Link>
               </div>
 
               <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
-                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-ocean">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-ocean">
                   <Wifi className="w-4 h-4" />
                   Connectivity &amp; Money
                 </div>
@@ -270,7 +270,7 @@ export default function DestinationDetail() {
               </div>
 
               <div className="p-8 bg-white border border-slate/10 rounded-3xl shadow-sm space-y-4">
-                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-wider text-amber-700">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-amber-700">
                   <AlertCircle className="w-4 h-4" />
                   Transport &amp; Scam Awareness
                 </div>
@@ -288,59 +288,59 @@ export default function DestinationDetail() {
             {/* Overview */}
             <div className="space-y-12">
               <div className="space-y-4">
-                <h2 className="text-xs font-black uppercase tracking-[0.4em] text-ocean">Overview</h2>
-                <h3 className="text-5xl font-serif font-bold text-slate leading-tight">
-                  Escape the ordinary and <span className="text-terra">immerse yourself</span> in local wonder.
+                <h2 className="text-xs font-bold uppercase tracking-widest text-ocean">Overview</h2>
+                <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-slate leading-tight">
+                  Explore on your own terms, with a <span className="text-terra">verified crew</span> when you want company.
                 </h3>
               </div>
-              <p className="text-xl text-slate/60 leading-relaxed font-medium">
-                {destination.description || `Experience ${destination.title} like a local, not a tourist. Our curated exploration of this ${destination.tag?.toLowerCase()} is designed for solo travellers seeking both autonomy and connection. We handle the complex logistics—verified guides, safe transport, and vetted stays—so you can focus on the moment.`}
+              <p className="text-lg md:text-xl text-slate/70 leading-relaxed font-medium">
+                {destination.description || `Experience ${destination.title} like a local, not a tourist. Travel Kin matches you with ID-verified solo travellers on the same dates so you can split vetted local skippers, boats, and stays while keeping complete freedom over your pace.`}
               </p>
 
               <div className="grid md:grid-cols-3 gap-8 pt-12">
                 {sections.map((s, i) => (
-                  <div key={i} className="p-8 rounded-[2.5rem] bg-slate/5 border border-slate/5 hover:bg-white hover:shadow-2xl hover:shadow-slate/5 transition-all group">
+                  <div key={i} className="p-8 rounded-2xl bg-slate/5 border border-slate/5 hover:bg-white hover:shadow-2xl hover:shadow-slate/5 transition-all group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-ocean shadow-sm mb-6 group-hover:scale-110 transition-transform">
                       <s.icon className="w-6 h-6" />
                     </div>
                     <h4 className="text-lg font-bold text-slate mb-2">{s.title}</h4>
-                    <p className="text-sm text-slate/50 leading-relaxed">{s.desc}</p>
+                    <p className="text-sm text-slate/70 leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
               </div>
 
               {/* Flash Pack Style: Solo Crew Chemistry & Vetted Local Guide */}
               <div className="grid md:grid-cols-2 gap-8 pt-6">
-                <div className="p-8 rounded-[2.5rem] bg-slate text-white space-y-6 relative overflow-hidden">
+                <div className="p-8 rounded-2xl bg-slate text-white space-y-6 relative overflow-hidden">
                   <div className="absolute -top-16 -right-16 w-40 h-40 bg-sunset/20 blur-3xl rounded-full" />
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-sunset">Crew Chemistry</span>
-                    <span className="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-widest text-white/80">
+                    <span className="text-xs font-bold uppercase tracking-wider text-sunset">Crew Chemistry</span>
+                    <span className="px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest text-white/80">
                       {soloStats.soloRatio}
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-2xl font-serif font-bold mb-2">{destination.vibe || "Electric & Communal"}</h4>
+                    <h4 className="text-2xl font-bold mb-2">{destination.vibe || "Electric & Communal"}</h4>
                     <p className="text-sm text-white/60 leading-relaxed">{soloStats.crewChemistry}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                     <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Typical Age Range</p>
-                      <p className="text-lg font-serif font-bold text-white">{soloStats.avgAge}</p>
+                      <p className="text-xs uppercase tracking-widest text-white/75 font-bold">Typical Age Range</p>
+                      <p className="text-lg font-bold text-white">{soloStats.avgAge}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Active Solo Kins</p>
-                      <p className="text-lg font-serif font-bold text-sunset">{soloStats.activeKinsCount} on island</p>
+                      <p className="text-xs uppercase tracking-widest text-white/75 font-bold">Active Solo Kins</p>
+                      <p className="text-lg font-bold text-sunset">{soloStats.activeKinsCount} on island</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-8 rounded-[2.5rem] bg-white border border-slate/10 shadow-xl shadow-slate/5 flex flex-col justify-between space-y-6">
+                <div className="p-8 rounded-2xl bg-white border border-slate/10 shadow-xl shadow-slate/5 flex flex-col justify-between space-y-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-ocean">Vetted Local Skipper</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-ocean">Vetted Local Skipper</span>
                     <div className="flex items-center gap-1 text-sunset">
                       <Star className="w-3.5 h-3.5 fill-current" />
-                      <span className="text-xs font-black text-slate">{localGuide.rating}</span>
+                      <span className="text-xs font-bold text-slate">{localGuide.rating}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -349,10 +349,10 @@ export default function DestinationDetail() {
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <h4 className="text-lg font-serif font-bold text-slate">{localGuide.name}</h4>
+                        <h4 className="text-lg font-bold text-slate">{localGuide.name}</h4>
                         <ShieldCheck className="w-4 h-4 text-ocean" />
                       </div>
-                      <p className="text-xs font-bold text-slate/50">{localGuide.role}</p>
+                      <p className="text-xs font-bold text-slate/70">{localGuide.role}</p>
                     </div>
                   </div>
                   <p className="text-xs text-slate/60 font-medium leading-relaxed">
@@ -367,23 +367,23 @@ export default function DestinationDetail() {
               <div className="space-y-12">
                 <div className="flex justify-between items-end">
                   <div className="space-y-4">
-                    <h2 className="text-xs font-black uppercase tracking-[0.4em] text-sunset">The Vibe</h2>
-                    <h3 className="text-4xl font-serif font-bold text-slate">Visual Narrative</h3>
+                    <h2 className="text-xs font-bold uppercase tracking-widest text-sunset">The Vibe</h2>
+                    <h3 className="text-4xl font-bold text-slate">Visual Narrative</h3>
                   </div>
-                  <button className="text-[10px] font-black uppercase tracking-widest text-slate hover:text-ocean transition-colors">
+                  <button className="text-xs font-bold uppercase tracking-widest text-slate hover:text-ocean transition-colors">
                     View All Photos
                   </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden">
+                  <div className="relative aspect-[4/5] rounded-2xl overflow-hidden">
                     <Image src={destination.gallery[0] || "https://images.pexels.com/photos/16141092/pexels-photo-16141092.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 1" />
                   </div>
                   <div className="space-y-6 flex flex-col">
-                    <div className="relative flex-grow rounded-[3rem] overflow-hidden">
+                    <div className="relative flex-grow rounded-2xl overflow-hidden">
                       <Image src={destination.gallery[1] || "https://images.pexels.com/photos/573850/pexels-photo-573850.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 2" />
                     </div>
-                    <div className="relative aspect-[3/2] rounded-[3rem] overflow-hidden">
+                    <div className="relative aspect-[3/2] rounded-2xl overflow-hidden">
                       <Image src={destination.gallery[2] || "https://images.pexels.com/photos/4982560/pexels-photo-4982560.jpeg?auto=compress&cs=tinysrgb&w=800"} fill className="object-cover hover:scale-105 transition-transform duration-700" alt="Vibe 3" />
                     </div>
                   </div>
@@ -395,31 +395,31 @@ export default function DestinationDetail() {
             {destination.survivalGuide && (
               <div className="space-y-12 pt-12 border-t border-slate-100">
                 <div className="space-y-4">
-                  <h2 className="text-xs font-black uppercase tracking-[0.4em] text-ocean">Local Knowledge</h2>
-                  <h3 className="text-4xl font-serif font-bold text-slate">Survival Guide</h3>
+                  <h2 className="text-xs font-bold uppercase tracking-widest text-ocean">Local Knowledge</h2>
+                  <h3 className="text-4xl font-bold text-slate">Survival Guide</h3>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-8">
                   {destination.survivalGuide.bestTime && (
                     <div className="p-6 bg-slate-50 rounded-3xl">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Best Time</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Best Time</h4>
                       <p className="font-medium text-slate-700">{destination.survivalGuide.bestTime}</p>
                     </div>
                   )}
                   {destination.survivalGuide.connectivity && (
                     <div className="p-6 bg-slate-50 rounded-3xl">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Connectivity</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Connectivity</h4>
                       <p className="font-medium text-slate-700">{destination.survivalGuide.connectivity}</p>
                     </div>
                   )}
                   {destination.survivalGuide.transport && (
                     <div className="p-6 bg-slate-50 rounded-3xl">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Transport</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Transport</h4>
                       <p className="font-medium text-slate-700">{destination.survivalGuide.transport}</p>
                     </div>
                   )}
                   {destination.survivalGuide.cash && (
                     <div className="p-6 bg-slate-50 rounded-3xl">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Cash & ATMs</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Cash & ATMs</h4>
                       <p className="font-medium text-slate-700">{destination.survivalGuide.cash}</p>
                     </div>
                   )}
@@ -431,57 +431,57 @@ export default function DestinationDetail() {
           {/* Sidebar / Booking Card */}
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-8">
-              <div className="bg-white rounded-[2.5rem] sm:rounded-[3.5rem] p-6 sm:p-8 xl:p-10 border border-slate/5 shadow-2xl shadow-slate/10 overflow-hidden relative">
-                <div className="flex justify-between items-start mb-10">
-                  <div className="pr-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate/30 block mb-2">Private Room or Shared Villa</span>
-                    <div className="flex items-baseline gap-2">
-                      <h4 className="text-5xl font-serif font-bold text-slate">{destination.price}</h4>
-                      <span className="text-slate/40 font-bold uppercase text-[10px] tracking-widest">/ Per Trip</span>
+              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate/10 shadow-xl shadow-slate/10 overflow-hidden relative">
+                <div className="flex justify-between items-start gap-3 mb-8">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate/65 block mb-2">Estimated Solo Budget</span>
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <h4 className="text-4xl xl:text-5xl font-extrabold tracking-tight tabular-nums text-slate">{destination.price}</h4>
+                      <span className="text-slate/65 font-bold uppercase text-xs tracking-wider">/ Est. 7 Days</span>
                     </div>
                   </div>
-                  <div className="px-4 py-1.5 bg-ocean/10 text-ocean rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
-                    Best Value
+                  <div className="px-3.5 py-1 bg-ocean/10 text-ocean rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                    Shared Splits
                   </div>
                 </div>
 
-                <div className="space-y-6 mb-10">
-                  <div className="flex items-center gap-4 text-slate/60">
-                    <Calendar className="w-5 h-5 text-sunset" />
-                    <span className="text-sm font-medium">8 Days / 7 Nights Expedition</span>
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center gap-3.5 text-slate/75">
+                    <Calendar className="w-5 h-5 text-sunset shrink-0" />
+                    <span className="text-sm font-medium">Flexible 5–8 day island loops</span>
                   </div>
-                  <div className="flex items-center gap-4 text-slate/60">
-                    <MapPin className="w-5 h-5 text-ocean" />
-                    <span className="text-sm font-medium">Includes internal flights & boat transfers</span>
+                  <div className="flex items-center gap-3.5 text-slate/75">
+                    <MapPin className="w-5 h-5 text-ocean shrink-0" />
+                    <span className="text-sm font-medium">Split vetted boats, skippers &amp; stays directly</span>
                   </div>
-                  <div className="flex items-center gap-4 text-slate/60">
-                    <Users className="w-5 h-5 text-terra" />
-                    <span className="text-sm font-medium">Max 8 explorers per crew</span>
+                  <div className="flex items-center gap-3.5 text-slate/75">
+                    <Users className="w-5 h-5 text-terra shrink-0" />
+                    <span className="text-sm font-medium">Small crews of 4–8 verified solo travellers</span>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <Link
                     href={`/dashboard?tab=hub&hub=${destination.id}`}
-                    className="w-full px-6 py-4 sm:py-5 bg-slate text-white rounded-full text-xs font-black uppercase tracking-[0.15em] shadow-xl shadow-slate/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 text-center"
+                    className="w-full px-6 py-4 bg-slate text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-slate/20 hover:bg-slate-mid active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 text-center"
                   >
                     <span className="leading-snug">Apply to Join Crew</span>
                     <ArrowRight className="w-4 h-4 text-sunset shrink-0" />
                   </Link>
                   <Link
                     href={`/dashboard?tab=itinerary`}
-                    className="w-full px-6 py-4 bg-sunset/10 border border-sunset/20 text-sunset rounded-full font-black uppercase tracking-widest text-xs hover:bg-sunset hover:text-white transition-all flex items-center justify-center gap-2 text-center"
+                    className="w-full px-6 py-3.5 bg-sunset/10 border border-sunset/20 text-sunset rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-sunset hover:text-white transition-all flex items-center justify-center gap-2 text-center"
                   >
                     <Calendar className="w-4 h-4 shrink-0" />
                     <span className="leading-snug">Save to My Wander List</span>
                   </Link>
-                  <p className="text-[10px] text-center text-slate/30 font-bold uppercase tracking-widest leading-loose">
-                    Vetting required for all members. <br /> Safety is our priority.
+                  <p className="text-xs text-center text-slate/65 font-medium leading-relaxed pt-1">
+                    Book your own flights · 100% ID-verified crew before chat.
                   </p>
                 </div>
               </div>
 
-              <div className="p-8 rounded-[3rem] bg-ocean/5 border border-ocean/10 flex items-center gap-6">
+              <div className="p-8 rounded-2xl bg-ocean/5 border border-ocean/10 flex items-center gap-6">
                 <div className="flex -space-x-3">
                   {[1, 2, 3].map(i => (
                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate/10 overflow-hidden">
@@ -490,7 +490,7 @@ export default function DestinationDetail() {
                   ))}
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-ocean mb-1">Crew Status</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-ocean mb-1">Crew Status</p>
                   <p className="text-xs font-bold text-slate">4 Explorers already confirmed</p>
                 </div>
               </div>
@@ -503,16 +503,16 @@ export default function DestinationDetail() {
         {/* Similar Destinations */}
         <section className="bg-slate py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-xs font-black uppercase tracking-[0.4em] text-sunset mb-20">Similar Paradises</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-sunset mb-20">Similar Paradises</h2>
             <div className="grid md:grid-cols-3 gap-12">
               {fallbackDestinations.filter(d => d.id !== destination.id).slice(0, 3).map((dest) => (
                 <Link key={dest.id} href={`/destinations/${dest.id}`} className="group">
-                  <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6">
+                  <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
                     <Image src={dest.image} fill className="object-cover group-hover:scale-110 transition-transform duration-700" alt={dest.title} />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate to-transparent opacity-60" />
                     <div className="absolute bottom-8 left-8">
-                      <h4 className="text-2xl font-serif font-bold text-white mb-2">{dest.title}</h4>
-                      <p className="text-white/60 text-xs font-black uppercase tracking-widest">{dest.tagline}</p>
+                      <h4 className="text-2xl font-bold text-white mb-2">{dest.title}</h4>
+                      <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{dest.tagline}</p>
                     </div>
                   </div>
                 </Link>

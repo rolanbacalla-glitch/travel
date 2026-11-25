@@ -139,16 +139,16 @@ export default function OnboardingPage() {
 
       {/* ── Navigation ── */}
       <nav className="relative z-10 p-6 md:p-8 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-serif font-bold text-slate">
+        <Link href="/" className="text-2xl font-bold text-slate">
           Travel <span className="text-sunset">Kin</span>
         </Link>
-        <div className="px-4 py-1.5 bg-sunset/20 backdrop-blur-md rounded-full border border-sunset/30 text-[10px] font-black tracking-widest text-sunset uppercase shadow-sm">
+        <div className="px-4 py-1.5 bg-sunset/20 backdrop-blur-md rounded-full border border-sunset/30 text-xs font-bold tracking-widest text-sunset uppercase shadow-sm">
           Step {currentStep + 1} of {steps.length}
         </div>
       </nav>
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-8">
-        <div className="glass w-full max-w-2xl rounded-[3rem] p-8 md:p-12 shadow-2xl">
+        <div className="glass w-full max-w-2xl rounded-2xl p-8 md:p-12 shadow-2xl">
           {/* ── Progress Bar ── */}
           <div className="h-2 w-full bg-white/40 shadow-inner ring-1 ring-white/60 backdrop-blur-sm rounded-full mb-12 overflow-hidden">
             <motion.div
@@ -173,7 +173,7 @@ export default function OnboardingPage() {
                 <div className="inline-flex p-3.5 rounded-2xl bg-sunset shadow-xl shadow-sunset/20 mb-6 ring-4 ring-sunset/10 transition-transform hover:scale-105 active:scale-95 cursor-default">
                   {React.createElement(steps[currentStep].icon, { className: "w-6 h-6 text-white" })}
                 </div>
-                <h1 className="text-4xl md:text-6xl font-serif font-bold text-slate mb-3 tracking-tight">
+                <h1 className="text-4xl md:text-6xl font-bold text-slate mb-3 tracking-tight">
                   {steps[currentStep].title}
                 </h1>
                 <p className="text-slate/60 text-lg md:text-xl font-medium">{steps[currentStep].desc}</p>
@@ -200,7 +200,7 @@ export default function OnboardingPage() {
                   onClick={prevStep}
                   disabled={currentStep === 0}
                   className={cn(
-                    "flex items-center gap-2 text-slate/50 font-bold tracking-widest uppercase text-xs hover:text-slate transition-colors duration-200",
+                    "flex items-center gap-2 text-slate/70 font-bold tracking-widest uppercase text-xs hover:text-slate transition-colors duration-200",
                     currentStep === 0 && "opacity-0 pointer-events-none"
                   )}
                 >
@@ -235,34 +235,34 @@ function IdentityForm({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-2 font-sans">
-        <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/50 ml-1">Legal Name</label>
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Legal Name</label>
         <input
           value={data.name || ""}
           onChange={(e) => update("name", e.target.value)}
           placeholder="Ex: Mia Reyes"
-          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-[1.5rem] shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/40 focus:bg-white"
+          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 focus:bg-white"
         />
       </div>
       <div className="space-y-2">
-        <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/50 ml-1">Username</label>
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Username</label>
         <div className="relative">
-          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/40 font-bold">@</span>
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/65 font-bold">@</span>
           <input
             value={data.username || ""}
             onChange={(e) => update("username", e.target.value)}
             placeholder="wanderer_mia"
-            className="w-full p-5 pl-10 bg-white/60 backdrop-blur-sm border border-white/40 rounded-[1.5rem] shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/40 focus:bg-white"
+            className="w-full p-5 pl-10 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 focus:bg-white"
           />
         </div>
       </div>
       <div className="md:col-span-2 space-y-2">
-        <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/50 ml-1">Short Bio</label>
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Short Bio</label>
         <textarea
           value={data.bio || ""}
           onChange={(e) => update("bio", e.target.value)}
           placeholder="What should we know about you? (Keep it fun)"
           rows={3}
-          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-[1.5rem] shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/40 resize-none focus:bg-white"
+          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 resize-none focus:bg-white"
         />
       </div>
     </div>
@@ -291,7 +291,7 @@ function StyleForm({
           key={s.id}
           onClick={() => toggle(s.id)}
           className={cn(
-            "p-6 bg-white/60 backdrop-blur-sm border rounded-[2rem] shadow-sm hover:shadow-md transition-all text-center group active:scale-95",
+            "p-6 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-md transition-all text-center group active:scale-95",
             selected.includes(s.id)
               ? "border-sunset bg-sunset/10 ring-1 ring-sunset/30 scale-[1.02] shadow-md"
               : "border-white/40 hover:bg-white/80 hover:border-sunset/50"
@@ -303,7 +303,7 @@ function StyleForm({
           )}>{s.icon}</div>
           <span className={cn(
             "text-xs font-bold tracking-widest uppercase transition-colors",
-            selected.includes(s.id) ? "text-sunset-dark" : "text-slate/50 group-hover:text-slate/80"
+            selected.includes(s.id) ? "text-sunset-dark" : "text-slate/70 group-hover:text-slate/80"
           )}>{s.label}</span>
           {selected.includes(s.id) && (
             <motion.div layoutId="check" className="mt-3 flex justify-center">
@@ -348,7 +348,7 @@ function VibeForm({
       </div>
 
       <div className="space-y-5">
-        <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/50 ml-1">Main Destinations</label>
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Main Destinations</label>
         <div className="grid grid-cols-2 gap-4">
           {[
             { name: "Thailand", icon: "🐘" },
@@ -360,14 +360,14 @@ function VibeForm({
               key={dest.name}
               onClick={() => toggleDest(dest.name)}
               className={cn(
-                "p-5 bg-white/60 backdrop-blur-sm border rounded-[2rem] shadow-sm flex items-center gap-4 transition-all font-bold group relative overflow-hidden",
+                "p-5 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm flex items-center gap-4 transition-all font-bold group relative overflow-hidden",
                 selectedDest.includes(dest.name)
                   ? "bg-sunset/10 border-sunset text-slate shadow-md scale-[1.02]"
                   : "border-white/40 text-slate/70 hover:bg-white/80 hover:border-sunset/50"
               )}
             >
               <div className={cn(
-                "w-12 h-12 rounded-[1.5rem] flex items-center justify-center text-xl transition-all duration-300",
+                "w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-300",
                 selectedDest.includes(dest.name)
                   ? "bg-sunset text-white shadow-md"
                   : "bg-white border border-white/60 shadow-sm group-hover:scale-110"
@@ -400,17 +400,17 @@ function VibeForm({
 function SafetyForm({ onPersist }: { onPersist: () => void }) {
   return (
     <div className="space-y-8">
-      <div className="p-10 glass-warm border border-white/40 rounded-[3rem] flex flex-col md:flex-row gap-8 relative overflow-hidden group shadow-sm">
+      <div className="p-10 glass-warm border border-white/40 rounded-2xl flex flex-col md:flex-row gap-8 relative overflow-hidden group shadow-sm">
         <div className="absolute -top-12 -right-12 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
           <ShieldCheck className="w-48 h-48 text-ocean rotate-12" />
         </div>
 
-        <div className="p-5 h-fit w-fit bg-ocean text-white rounded-[1.5rem] shadow-lg ring-8 ring-white/50 relative z-10 animate-float">
+        <div className="p-5 h-fit w-fit bg-ocean text-white rounded-xl shadow-lg ring-8 ring-white/50 relative z-10 animate-float">
           <ShieldCheck className="w-8 h-8" />
         </div>
 
         <div className="relative z-10 flex-1">
-          <h4 className="text-2xl font-serif text-slate font-bold mb-3 tracking-tight">Trust Verification</h4>
+          <h4 className="text-2xl text-slate font-bold mb-3 tracking-tight">Trust Verification</h4>
           <p className="text-slate/60 text-base font-medium leading-relaxed max-w-md mb-10">
             Join 12,000+ verified solo travellers. We use secure identity checks to ensure everyone in our community is who they say they are.
           </p>
@@ -434,7 +434,7 @@ function SafetyForm({ onPersist }: { onPersist: () => void }) {
         </div>
       </div>
 
-      <div className="flex items-start gap-4 p-6 glass border border-sunset/20 rounded-[2rem] text-sunset-dark text-sm font-medium">
+      <div className="flex items-start gap-4 p-6 glass border border-sunset/20 rounded-2xl text-sunset-dark text-sm font-medium">
         <AlertTriangle className="w-6 h-6 text-sunset flex-shrink-0 mt-0.5" />
         <p>Your privacy is our priority. ID verification data is processed by a certified third party and is never shared with other users or stored on our public servers.</p>
       </div>
@@ -466,7 +466,7 @@ function OnboardingSuccess() {
         >
           <Check className="w-12 h-12 text-white" />
         </motion.div>
-        <h2 className="text-5xl md:text-8xl font-serif font-bold text-slate mb-6 leading-tight tracking-tight">
+        <h2 className="text-5xl md:text-8xl font-bold text-slate mb-6 leading-tight tracking-tight">
           You&apos;re All <span className="text-sunset">Set!</span>
         </h2>
         <p className="text-slate/60 text-xl md:text-2xl max-w-lg mx-auto mb-12 font-medium">

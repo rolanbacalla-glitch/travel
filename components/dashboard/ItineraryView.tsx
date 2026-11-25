@@ -219,7 +219,7 @@ export function ItineraryView() {
             <Calendar className="w-3.5 h-3.5" />
             Shared Day Plan
           </div>
-          <h2 className="text-3xl md:text-4xl font-serif text-slate font-bold">Today in Siargao</h2>
+          <h2 className="text-3xl md:text-4xl text-slate font-bold">Today in Siargao</h2>
           <p className="text-slate/60 font-medium">
             Coordinate route stops, upvote crew suggestions, and synchronise your island loop.
           </p>
@@ -271,22 +271,22 @@ export function ItineraryView() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
             >
               <div className="p-8 space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-serif font-bold text-slate">Suggest Activity</h3>
+                  <h3 className="text-2xl font-bold text-slate">Suggest Activity</h3>
                   <button
                     onClick={() => setIsAdding(false)}
                     className="p-2 hover:bg-slate/5 rounded-full transition-colors"
                   >
-                    <X className="w-6 h-6 text-slate/40" />
+                    <X className="w-6 h-6 text-slate/65" />
                   </button>
                 </div>
 
                 <form onSubmit={handleAddActivity} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">
+                    <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                       Activity Name
                     </label>
                     <input
@@ -299,7 +299,7 @@ export function ItineraryView() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">
+                      <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                         Location
                       </label>
                       <input
@@ -310,7 +310,7 @@ export function ItineraryView() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">
+                      <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                         Time
                       </label>
                       <input
@@ -322,7 +322,7 @@ export function ItineraryView() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate/40 ml-1">
+                    <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                       Category
                     </label>
                     <div className="grid grid-cols-4 gap-2">
@@ -331,10 +331,10 @@ export function ItineraryView() {
                           key={cat}
                           type="button"
                           onClick={() => setNewItem({ ...newItem, category: cat })}
-                          className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                          className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all ${
                             newItem.category === cat
                               ? "bg-ocean text-white border-ocean shadow-lg shadow-ocean/20"
-                              : "bg-slate/5 text-slate/40 border-transparent hover:border-slate/10"
+                              : "bg-slate/5 text-slate/65 border-transparent hover:border-slate/10"
                           }`}
                         >
                           {cat}
@@ -407,7 +407,7 @@ export function ItineraryView() {
               </div>
             </div>
             <ChevronDown
-              className={`w-5 h-5 text-slate/50 transition-transform duration-200 ${
+              className={`w-5 h-5 text-slate/70 transition-transform duration-200 ${
                 isDayExpanded ? "rotate-180" : ""
               }`}
             />
@@ -429,7 +429,7 @@ export function ItineraryView() {
             >
               {/* Stop Number Node on Left Rail */}
               <div
-                className={`hidden sm:flex absolute left-1 top-6 z-10 w-8 h-8 rounded-full items-center justify-center text-xs font-black border-2 border-white shadow-md transition-colors ${
+                className={`hidden sm:flex absolute left-1 top-6 z-10 w-8 h-8 rounded-full items-center justify-center text-xs font-bold border-2 border-white shadow-md transition-colors ${
                   item.isDone
                     ? "bg-green-500 text-white"
                     : selectedStopId === item.id
@@ -454,13 +454,13 @@ export function ItineraryView() {
                       </div>
                       <p className="text-xs font-bold text-slate/70">{item.time}</p>
                       {item.splitCost && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-ocean/10 text-ocean text-[10px] font-black uppercase tracking-wider">
+                        <span className="px-2.5 py-0.5 rounded-full bg-ocean/10 text-ocean text-xs font-bold uppercase tracking-wider">
                           {item.splitCost}
                         </span>
                       )}
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${getCategoryColor(
+                      className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getCategoryColor(
                         item.category
                       )}`}
                     >
@@ -480,7 +480,7 @@ export function ItineraryView() {
 
                   <div className="pt-4 border-t border-slate/5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-sunset flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                      <div className="w-6 h-6 rounded-full bg-sunset flex items-center justify-center text-xs font-bold text-white uppercase">
                         {item.suggestedBy[0]}
                       </div>
                       <p className="text-xs font-semibold text-slate/60">
@@ -502,7 +502,7 @@ export function ItineraryView() {
                         className={`p-1.5 rounded-xl transition-all cursor-pointer active:scale-90 ${
                           pinnedIds.includes(item.id)
                             ? "bg-sunset/10 text-sunset"
-                            : "text-slate/30 hover:text-sunset hover:bg-slate/5"
+                            : "text-slate/65 hover:text-sunset hover:bg-slate/5"
                         }`}
                       >
                         <Pin className="w-4 h-4" />
@@ -527,7 +527,7 @@ export function ItineraryView() {
                         }}
                         title={item.isDone ? "Mark as active" : "Mark as completed"}
                         className={`p-1.5 transition-all cursor-pointer active:scale-90 ${
-                          item.isDone ? "text-green-600" : "text-slate/30 hover:text-green-600"
+                          item.isDone ? "text-green-600" : "text-slate/65 hover:text-green-600"
                         }`}
                       >
                         <CheckCircle2 className="w-5 h-5" />
@@ -569,10 +569,10 @@ export function ItineraryView() {
               </svg>
 
               <div className="relative z-10 flex items-center justify-between gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-sunset border border-white/10 whitespace-nowrap flex-shrink-0">
+                <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-bold uppercase tracking-wider text-sunset border border-white/10 whitespace-nowrap flex-shrink-0">
                   Live Route · {items.length} Stops
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-white/60 truncate">
+                <span className="text-xs font-bold uppercase tracking-wider text-white/60 truncate">
                   General Luna → Malinao
                 </span>
               </div>
@@ -590,7 +590,7 @@ export function ItineraryView() {
                     }`}
                   >
                     <span
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 border-white transition-colors ${
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-white transition-colors ${
                         item.isDone
                           ? "bg-green-500 text-white"
                           : isSelected
@@ -608,10 +608,10 @@ export function ItineraryView() {
             {activeStop && (
               <div className="space-y-3 bg-white/5 rounded-2xl p-5 border border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-sunset">
+                  <span className="text-xs font-bold uppercase tracking-wider text-sunset">
                     Selected Waypoint
                   </span>
-                  <span className="text-[10px] font-bold text-white/60">
+                  <span className="text-xs font-bold text-white/60">
                     {activeStop.coords.lat} · {activeStop.coords.lng}
                   </span>
                 </div>
@@ -629,7 +629,7 @@ export function ItineraryView() {
                   <button
                     type="button"
                     onClick={() => toggleVote(activeStop.id)}
-                    className="px-4 py-2 rounded-xl bg-sunset text-white text-[10px] font-black uppercase tracking-wider hover:bg-sunset/90 transition-all"
+                    className="px-4 py-2 rounded-xl bg-sunset text-white text-xs font-bold uppercase tracking-wider hover:bg-sunset/90 transition-all"
                   >
                     Upvote ({activeStop.votes})
                   </button>
@@ -642,13 +642,13 @@ export function ItineraryView() {
 
       {/* Suggested for Tomorrow Section */}
       {tomorrowVoteStatus !== "dismissed" && (
-        <div className="pt-12 px-8 py-12 bg-sunset/5 rounded-[50px] border border-sunset/10 flex flex-col md:flex-row items-center gap-12">
+        <div className="pt-12 px-8 py-12 bg-sunset/5 rounded-3xl border border-sunset/10 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 space-y-4">
-            <div className="flex items-center gap-2 text-sunset font-black text-xs uppercase tracking-[0.2em]">
+            <div className="flex items-center gap-2 text-sunset font-bold text-xs uppercase tracking-wider">
               <div className="w-4 h-0.5 bg-sunset" />
               Upvoting Now · {tomorrowVotes} Crew Votes
             </div>
-            <h3 className="text-3xl font-serif font-bold text-slate">
+            <h3 className="text-3xl font-bold text-slate">
               Ready for tomorrow&apos;s Sugba Lagoon &amp; Kawhagan Sandbar Loop?
             </h3>
             <p className="text-slate/60 leading-relaxed max-w-md">
@@ -682,7 +682,7 @@ export function ItineraryView() {
           <div className="relative w-full md:w-64 h-64 bg-white/40 rounded-3xl overflow-hidden border border-slate/5">
             <div className="absolute inset-0 flex items-center justify-center flex-col gap-2">
               <Heart className="w-12 h-12 text-sunset animate-bounce" />
-              <span className="text-[10px] font-black text-sunset uppercase tracking-widest">
+              <span className="text-xs font-bold text-sunset uppercase tracking-widest">
                 {tomorrowVotes} Kins In
               </span>
             </div>

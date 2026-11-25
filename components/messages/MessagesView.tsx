@@ -28,7 +28,7 @@ import Link from "next/link";
 // Dynamic Import for Leaflet to fix SSR
 const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), {
   ssr: false,
-  loading: () => <div className="w-full h-full bg-slate/5 animate-pulse flex items-center justify-center text-slate/50 font-black uppercase tracking-widest italic">Syncing Radar...</div>
+  loading: () => <div className="w-full h-full bg-slate/5 animate-pulse flex items-center justify-center text-slate/70 font-bold uppercase tracking-widest italic">Syncing Radar...</div>
 });
 
 /* ─── Types & Mock Data (Extended) ─────────────────────────────────────────── */
@@ -50,17 +50,17 @@ function HandshakeCard({ kinName, status, onAccept, onDecline }: {
       <div className="flex items-center gap-4">
         <div className={cn(
           "p-3 rounded-2xl",
-          status === 'pending' ? "bg-ocean/5 text-ocean" : (status === 'accepted' ? "bg-green-50 text-green-500" : "bg-slate/5 text-slate/30")
+          status === 'pending' ? "bg-ocean/5 text-ocean" : (status === 'accepted' ? "bg-green-50 text-green-500" : "bg-slate/5 text-slate/65")
         )}>
           <ShieldCheck className="w-6 h-6" />
         </div>
         <div>
-          <h4 className="text-sm font-black text-slate uppercase tracking-widest">Kin Protocol</h4>
-          <p className="text-[10px] text-slate/60 font-bold uppercase tracking-tighter">Location Verification</p>
+          <h4 className="text-sm font-bold text-slate uppercase tracking-widest">Kin Protocol</h4>
+          <p className="text-xs text-slate/60 font-bold uppercase tracking-tighter">Location Verification</p>
         </div>
       </div>
 
-      <p className="text-xs text-slate/60 leading-relaxed font-serif italic">
+      <p className="text-xs text-slate/60 leading-relaxed italic">
         {status === 'pending'
           ? `${kinName} is requesting a Trust Handshake. Accept to share precise coordinates for 2 hours.`
           : (status === 'accepted' ? "Trust Handshake Active. Precise pins unlocked." : "Handshake Expired.")}
@@ -70,14 +70,14 @@ function HandshakeCard({ kinName, status, onAccept, onDecline }: {
         <div className="flex items-center gap-2 pt-2">
           <button
             onClick={onAccept}
-            className="flex-1 py-3 bg-ocean text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-ocean/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            className="flex-1 py-3 bg-ocean text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-ocean/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
             aria-label={`Accept trust handshake with ${kinName}`}
           >
             Accept (2h Share)
           </button>
           <button
             onClick={onDecline}
-            className="px-4 py-3 bg-slate/5 text-slate/40 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate/10 transition-all text-center cursor-pointer"
+            className="px-4 py-3 bg-slate/5 text-slate/65 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate/10 transition-all text-center cursor-pointer"
             aria-label="Decline trust handshake"
           >
             X
@@ -201,10 +201,10 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
                 <Image src={conv.image} alt="kin" fill className="object-cover" />
               </div>
               <div>
-                <h4 className="text-[10px] font-black text-slate uppercase tracking-widest">{conv.name}</h4>
+                <h4 className="text-xs font-bold text-slate uppercase tracking-widest">{conv.name}</h4>
                 <div className="flex items-center gap-1">
-                  <Lock className={cn("w-2.5 h-2.5", session.trustStatus === 'BLURRED' ? "text-slate/30" : "text-green-500")} />
-                  <span className="text-[8px] font-bold text-slate/60 uppercase">
+                  <Lock className={cn("w-2.5 h-2.5", session.trustStatus === 'BLURRED' ? "text-slate/65" : "text-green-500")} />
+                  <span className="text-xs font-bold text-slate/60 uppercase">
                     {session.trustStatus === 'BLURRED' ? 'Blurred Privacy' : 'Full Precision'}
                   </span>
                 </div>
@@ -218,7 +218,7 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
                 title="Kin Handshake"
               >
                 <ShieldCheck className="w-5 h-5" />
-                <span className="text-[9px] font-black uppercase tracking-widest hidden sm:block">Verify Pins</span>
+                <span className="text-xs font-bold uppercase tracking-widest hidden sm:block">Verify Pins</span>
               </button>
             )}
           </div>
@@ -230,10 +230,10 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-slate/60" title="Proximity Distance">
             <Navigation className="w-3.5 h-3.5" />
-            <span className="text-[9px] font-black uppercase tracking-widest">~800m Away</span>
+            <span className="text-xs font-bold uppercase tracking-widest">~800m Away</span>
           </div>
           <div className={cn(
-            "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border shadow-sm transition-all flex items-center gap-1.5",
+            "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border shadow-sm transition-all flex items-center gap-1.5",
             conv.verified ? "bg-green-50 text-green-600 border-green-100" : "bg-slate/5 text-slate/60 border-slate/5"
           )}>
             <div className={cn("w-1 h-1 rounded-full", conv.verified ? "bg-green-500 animate-pulse" : "bg-slate/20")} />
@@ -244,12 +244,12 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
         <div className="flex items-center gap-3">
           <button
             onClick={() => store.archiveChat(conv.id, conv.name, conv.location, conv.vibe)}
-            className="flex items-center gap-2 text-slate/50 hover:text-ocean transition-all cursor-pointer"
+            className="flex items-center gap-2 text-slate/70 hover:text-ocean transition-all cursor-pointer"
             title="Archive to Memories"
             aria-label={`Archive chat with ${conv.name}`}
           >
             <History className="w-4 h-4" />
-            <span className="text-[8px] font-black uppercase tracking-widest hidden md:block">Archive</span>
+            <span className="text-xs font-bold uppercase tracking-widest hidden md:block">Archive</span>
           </button>
           <div className="w-px h-4 bg-slate/10" />
           <button
@@ -266,14 +266,14 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
       <div className="flex-1 overflow-y-auto px-5 py-8 space-y-6 flex flex-col items-center">
 
         {/* System Info Bubble */}
-        <div className="px-6 py-2 bg-slate/5 rounded-full text-[9px] font-black text-slate/60 uppercase tracking-[0.2em] mb-4">
+        <div className="px-6 py-2 bg-slate/5 rounded-full text-xs font-bold text-slate/60 uppercase tracking-wider mb-4">
           Session Active · End-to-End Secure
         </div>
 
         {verifyPrompt && (
           <div className="w-full max-w-md p-5 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex items-center justify-between gap-4">
             <div className="space-y-1">
-              <p className="text-xs font-black uppercase tracking-widest text-amber-800">
+              <p className="text-xs font-bold uppercase tracking-widest text-amber-800">
                 ID Verification Required
               </p>
               <p className="text-xs text-slate/70">
@@ -282,7 +282,7 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
             </div>
             <Link
               href="/verify"
-              className="px-4 py-2.5 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shrink-0 hover:bg-amber-600 transition-colors"
+              className="px-4 py-2.5 bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 hover:bg-amber-600 transition-colors"
             >
               Verify ID
             </Link>
@@ -306,7 +306,7 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
                   : "bg-white text-slate rounded-3xl rounded-bl-sm border border-slate/5 shadow-sm"
               )}>
                 {msg.text}
-                <div className={cn("text-[9px] mt-1 font-bold opacity-60 uppercase tracking-[0.1em]", msg.fromMe ? "text-right" : "text-left")}>
+                <div className={cn("text-xs mt-1 font-bold opacity-60 uppercase tracking-wide", msg.fromMe ? "text-right" : "text-left")}>
                   {msg.time}
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
   const activeConv = KINS.find(c => c.id === store.activeId) || null;
 
   return (
-    <div className="flex h-[calc(100vh-140px)] bg-white rounded-[3rem] border border-slate/10 shadow-2xl overflow-hidden">
+    <div className="flex h-[calc(100vh-140px)] bg-white rounded-2xl border border-slate/10 shadow-2xl overflow-hidden">
 
       {/* List (Sidebar) */}
       <div className={cn(
@@ -381,14 +381,14 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
         activeConv ? "hidden md:flex" : "flex"
       )}>
         <div className="p-8 border-b border-slate/5">
-          <h2 className="text-3xl font-serif font-black text-slate">Ring</h2>
-          <p className="text-[10px] font-black text-slate/60 uppercase tracking-[0.2em] mt-1 mb-8">Active Conversations</p>
+          <h2 className="text-3xl font-extrabold text-slate">Ring</h2>
+          <p className="text-xs font-bold text-slate/60 uppercase tracking-wider mt-1 mb-8">Active Conversations</p>
 
           {/* Search */}
           <div className="relative group">
             <input
               placeholder="Find Kin..."
-              className="w-full pl-12 pr-4 py-4 bg-white border border-slate/5 rounded-[20px] text-xs font-bold text-slate shadow-sm focus:shadow-xl transition-all"
+              className="w-full pl-12 pr-4 py-4 bg-white border border-slate/5 rounded-xl text-xs font-bold text-slate shadow-sm focus:shadow-xl transition-all"
             />
             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ocean" />
           </div>
@@ -404,27 +404,27 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
                 key={c.id}
                 onClick={() => store.setActiveId(c.id)}
                 className={cn(
-                  "w-full p-6 text-left rounded-[35px] transition-all flex items-center gap-5 cursor-pointer",
+                  "w-full p-6 text-left rounded-2xl transition-all flex items-center gap-5 cursor-pointer",
                   store.activeId === c.id ? "bg-slate text-white shadow-2xl shadow-slate/30" : "hover:bg-white"
                 )}
               >
-                <div className="relative w-14 h-14 rounded-[22px] overflow-hidden shadow-md flex-shrink-0">
+                <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-md flex-shrink-0">
                   <Image src={c.image} alt={c.name} fill className="object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <h4 className="font-bold text-base leading-none">{c.name}</h4>
                     {lastMsg && (
-                      <span className={cn("text-[8px] font-bold opacity-40 uppercase tracking-widest", store.activeId === c.id ? "text-white" : "text-slate")}>
+                      <span className={cn("text-xs font-bold opacity-40 uppercase tracking-widest", store.activeId === c.id ? "text-white" : "text-slate")}>
                         {lastMsg.time}
                       </span>
                     )}
                   </div>
-                  <p className={cn("text-[10px] uppercase font-black tracking-widest mt-2", store.activeId === c.id ? "text-white/40" : "text-slate/60")}>
+                  <p className={cn("text-xs uppercase font-bold tracking-widest mt-2", store.activeId === c.id ? "text-white/75" : "text-slate/60")}>
                     {c.location} · {c.vibe.split(',')[0]}
                   </p>
                   {lastMsg && (
-                    <p className={cn("text-[11px] font-medium mt-2 truncate opacity-80", store.activeId === c.id ? "text-white" : "text-slate")}>
+                    <p className={cn("text-xs font-medium mt-2 truncate opacity-80", store.activeId === c.id ? "text-white" : "text-slate")}>
                       {lastMsg.text}
                     </p>
                   )}
@@ -438,15 +438,15 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
         <div className="p-4 border-t border-slate/5">
           <button
             onClick={onVerify}
-            className="w-full text-left group p-4 bg-ocean text-white rounded-[20px] shadow-md shadow-ocean/10 relative overflow-hidden hover:bg-ocean/90 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="w-full text-left group p-4 bg-ocean text-white rounded-xl shadow-md shadow-ocean/10 relative overflow-hidden hover:bg-ocean/90 active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <div className="relative z-10 space-y-1.5">
               <div className="flex items-center gap-2 mb-1">
                 <Lock className="w-4 h-4 opacity-60" />
-                <h5 className="text-[10px] font-black uppercase tracking-widest">Kin Protocol</h5>
+                <h5 className="text-xs font-bold uppercase tracking-widest">Kin Protocol</h5>
               </div>
               <p className="text-xs leading-relaxed opacity-70">Complete your ID check to unlock precise proximity pins.</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/90 pt-1">Verify Now →</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/90 pt-1">Verify Now →</p>
             </div>
           </button>
         </div>
@@ -458,10 +458,10 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
           <ChatThread conv={activeConv} onBack={() => store.setActiveId(null)} />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#F9F8F6]/20">
-            <div className="w-24 h-24 bg-white border border-slate/5 rounded-[40px] shadow-xl flex items-center justify-center mb-8">
+            <div className="w-24 h-24 bg-white border border-slate/5 rounded-2xl shadow-xl flex items-center justify-center mb-8">
               <Lock className="w-8 h-8 text-slate/20" />
             </div>
-            <h3 className="text-3xl font-serif font-black text-slate">Secure Line</h3>
+            <h3 className="text-3xl font-extrabold text-slate">Secure Line</h3>
             <p className="text-xs text-slate/60 max-w-sm mt-4 font-medium leading-relaxed">
               Select a Kin to start coordinating. Every conversation in the Ring is end-to-end shielded by the Traveller Protocol.
             </p>

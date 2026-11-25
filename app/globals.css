@@ -6,7 +6,7 @@
 :root {
   --background: #F7F2E4;
   --foreground: #1E2D35;
-  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jakarta: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 /* ─── Base resets ───────────────────────────────────────────── */
@@ -19,7 +19,7 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-jakarta), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   overflow-x: clip;

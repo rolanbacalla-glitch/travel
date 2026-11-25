@@ -91,8 +91,8 @@ export default function AdminUsersPage() {
     <div className="p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-serif font-black text-slate tracking-tight">Users</h1>
-          <p className="text-slate/60 font-medium mt-1">Manage traveler accounts and permissions.</p>
+          <h1 className="text-3xl font-extrabold text-slate tracking-tight">Users</h1>
+          <p className="text-slate/60 font-medium mt-1">Manage traveller accounts and permissions.</p>
         </div>
         <button 
           onClick={handleInjectDummy}
@@ -120,10 +120,10 @@ export default function AdminUsersPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">User</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Role</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Status</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 text-right">Actions</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">User</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">Role</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">Status</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -159,7 +159,7 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-widest ${
                         user.role === 'admin' 
                           ? 'bg-purple-100 text-purple-700' 
                           : 'bg-slate-100 text-slate-600'
@@ -169,7 +169,7 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-widest ${
                         user.status === 'banned' 
                           ? 'bg-red-100 text-red-600' 
                           : 'bg-green-100 text-green-700'

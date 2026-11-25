@@ -99,7 +99,7 @@ export default function AdminDestinations() {
     <div className="p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-slate mb-2">Destinations</h1>
+          <h1 className="text-3xl font-bold text-slate mb-2">Destinations</h1>
           <p className="text-slate-500 font-medium">Manage all available trips and destinations on the platform.</p>
         </div>
         
@@ -136,10 +136,10 @@ export default function AdminDestinations() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Destination</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Price</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">Rating</th>
-                <th className="py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 text-right">Actions</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">Destination</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">Price</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">Rating</th>
+                <th className="py-4 px-6 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>

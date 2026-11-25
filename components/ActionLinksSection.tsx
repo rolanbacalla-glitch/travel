@@ -41,13 +41,13 @@ export function ActionLinksSection() {
             >
               <Link
                 href={action.href}
-                className={`group block p-12 rounded-[3rem] bg-white border border-mist hover:shadow-2xl transition-all duration-500 overflow-hidden relative`}
+                className={`group block p-12 rounded-2xl bg-white border border-mist hover:shadow-2xl transition-all duration-500 overflow-hidden relative`}
               >
                 <div className="flex flex-col h-full relative z-10">
                   <div className={`w-16 h-16 rounded-2xl ${action.color} text-white flex items-center justify-center mb-8 shadow-lg ${action.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
                     <action.icon className="w-8 h-8" />
                   </div>
-                  <h3 className="text-3xl font-serif font-bold text-slate mb-4 group-hover:text-ocean transition-colors">
+                  <h3 className="text-3xl font-bold text-slate mb-4 group-hover:text-ocean transition-colors">
                     {action.title}
                   </h3>
                   <p className="text-slate/60 text-lg leading-relaxed mb-8 max-w-sm">

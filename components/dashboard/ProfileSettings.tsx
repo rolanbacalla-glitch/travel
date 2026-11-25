@@ -191,21 +191,21 @@ export function ProfileSettings() {
             <Sparkles className="w-3.5 h-3.5" />
             Your Persona
           </div>
-          <h2 className="text-4xl font-serif text-slate font-bold">Profile Settings</h2>
+          <h2 className="text-4xl text-slate font-bold">Profile Settings</h2>
           <p className="text-slate/60 font-medium">Update your bio and preferences to find matched travellers near you.</p>
         </div>
         
         <div className="flex items-center gap-3">
           <button 
             onClick={handleReset}
-            className="flex items-center gap-2 px-6 py-3.5 bg-white text-slate/60 hover:text-slate border border-slate/5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-sm transition-all hover:bg-slate/5 active:scale-95"
+            className="flex items-center gap-2 px-6 py-3.5 bg-white text-slate/60 hover:text-slate border border-slate/5 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-sm transition-all hover:bg-slate/5 active:scale-95"
           >
             <RotateCcw className="w-4 h-4" />
             Reset
           </button>
           <button 
             onClick={handleSave}
-            className="flex items-center gap-2 px-8 py-3.5 bg-sunset text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-8 py-3.5 bg-sunset text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
           >
             <Save className="w-4 h-4" />
             Save Profile
@@ -219,7 +219,7 @@ export function ProfileSettings() {
         <div className="md:col-span-1 space-y-8">
           
           {/* Avatar Section */}
-          <div className="bg-white border border-slate/5 rounded-[40px] p-8 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group">
+          <div className="bg-white border border-slate/5 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group">
             <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-sunset/10 group-hover:border-sunset/30 transition-all shadow-inner">
               <Image 
                 src={avatar || AVATAR_PRESETS[0]} 
@@ -243,7 +243,7 @@ export function ProfileSettings() {
                 <h3 className="text-xl font-bold text-slate">{name || "Mia Reyes"}</h3>
                 {profile.isVerified && <ShieldCheck className="w-4.5 h-4.5 text-ocean" />}
               </div>
-              <p className="text-xs font-semibold text-slate/40 mt-1">@{username || "wanderer_mia"}</p>
+              <p className="text-xs font-semibold text-slate/65 mt-1">@{username || "wanderer_mia"}</p>
             </div>
 
             {/* Avatar Preset Selector & Custom Upload */}
@@ -255,7 +255,7 @@ export function ProfileSettings() {
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col justify-center items-center z-10"
                 >
-                  <p className="text-xs font-black uppercase tracking-widest text-slate/40 mb-4">Select Avatar</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate/65 mb-4">Select Avatar</p>
                   <div className="flex gap-3 justify-center mb-4">
                     {AVATAR_PRESETS.map((p, idx) => (
                       <button
@@ -275,7 +275,7 @@ export function ProfileSettings() {
                   </div>
 
                   <label className="mb-4 flex flex-col items-center gap-1 cursor-pointer group/upload">
-                    <span className="px-4 py-2 border border-slate/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-slate/60 hover:text-slate hover:bg-slate/5 transition-all">
+                    <span className="px-4 py-2 border border-slate/10 rounded-2xl text-xs font-bold uppercase tracking-widest text-slate/60 hover:text-slate hover:bg-slate/5 transition-all">
                       Upload Custom Photo
                     </span>
                     <input 
@@ -288,7 +288,7 @@ export function ProfileSettings() {
 
                   <button 
                     onClick={() => setShowAvatarSelector(false)}
-                    className="px-4 py-2 bg-slate/5 text-slate text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate/10 transition-colors"
+                    className="px-4 py-2 bg-slate/5 text-slate text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-slate/10 transition-colors"
                   >
                     Cancel
                   </button>
@@ -299,22 +299,22 @@ export function ProfileSettings() {
 
           {/* Verification Card */}
           {profile.isVerified ? (
-            <div className="bg-gradient-to-br from-ocean/5 to-ocean/10 border border-ocean/10 rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-ocean/5 to-ocean/10 border border-ocean/10 rounded-2xl p-8 shadow-sm text-center relative overflow-hidden group">
               <div className="p-3 w-fit bg-ocean text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h4 className="text-lg font-bold text-slate font-serif">Passport Verified</h4>
+              <h4 className="text-lg font-bold text-slate">Passport Verified</h4>
               <p className="text-slate/60 text-xs font-semibold mt-1">Identity checked on May 20, 2026</p>
-              <div className="mt-4 px-3 py-1 bg-white/60 border border-ocean/10 rounded-full text-[9px] font-black uppercase tracking-wider text-ocean w-fit mx-auto">
+              <div className="mt-4 px-3 py-1 bg-white/60 border border-ocean/10 rounded-full text-xs font-bold uppercase tracking-wider text-ocean w-fit mx-auto">
                 Level 3 Security Active
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/10 rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/10 rounded-2xl p-8 shadow-sm text-center relative overflow-hidden group">
               <div className="p-3 w-fit bg-amber-500 text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h4 className="text-lg font-bold text-slate font-serif">Verification Required</h4>
+              <h4 className="text-lg font-bold text-slate">Verification Required</h4>
               <p className="text-slate/60 text-xs font-semibold mt-1">Please verify your new identity details</p>
               <Link
                 href="/verify"
@@ -330,8 +330,8 @@ export function ProfileSettings() {
         <div className="md:col-span-2 space-y-8">
           
           {/* Section: Basic Info */}
-          <div className="bg-white border border-slate/5 rounded-[40px] p-8 md:p-10 shadow-sm space-y-6">
-            <h3 className="text-lg font-serif font-bold text-slate border-b border-slate/5 pb-4">Basic Information</h3>
+          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
+            <h3 className="text-lg font-bold text-slate border-b border-slate/5 pb-4">Basic Information</h3>
             
             {/* Warning Banner */}
             <AnimatePresence>
@@ -355,7 +355,7 @@ export function ProfileSettings() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/40 ml-1">Legal Name</label>
+                <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Legal Name</label>
                 <input 
                   type="text" 
                   value={name} 
@@ -364,9 +364,9 @@ export function ProfileSettings() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/40 ml-1">Username</label>
+                <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Username</label>
                 <div className="relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/30 font-bold text-sm">@</span>
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/65 font-bold text-sm">@</span>
                   <input 
                     type="text" 
                     value={username} 
@@ -378,7 +378,7 @@ export function ProfileSettings() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate/40 ml-1">Short Bio</label>
+              <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Short Bio</label>
               <textarea 
                 rows={3}
                 value={bio} 
@@ -389,10 +389,10 @@ export function ProfileSettings() {
           </div>
 
           {/* Section: Travel Style */}
-          <div className="bg-white border border-slate/5 rounded-[40px] p-8 md:p-10 shadow-sm space-y-6">
+          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
             <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-serif font-bold text-slate">Travel Style</h3>
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate/30 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+              <h3 className="text-lg font-bold text-slate">Travel Style</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -410,7 +410,7 @@ export function ProfileSettings() {
                     )}
                   >
                     <div className="text-3xl mb-2 group-hover:scale-105 transition-transform">{style.icon}</div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest block leading-tight">{style.label}</span>
+                    <span className="text-xs font-bold uppercase tracking-widest block leading-tight">{style.label}</span>
                     {isActive && (
                       <span className="absolute top-2 right-2 bg-sunset text-white p-0.5 rounded-full">
                         <Check className="w-2.5 h-2.5" />
@@ -423,10 +423,10 @@ export function ProfileSettings() {
           </div>
 
           {/* Section: Vibes */}
-          <div className="bg-white border border-slate/5 rounded-[40px] p-8 md:p-10 shadow-sm space-y-6">
+          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
             <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-serif font-bold text-slate">Personal Vibes</h3>
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate/30 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+              <h3 className="text-lg font-bold text-slate">Personal Vibes</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
             </div>
             
             <div className="flex flex-wrap gap-2.5">
@@ -451,10 +451,10 @@ export function ProfileSettings() {
           </div>
 
           {/* Section: Main Destinations */}
-          <div className="bg-white border border-slate/5 rounded-[40px] p-8 md:p-10 shadow-sm space-y-6">
+          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
             <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-serif font-bold text-slate">Main Destinations</h3>
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate/30 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+              <h3 className="text-lg font-bold text-slate">Main Destinations</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
             </div>
             
             <div className="grid grid-cols-2 gap-4">

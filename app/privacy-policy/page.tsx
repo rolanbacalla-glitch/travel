@@ -53,9 +53,9 @@ export default function PrivacyPolicyPage() {
         <div className="container mx-auto px-6 relative z-20 text-center mt-16">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-4">
             <Shield className="w-4 h-4 text-sunset" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Legal Center</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-white">Legal Centre</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-md">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
             Privacy Policy
           </h1>
           <p className="text-white/80 text-sm md:text-base max-w-xl mx-auto font-medium">
@@ -80,7 +80,7 @@ export default function PrivacyPolicyPage() {
             
             {/* Introduction */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Scale className="w-6 h-6 text-sunset flex-shrink-0" />
                 1. Data Controller & Compliance
               </h2>
@@ -94,7 +94,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Information We Collect */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <FileText className="w-6 h-6 text-sunset flex-shrink-0" />
                 2. Information We Collect
               </h2>
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Legal Basis for Processing */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Lock className="w-6 h-6 text-sunset flex-shrink-0" />
                 3. Legal Bases under UK GDPR
               </h2>
@@ -144,7 +144,7 @@ export default function PrivacyPolicyPage() {
 
             {/* How We Share Your Data */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Eye className="w-6 h-6 text-sunset flex-shrink-0" />
                 4. Data Sharing & International Transfers
               </h2>
@@ -163,7 +163,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Your Rights */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Scale className="w-6 h-6 text-sunset flex-shrink-0" />
                 5. Your Legal Rights
               </h2>
@@ -191,7 +191,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Contact & Complaints */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <ExternalLink className="w-6 h-6 text-sunset flex-shrink-0" />
                 6. Contact & Regulatory Appeals
               </h2>

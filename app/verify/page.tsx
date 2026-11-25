@@ -75,13 +75,13 @@ export default function VerificationPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-white rounded-[2.5rem] p-10 shadow-2xl space-y-8"
+              className="bg-white rounded-2xl p-10 shadow-2xl space-y-8"
             >
               <div className="w-20 h-20 bg-ocean/10 rounded-3xl flex items-center justify-center text-ocean mx-auto">
                 <ShieldCheck className="w-10 h-10" />
               </div>
               <div className="text-center space-y-2">
-                <h1 className="text-3xl font-serif text-slate font-bold">Trusted Verification</h1>
+                <h1 className="text-3xl text-slate font-bold">Trusted Verification</h1>
                 <p className="text-slate/60 max-w-xs mx-auto">Join a community of 12,000+ verified solo travellers in Southeast Asia.</p>
               </div>
 
@@ -99,7 +99,7 @@ export default function VerificationPage() {
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               
-              <Link href="/onboarding" className="block text-center text-slate/40 text-sm font-bold uppercase tracking-widest hover:text-slate transition-colors">
+              <Link href="/onboarding" className="block text-center text-slate/65 text-sm font-bold uppercase tracking-widest hover:text-slate transition-colors">
                 Maybe Later
               </Link>
             </motion.div>
@@ -113,7 +113,7 @@ export default function VerificationPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="space-y-8"
             >
-              <div className="relative aspect-[3/4] md:aspect-video bg-black rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/10 group">
+              <div className="relative aspect-[3/4] md:aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 group">
                 <Webcam
                   audio={false}
                   ref={webcamRef}
@@ -152,9 +152,9 @@ export default function VerificationPage() {
               key="review"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-[2.5rem] p-8 shadow-2xl space-y-8"
+              className="bg-white rounded-2xl p-8 shadow-2xl space-y-8"
             >
-              <h2 className="text-2xl font-serif text-slate font-bold text-center">Is the text clear?</h2>
+              <h2 className="text-2xl text-slate font-bold text-center">Is the text clear?</h2>
               <div className="aspect-[3/4] md:aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate/5 bg-sand relative">
                 {capturedImage && (
                   <Image 
@@ -169,7 +169,7 @@ export default function VerificationPage() {
               <div className="grid grid-cols-2 gap-4">
                 <button 
                   onClick={() => setStep("capture")}
-                  className="py-4 bg-slate/5 text-slate/50 font-bold rounded-xl hover:bg-slate/10 transition-all flex items-center justify-center gap-2"
+                  className="py-4 bg-slate/5 text-slate/70 font-bold rounded-xl hover:bg-slate/10 transition-all flex items-center justify-center gap-2"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Retake
@@ -201,7 +201,7 @@ export default function VerificationPage() {
                 </div>
               </div>
               <div className="space-y-4">
-                <h2 className="text-3xl font-serif text-white font-bold">Verifying Identity</h2>
+                <h2 className="text-3xl text-white font-bold">Verifying Identity</h2>
                 <div className="w-full max-w-xs mx-auto h-2 bg-white/10 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
@@ -210,7 +210,7 @@ export default function VerificationPage() {
                       className="h-full bg-ocean"
                     />
                 </div>
-                <p className="text-white/40 font-medium animate-pulse">Running biometric match & OCR...</p>
+                <p className="text-white/75 font-medium animate-pulse">Running biometric match & OCR...</p>
               </div>
             </motion.div>
           )}
@@ -220,14 +220,14 @@ export default function VerificationPage() {
               key="success"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-white rounded-[2.5rem] p-12 shadow-2xl text-center space-y-8"
+              className="bg-white rounded-2xl p-12 shadow-2xl text-center space-y-8"
             >
               <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto ring-8 ring-green-500/5">
                 <Check className="w-12 h-12 text-green-500" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-4xl font-serif text-slate font-bold">Verified!</h2>
-                <p className="text-slate/50">Your identity check was successful. You now have full access to our global travellers network.</p>
+                <h2 className="text-4xl text-slate font-bold">Verified!</h2>
+                <p className="text-slate/70">Your identity check was successful. You now have full access to our global travellers network.</p>
               </div>
               <Link 
                 href="/dashboard" 
@@ -243,7 +243,7 @@ export default function VerificationPage() {
       {/* Security Footer */}
       <div className="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-3 text-white/20 select-none">
         <Lock className="w-4 h-4" />
-        <span className="text-xs font-bold uppercase tracking-[0.2em]">End-to-End Encryption Enabled</span>
+        <span className="text-xs font-bold uppercase tracking-wider">End-to-End Encryption Enabled</span>
       </div>
     </div>
   );
@@ -257,7 +257,7 @@ function VerificationPoint({ icon: Icon, title, desc }: { icon: any, title: stri
       </div>
       <div>
         <h4 className="font-bold text-slate leading-tight">{title}</h4>
-        <p className="text-slate/40 text-sm leading-tight">{desc}</p>
+        <p className="text-slate/65 text-sm leading-tight">{desc}</p>
       </div>
     </div>
   );

@@ -259,7 +259,7 @@ export function CommunityFeed() {
       case "intel":
         return "bg-purple-100 text-purple-600 border-purple-200";
       default:
-        return "bg-slate/5 text-slate/40 border-slate/10";
+        return "bg-slate/5 text-slate/65 border-slate/10";
     }
   };
 
@@ -268,7 +268,7 @@ export function CommunityFeed() {
       {/* Header / Create Post Trigger */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="space-y-2">
-          <h2 className="text-4xl font-serif text-slate font-bold">Community Pulse</h2>
+          <h2 className="text-4xl text-slate font-bold">Community Pulse</h2>
           <p className="text-slate/60 font-medium">
             Real-time signals, boat cost-splits, and local intel across Siargao &amp; Palawan.
           </p>
@@ -276,7 +276,7 @@ export function CommunityFeed() {
         <button
           type="button"
           onClick={() => setIsPosting(true)}
-          className="group flex items-center gap-3 px-8 py-4 bg-slate text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
+          className="group flex items-center gap-3 px-8 py-4 bg-slate text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
         >
           <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
           Post Drop or Pulse
@@ -284,15 +284,15 @@ export function CommunityFeed() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 p-1.5 bg-slate/5 rounded-[20px] w-fit border border-slate/5 shadow-inner">
+      <div className="flex items-center gap-2 p-1.5 bg-slate/5 rounded-xl w-fit border border-slate/5 shadow-inner">
         {(["All", "Pings", "Drops", "Intel"] as FilterType[]).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setFilter(tab)}
             className={cn(
-              "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all relative",
-              filter === tab ? "text-slate" : "text-slate/40 hover:text-slate/60"
+              "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all relative",
+              filter === tab ? "text-slate" : "text-slate/65 hover:text-slate/60"
             )}
           >
             {filter === tab && (
@@ -318,12 +318,12 @@ export function CommunityFeed() {
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                className="group relative bg-white border border-slate/5 rounded-[48px] p-8 shadow-sm hover:shadow-2xl hover:shadow-slate/5 transition-all duration-500 overflow-hidden"
+                className="group relative bg-white border border-slate/5 rounded-3xl p-8 shadow-sm hover:shadow-2xl hover:shadow-slate/5 transition-all duration-500 overflow-hidden"
               >
                 {/* Type Indicator */}
                 <div
                   className={cn(
-                    "absolute top-8 right-8 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm",
+                    "absolute top-8 right-8 flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm",
                     getTypeColor(item.type)
                   )}
                 >
@@ -346,7 +346,7 @@ export function CommunityFeed() {
                         />
                       </div>
 
-                      <div className="absolute -bottom-1 -right-1 px-3 py-1 bg-slate text-white rounded-full text-[8px] font-black uppercase tracking-tighter shadow-lg border-2 border-white z-10 group-hover:bg-ocean transition-colors">
+                      <div className="absolute -bottom-1 -right-1 px-3 py-1 bg-slate text-white rounded-full text-xs font-bold uppercase tracking-tighter shadow-lg border-2 border-white z-10 group-hover:bg-ocean transition-colors">
                         {item.user.vibe}
                       </div>
                     </div>
@@ -354,8 +354,8 @@ export function CommunityFeed() {
 
                   <div className="flex-1 space-y-4">
                     <div>
-                      <h3 className="text-xl font-serif font-black text-slate">{item.user.name}</h3>
-                      <div className="flex flex-wrap items-center gap-4 text-[10px] font-bold text-slate/40 uppercase tracking-widest">
+                      <h3 className="text-xl font-bold text-slate">{item.user.name}</h3>
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate/65 uppercase tracking-widest">
                         <div className="flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-sunset/60" />
                           {item.location}
@@ -365,7 +365,7 @@ export function CommunityFeed() {
                           {item.timestamp}
                         </div>
                         {item.expiresIn && (
-                          <span className="text-sunset font-black">• {item.expiresIn}</span>
+                          <span className="text-sunset font-bold">• {item.expiresIn}</span>
                         )}
                       </div>
                     </div>
@@ -383,10 +383,10 @@ export function CommunityFeed() {
                           </div>
                           <div className="space-y-1">
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="px-2.5 py-0.5 rounded-full bg-ocean/10 text-ocean text-[10px] font-black uppercase tracking-widest">
+                              <span className="px-2.5 py-0.5 rounded-full bg-ocean/10 text-ocean text-xs font-bold uppercase tracking-widest">
                                 {item.splitCost || "£15 / person"}
                               </span>
-                              <span className="text-[10px] font-black uppercase tracking-widest text-slate/50 flex items-center gap-1">
+                              <span className="text-xs font-bold uppercase tracking-widest text-slate/70 flex items-center gap-1">
                                 <Users className="w-3 h-3" />
                                 {item.seatsFilled ?? 3}/{item.seatsTotal ?? 6} Seats Filled
                               </span>
@@ -401,7 +401,7 @@ export function CommunityFeed() {
                           type="button"
                           onClick={() => handleToggleJoinDrop(item.id)}
                           className={cn(
-                            "px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 shrink-0",
+                            "px-5 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 shrink-0",
                             item.joinedByMe
                               ? "bg-green-600 text-white shadow-lg shadow-green-600/20"
                               : "bg-slate text-white hover:bg-sunset shadow-md"
@@ -423,7 +423,7 @@ export function CommunityFeed() {
                       {item.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-[10px] font-black uppercase tracking-wider text-ocean/60 bg-ocean/5 px-3 py-1 rounded-lg border border-ocean/10"
+                          className="text-xs font-bold uppercase tracking-wider text-ocean/60 bg-ocean/5 px-3 py-1 rounded-lg border border-ocean/10"
                         >
                           #{tag}
                         </span>
@@ -434,7 +434,7 @@ export function CommunityFeed() {
                       <button
                         type="button"
                         onClick={() => handleToggleLike(item.id)}
-                        className="flex items-center gap-2 text-slate/40 hover:text-sunset transition-colors group/btn"
+                        className="flex items-center gap-2 text-slate/65 hover:text-sunset transition-colors group/btn"
                       >
                         <div className="p-2 rounded-xl group-hover/btn:bg-sunset/10 transition-all">
                           <Heart
@@ -450,7 +450,7 @@ export function CommunityFeed() {
                       </button>
                       <button
                         type="button"
-                        className="flex items-center gap-2 text-slate/40 hover:text-ocean transition-colors group/btn"
+                        className="flex items-center gap-2 text-slate/65 hover:text-ocean transition-colors group/btn"
                       >
                         <div className="p-2 rounded-xl group-hover/btn:bg-ocean/10 transition-all">
                           <MessageSquare className="w-5 h-5" />
@@ -459,7 +459,7 @@ export function CommunityFeed() {
                       </button>
                       <button
                         type="button"
-                        className="flex items-center gap-2 text-slate/40 hover:text-slate transition-colors ml-auto p-2 hover:bg-slate/5 rounded-xl"
+                        className="flex items-center gap-2 text-slate/65 hover:text-slate transition-colors ml-auto p-2 hover:bg-slate/5 rounded-xl"
                       >
                         <Share2 className="w-5 h-5" />
                       </button>
@@ -487,29 +487,29 @@ export function CommunityFeed() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden border border-white/20"
+              className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-white/20"
             >
               <div className="p-8 space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-3xl font-serif font-bold text-slate">Share a Pulse</h3>
+                  <h3 className="text-3xl font-bold text-slate">Share a Pulse</h3>
                   <button
                     type="button"
                     onClick={() => setIsPosting(false)}
                     className="p-2 hover:bg-slate/5 rounded-full transition-colors"
                   >
-                    <X className="w-6 h-6 text-slate/40" />
+                    <X className="w-6 h-6 text-slate/65" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2 p-1.5 bg-slate/5 rounded-[20px] shadow-inner border border-slate/5">
+                <div className="flex items-center gap-2 p-1.5 bg-slate/5 rounded-xl shadow-inner border border-slate/5">
                   {(["ping", "drop", "intel"] as const).map((type) => (
                     <button
                       key={type}
                       type="button"
                       onClick={() => setPostType(type)}
                       className={cn(
-                        "flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all relative",
-                        postType === type ? "text-slate" : "text-slate/40 hover:text-slate/60"
+                        "flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all relative",
+                        postType === type ? "text-slate" : "text-slate/65 hover:text-slate/60"
                       )}
                     >
                       {postType === type && (
@@ -525,7 +525,7 @@ export function CommunityFeed() {
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate/40 ml-1">
+                    <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                       What&rsquo;s the plan?
                     </label>
                     <textarea
@@ -537,14 +537,14 @@ export function CommunityFeed() {
                           ? "e.g. Chartering a bangka boat to Daku & Guyam Islands at 9am—who wants to split?"
                           : "Share live island intel or a hangout signal..."
                       }
-                      className="w-full h-28 px-6 py-5 bg-slate/5 rounded-3xl border border-transparent focus:border-ocean/20 focus:bg-white transition-all outline-none text-slate font-medium resize-none text-base placeholder:text-slate/30"
+                      className="w-full h-28 px-6 py-5 bg-slate/5 rounded-3xl border border-transparent focus:border-ocean/20 focus:bg-white transition-all outline-none text-slate font-medium resize-none text-base placeholder:text-slate/65"
                     />
                   </div>
 
                   {postType === "drop" && (
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate/40 ml-1">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                           Split Cost Estimate
                         </label>
                         <input
@@ -555,7 +555,7 @@ export function CommunityFeed() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate/40 ml-1">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate/65 ml-1">
                           Max Crew Seats
                         </label>
                         <input
@@ -573,14 +573,14 @@ export function CommunityFeed() {
                   <div className="flex gap-4">
                     <button
                       type="button"
-                      className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate/60 border border-transparent hover:border-slate/10 transition-all"
+                      className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate/5 rounded-2xl text-xs font-bold uppercase tracking-widest text-slate/60 border border-transparent hover:border-slate/10 transition-all"
                     >
                       <Camera className="w-4 h-4 text-ocean" />
                       Add Snap
                     </button>
                     <button
                       type="button"
-                      className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate/60 border border-transparent hover:border-slate/10 transition-all"
+                      className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate/5 rounded-2xl text-xs font-bold uppercase tracking-widest text-slate/60 border border-transparent hover:border-slate/10 transition-all"
                     >
                       <MapPin className="w-4 h-4 text-sunset" />
                       General Luna
@@ -592,7 +592,7 @@ export function CommunityFeed() {
                     onClick={handleCastPulse}
                     disabled={!newPostContent.trim()}
                     className={cn(
-                      "w-full py-5 bg-slate text-white rounded-3xl font-black uppercase tracking-[0.2em] shadow-2xl transition-all flex items-center justify-center gap-4",
+                      "w-full py-5 bg-slate text-white rounded-3xl font-bold uppercase tracking-wider shadow-2xl transition-all flex items-center justify-center gap-4",
                       newPostContent.trim()
                         ? "hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                         : "opacity-50 cursor-not-allowed"

@@ -490,27 +490,27 @@ export const testimonials = [
 
 export const stats = [
   {
-    value: "47K+",
-    label: "Solo Travellers",
-    description: "Verified solo explorers adventuring safely across Southeast Asia.",
-    href: "/dashboard"
+    value: "12K+",
+    label: "Verified Travellers",
+    description: "ID-checked solo explorers sharing routes safely across the Philippines & SE Asia.",
+    href: "/onboarding"
   },
   {
-    value: "87",
-    label: "Destinations",
-    description: "Curated islands, cities, and jungle escapes across the Philippines and beyond.",
+    value: "16",
+    label: "Curated Hubs",
+    description: "Islands, highlands, and surf towns with active solo crews and vetted skippers.",
     href: "/destinations"
   },
   {
     value: "24/7",
     label: "Emergency Support",
-    description: "Real-time monitoring and local rapid response in 12 SE Asian countries.",
+    description: "Real-time safety check-ins and local rapid response whenever you need backup.",
     href: "/safety-commitment"
   },
   {
     value: "180+",
-    label: "Local Guides",
-    description: "Vetted, community-trusted guides who know every hidden trail and reef.",
+    label: "Local Skippers",
+    description: "Vetted, community-rated boat captains and local guides on every route.",
     href: "/guides"
   },
 ];

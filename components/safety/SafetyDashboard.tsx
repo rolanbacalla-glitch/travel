@@ -26,7 +26,7 @@ import { useState, useRef, useEffect } from "react";
 
 const InteractiveMap = dynamic(() => import("@/components/map/InteractiveMap"), {
   ssr: false,
-  loading: () => <div className="w-full h-[500px] bg-slate/5 animate-pulse rounded-[2rem] flex items-center justify-center text-slate/20 font-black uppercase tracking-widest italic tracking-widest">Initialising Secure Map...</div>
+  loading: () => <div className="w-full h-[500px] bg-slate/5 animate-pulse rounded-2xl flex items-center justify-center text-slate/20 font-bold uppercase tracking-widest italic tracking-widest">Initialising Secure Map...</div>
 });
 
 export function SafetyDashboard() {
@@ -101,7 +101,7 @@ export function SafetyDashboard() {
                 <div className="space-y-8">
                   {/* Contacts */}
                   <section className="space-y-4">
-                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-ocean">
+                    <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-ocean">
                       <Users className="w-4 h-4" />
                       <h3>Trusted Contacts</h3>
                     </div>
@@ -136,7 +136,7 @@ export function SafetyDashboard() {
 
                   {/* Automation */}
                   <section className="space-y-4">
-                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-amber-700">
+                    <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-amber-700">
                       <Clock className="w-4 h-4" />
                       <h3>Check-in Automation</h3>
                     </div>
@@ -166,7 +166,7 @@ export function SafetyDashboard() {
 
                   {/* Privacy & Permissions */}
                   <section className="space-y-4">
-                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate">
+                    <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate">
                       <Lock className="w-4 h-4" />
                       <h3>Privacy & Permissions</h3>
                     </div>
@@ -179,7 +179,7 @@ export function SafetyDashboard() {
 
                   {/* Offline Data */}
                   <section className="space-y-4">
-                    <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-green-600">
+                    <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-green-600">
                       <Download className="w-4 h-4" />
                       <h3>Offline Resources</h3>
                     </div>
@@ -191,10 +191,10 @@ export function SafetyDashboard() {
                           </div>
                           <div>
                             <p className="text-xs font-bold text-slate">Medical ID</p>
-                            <p className="text-[10px] font-medium text-slate/50">Saved locally</p>
+                            <p className="text-xs font-medium text-slate/70">Saved locally</p>
                           </div>
                         </div>
-                        <span className="text-[10px] font-bold text-ocean uppercase tracking-widest">Edit</span>
+                        <span className="text-xs font-bold text-ocean uppercase tracking-widest">Edit</span>
                       </div>
                     </div>
                   </section>
@@ -210,19 +210,19 @@ export function SafetyDashboard() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg px-6"
           >
-            <div className="bg-red-600 text-white p-6 rounded-[2.5rem] shadow-2xl flex items-center justify-between gap-6 border-4 border-white/20">
+            <div className="bg-red-600 text-white p-6 rounded-2xl shadow-2xl flex items-center justify-between gap-6 border-4 border-white/20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center animate-pulse">
                   <AlertTriangle className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black uppercase tracking-widest">SOS ACTIVE</h4>
-                  <p className="text-[10px] font-bold opacity-60">Authorities & Circle Notified</p>
+                  <h4 className="text-sm font-bold uppercase tracking-widest">SOS ACTIVE</h4>
+                  <p className="text-xs font-bold opacity-60">Authorities & Circle Notified</p>
                 </div>
               </div>
               <button
                 onClick={handleDeactivate}
-                className="px-6 py-2 bg-white text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+                className="px-6 py-2 bg-white text-red-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
               >
                 Cancel SOS
               </button>
@@ -268,7 +268,7 @@ export function SafetyDashboard() {
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Community Trust</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate/60">Community Trust</p>
               <p className="text-lg font-sans font-extrabold text-slate">94% Positive <span className="text-xs font-bold text-green-700">· ID Verified</span></p>
             </div>
           </div>
@@ -277,7 +277,7 @@ export function SafetyDashboard() {
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Trusted Circle</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate/60">Trusted Circle</p>
               <p className="text-lg font-sans font-extrabold text-slate">3 Contacts <span className="text-xs font-bold text-slate/60">· {autoSosEnabled ? "Auto-SOS On" : "Manual"}</span></p>
             </div>
           </div>
@@ -286,7 +286,7 @@ export function SafetyDashboard() {
               <MapPin className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">Local Zone Pulse</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate/60">Local Zone Pulse</p>
               <p className="text-lg font-sans font-extrabold text-slate">General Luna <span className="text-xs font-bold text-green-700">· Low Risk</span></p>
             </div>
           </div>
@@ -296,13 +296,13 @@ export function SafetyDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* The SOS Button - High Contrast Semantic Alert */}
-          <div className="lg:col-span-2 relative p-10 md:p-12 bg-slate text-white rounded-[40px] shadow-2xl overflow-hidden group border border-red-500/20">
+          <div className="lg:col-span-2 relative p-10 md:p-12 bg-slate text-white rounded-2xl shadow-2xl overflow-hidden group border border-red-500/20">
             <div className="absolute inset-0 bg-gradient-to-br from-slate via-slate to-red-950/80" />
             <div className="absolute -top-32 -right-32 w-80 h-80 bg-red-600/15 blur-[100px] group-hover:bg-red-600/25 transition-all duration-700" />
 
             <div className="relative z-10 h-full flex flex-col justify-between space-y-8">
               <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/30 text-red-200 text-[11px] font-bold uppercase tracking-wider">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/30 text-red-200 text-xs font-bold uppercase tracking-wider">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   Emergency Broadcast
                 </div>
@@ -334,7 +334,7 @@ export function SafetyDashboard() {
                       }
                     }}
                     className={cn(
-                      "w-full sm:w-auto px-12 py-6 rounded-[2rem] font-black uppercase tracking-[0.18em] shadow-xl transition-all active:scale-95 text-sm relative z-10 overflow-hidden focus:outline-none focus:ring-4 focus:ring-red-400/50",
+                      "w-full sm:w-auto px-12 py-6 rounded-2xl font-bold uppercase tracking-wider shadow-xl transition-all active:scale-95 text-sm relative z-10 overflow-hidden focus:outline-none focus:ring-4 focus:ring-red-400/50",
                       isSOSActive
                         ? "bg-white text-red-700 cursor-default"
                         : "bg-red-600 text-white hover:bg-red-500 shadow-red-600/40"
@@ -372,7 +372,7 @@ export function SafetyDashboard() {
           </div>
 
           {/* Safety Pulse */}
-          <div className="p-8 md:p-10 bg-white border border-slate/10 rounded-[40px] shadow-xl shadow-slate/5 flex flex-col justify-between border-t-4 border-t-green-600">
+          <div className="p-8 md:p-10 bg-white border border-slate/10 rounded-2xl shadow-xl shadow-slate/5 flex flex-col justify-between border-t-4 border-t-green-600">
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="p-3.5 bg-green-50 rounded-2xl">
@@ -381,7 +381,7 @@ export function SafetyDashboard() {
                 <button
                   type="button"
                   onClick={() => setShowSettings(true)}
-                  className="group flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-full transition-all active:scale-95 cursor-pointer"
+                  className="group flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-full transition-all active:scale-95 cursor-pointer"
                 >
                   <Clock className="w-3.5 h-3.5 text-green-600 group-hover:rotate-12 transition-transform" />
                   {checkedInAt ? `Checked in · ${checkedInAt}` : `Next pulse: ${pulseFrequency}`}
@@ -399,7 +399,7 @@ export function SafetyDashboard() {
                   new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
                 )
               }
-              className={`mt-8 py-4 border rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-sm active:scale-95 ${
+              className={`mt-8 py-4 border rounded-2xl font-bold uppercase tracking-widest text-xs transition-all shadow-sm active:scale-95 ${
                 checkedInAt
                   ? "bg-green-600 text-white border-green-600 shadow-green-600/20"
                   : "bg-[#F9F8F6] text-slate border-slate/10 hover:bg-green-600 hover:text-white hover:border-green-600"
@@ -416,13 +416,13 @@ export function SafetyDashboard() {
           {/* Map Section */}
           <div className="lg:col-span-3 space-y-6">
             <div className="flex items-center justify-between px-4">
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate/40">Real-time Safety Heatmap</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate/65">Real-time Safety Heatmap</h3>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-[10px] font-bold text-slate/60 uppercase">General Luna, Siargao (Secure)</span>
+                <span className="text-xs font-bold text-slate/60 uppercase">General Luna, Siargao (Secure)</span>
               </div>
             </div>
-            <div className="rounded-[40px] overflow-hidden border border-slate/5 shadow-2xl relative z-0">
+            <div className="rounded-2xl overflow-hidden border border-slate/5 shadow-2xl relative z-0">
               <InteractiveMap />
             </div>
           </div>
@@ -432,7 +432,7 @@ export function SafetyDashboard() {
             {/* Trusted Circle */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate/40">Trusted Circle</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate/65">Trusted Circle</h3>
                 <Plus className="w-4 h-4 text-ocean cursor-pointer" />
               </div>
               <div className="space-y-4">
@@ -457,7 +457,7 @@ export function SafetyDashboard() {
             </div>
 
             {/* Local Emergency Numbers */}
-            <div className="p-6 bg-white border border-slate/5 rounded-[40px] shadow-xl shadow-slate/5 space-y-4">
+            <div className="p-6 bg-white border border-slate/5 rounded-2xl shadow-xl shadow-slate/5 space-y-4">
               <div className="flex items-center gap-3 px-2">
                 <div className="p-2.5 bg-red-50 rounded-2xl">
                   <Phone className="w-4 h-4 text-red-500" />
@@ -466,12 +466,12 @@ export function SafetyDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-4 bg-[#F9F8F6] rounded-3xl flex flex-col items-center justify-center text-center gap-1 hover:bg-slate/5 transition-colors cursor-pointer">
-                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Emergency PH</span>
-                  <span className="text-xl font-serif font-bold text-slate">911</span>
+                  <span className="text-xs font-bold text-slate/65 uppercase tracking-wide">Emergency PH</span>
+                  <span className="text-xl font-extrabold tabular-nums text-slate">911</span>
                 </div>
                 <div className="p-4 bg-[#F9F8F6] rounded-3xl flex flex-col items-center justify-center text-center gap-1 hover:bg-slate/5 transition-colors cursor-pointer">
-                  <span className="text-[9px] font-black text-slate/40 uppercase tracking-widest">Coast Guard</span>
-                  <span className="text-xl font-serif font-bold text-slate">8527</span>
+                  <span className="text-xs font-bold text-slate/65 uppercase tracking-wide">Coast Guard</span>
+                  <span className="text-xl font-extrabold tabular-nums text-slate">8527</span>
                 </div>
               </div>
             </div>
@@ -484,17 +484,17 @@ export function SafetyDashboard() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate">ID Verified Profile</p>
-                  <p className="text-[10px] font-medium text-slate/50">Kin Protocol active</p>
+                  <p className="text-xs font-medium text-slate/70">Kin Protocol active</p>
                 </div>
               </div>
               <CheckCircle2 className="w-4 h-4 text-ocean" />
             </div>
 
             {/* Travel Insurance quick access */}
-            <div className="p-6 border-2 border-dashed border-slate/30 rounded-[35px] flex flex-col items-center justify-center gap-3 text-center group cursor-pointer hover:border-ocean/20 transition-all">
+            <div className="p-6 border-2 border-dashed border-slate/30 rounded-2xl flex flex-col items-center justify-center gap-3 text-center group cursor-pointer hover:border-ocean/20 transition-all">
               <AlertTriangle className="w-6 h-6 text-slate/70 group-hover:text-ocean/40 transition-colors" />
-              <p className="text-[10px] font-bold text-slate/70 uppercase tracking-widest">Travel Insurance Policy</p>
-              <span className="text-xs font-black text-slate/50">#TK-99281-ASIA</span>
+              <p className="text-xs font-bold text-slate/70 uppercase tracking-widest">Travel Insurance Policy</p>
+              <span className="text-xs font-bold text-slate/70">#TK-99281-ASIA</span>
             </div>
           </div>
         </div>
@@ -508,7 +508,7 @@ function CircleMember({ name, role, image, verified }: { name: string; role: str
   return (
     <div className="flex items-center justify-between group">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-white border border-slate/5 overflow-hidden flex items-center justify-center text-xs font-black text-slate shadow-sm group-hover:border-ocean transition-all">
+        <div className="w-12 h-12 rounded-2xl bg-white border border-slate/5 overflow-hidden flex items-center justify-center text-xs font-bold text-slate shadow-sm group-hover:border-ocean transition-all">
           <Image
             src={image}
             alt={name}
@@ -520,7 +520,7 @@ function CircleMember({ name, role, image, verified }: { name: string; role: str
         </div>
         <div>
           <p className="text-xs font-bold text-slate">{name}</p>
-          <p className="text-[9px] font-black text-slate/30 uppercase tracking-tighter">{role}</p>
+          <p className="text-xs font-bold text-slate/65 uppercase tracking-tighter">{role}</p>
         </div>
       </div>
       {verified && <CheckCircle2 className="w-3.5 h-3.5 text-ocean/40" />}
@@ -533,7 +533,7 @@ function PermissionRow({ title, desc, active }: { title: string; desc: string; a
     <div className="flex items-center justify-between p-4 border border-slate/10 rounded-2xl cursor-pointer hover:bg-slate/5 transition-colors">
       <div>
         <p className="text-sm font-bold text-slate">{title}</p>
-        <p className="text-xs font-medium text-slate/50">{desc}</p>
+        <p className="text-xs font-medium text-slate/70">{desc}</p>
       </div>
       <div className={cn("w-10 h-6 rounded-full relative transition-colors", active ? "bg-green-500" : "bg-slate/20")}>
         <div className={cn("absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm", active ? "right-1" : "left-1")} />

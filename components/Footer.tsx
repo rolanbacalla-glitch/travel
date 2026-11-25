@@ -19,71 +19,67 @@ export function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link
               href="/"
-              className="text-4xl font-serif font-bold text-white mb-8 block"
+              className="text-4xl font-bold text-white mb-8 block"
             >
               Travel <span className="text-sunset">Kin</span>
             </Link>
-            <p className="text-white/50 text-lg max-w-sm mb-10 leading-relaxed">
-              We&rsquo;re building the infrastructure for safe, meaningful solo
-              exploration across Southeast Asia. Join our community of 47k+
-              travellers.
+            <p className="text-white/75 text-base max-w-sm mb-8 leading-relaxed">
+              We&rsquo;re building the safety-first network for solo travellers across the Philippines &amp; Southeast Asia. Join 12,000+ ID-verified explorers.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socialLinks.map((social, i) => (
-                <button
+                <Link
                   key={i}
-                  aria-label={social.label}
-                  className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-slate transition-all duration-300"
+                  href="/destinations"
+                  aria-label={`${social.label} — Explore Travel Kin`}
+                  className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center hover:bg-white hover:text-slate transition-all duration-300"
                 >
-                  <social.icon className="w-5 h-5" />
-                </button>
+                  <social.icon className="w-4 h-4" />
+                </Link>
               ))}
             </div>
           </div>
 
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-sunset mb-8">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-sunset mb-6">
               Explore
             </h4>
-            <ul className="space-y-4">
-              {["Destinations", "Crew", "Guides", "Safety"].map((item) => {
-                let href = `/${item.toLowerCase()}`;
-                if (item === "Destinations") href = "/destinations";
-                else if (item === "Crew") href = "/#crew";
-                else if (item === "Safety") href = "/safety-commitment";
-
-                return (
-                  <li key={item}>
-                    <Link
-                      href={href}
-                      className="text-white/60 hover:text-white transition-colors font-medium"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                );
-              })}
+            <ul className="space-y-3.5">
+              {[
+                { label: "Destinations", href: "/destinations" },
+                { label: "How Crew Matching Works", href: "/#crew" },
+                { label: "Field Guides", href: "/guides" },
+                { label: "Safety Commitment", href: "/safety-commitment" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="text-white/75 hover:text-white transition-colors font-medium text-sm"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-sunset mb-8">
-              Community
+            <h4 className="font-bold text-xs uppercase tracking-wider text-sunset mb-6">
+              Get Started
             </h4>
-            <ul className="space-y-4">
+            <ul className="space-y-3.5">
               {[
-                "Member Stories",
-                "Ambassador Program",
-                "Solo Travel Meetups",
-                "Partners",
-                "Help Center",
+                { label: "Build Your Crew Profile", href: "/onboarding" },
+                { label: "ID Verification", href: "/verify" },
+                { label: "Member Dashboard", href: "/dashboard" },
+                { label: "Sign In", href: "/login" },
               ].map((item) => (
-                <li key={item}>
+                <li key={item.label}>
                   <Link
-                    href="#"
-                    className="text-white/60 hover:text-white transition-colors font-medium"
+                    href={item.href}
+                    className="text-white/75 hover:text-white transition-colors font-medium text-sm"
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}
@@ -91,11 +87,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-white/30 text-xs font-bold uppercase tracking-widest">
-            © {new Date().getFullYear()} TRAVEL KIN LTD. ALL RIGHTS RESERVED.
+        <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-white/70 text-xs font-semibold tracking-wide">
+            © {new Date().getFullYear()} Travel Kin Ltd. All rights reserved.
           </div>
-          <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-white/30">
+          <div className="flex flex-wrap gap-6 text-xs font-semibold text-white/70">
             <Link href="/privacy-policy" className="hover:text-white">
               Privacy Policy
             </Link>

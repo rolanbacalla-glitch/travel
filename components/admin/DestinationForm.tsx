@@ -87,7 +87,7 @@ export default function DestinationForm({ initialData = null, isEdit = false }: 
           <Link href="/admin/destinations" className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors">
             <ArrowLeft className="w-5 h-5 text-slate-600" />
           </Link>
-          <h1 className="text-3xl font-serif font-black text-slate tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate tracking-tight">
             {isEdit ? "Edit Destination" : "Create Destination"}
           </h1>
         </div>

@@ -21,26 +21,26 @@ export function CTASection() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate via-slate/90 to-ocean/40 z-10" />
 
       <div className="relative z-20 max-w-4xl mx-auto">
-        <h2 className="text-5xl md:text-8xl font-serif font-bold text-white mb-10 leading-[1.1] text-balance">
-          The world is <span className="text-sunset">waiting</span>. Stop
-          waiting for <span className="text-sand">them</span>.
+        <h2 className="text-4xl md:text-7xl font-extrabold tracking-tight text-white mb-8 leading-[1.08] text-balance">
+          Ready to go <span className="text-sunset">solo</span> without going{" "}
+          <span className="text-sand">alone</span>?
         </h2>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/verify"
-            className="w-full sm:w-auto px-10 py-5 bg-sunset text-white font-bold rounded-full shadow-2xl hover:bg-sunset-dark transition-all duration-300 hover:scale-105 active:scale-95 focus-ring flex items-center justify-center gap-3"
+            href="/onboarding"
+            className="w-full sm:w-auto px-8 py-4 bg-sunset text-white font-bold rounded-xl shadow-2xl hover:bg-sunset-dark transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] focus-ring flex items-center justify-center gap-2.5"
           >
-            Join the Movement <ArrowRight className="w-5 h-5" />
+            Build Your Crew Profile <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
             href="/guides"
-            className="w-full sm:w-auto px-10 py-5 border border-white/20 text-white font-bold rounded-full hover:bg-white/10 transition-all duration-300 focus-ring"
+            className="w-full sm:w-auto px-8 py-4 border border-white/25 text-white font-bold rounded-xl hover:bg-white/10 transition-all duration-300 focus-ring"
           >
-            Browse Guides
+            Read Field Guides
           </Link>
         </div>
-        <p className="mt-12 text-white/40 text-xs font-bold uppercase tracking-[0.4em]">
-          NO TRIP DEPOSIT REQUIRED TO JOIN
+        <p className="mt-10 text-white/75 text-xs font-bold uppercase tracking-wider">
+          Free to join · ID-checked before your first crew chat
         </p>
       </div>
     </section>

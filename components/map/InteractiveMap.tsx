@@ -163,7 +163,7 @@ function InfoCard({ pin, onClose }: { pin: Pin; onClose: () => void }) {
     >
       <button
         onClick={onClose}
-        className="absolute top-3 right-3 text-slate/30 hover:text-slate transition-colors"
+        className="absolute top-3 right-3 text-slate/65 hover:text-slate transition-colors"
         aria-label="Close"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -184,34 +184,34 @@ function InfoCard({ pin, onClose }: { pin: Pin; onClose: () => void }) {
         </div>
         <div>
           <h5 className="font-bold text-slate text-sm leading-tight">{pin.name}</h5>
-          <p className="text-[9px] text-slate/40 uppercase font-black tracking-widest mt-1">
+          <p className="text-xs text-slate/65 uppercase font-bold tracking-widest mt-1">
             {subtitle}
           </p>
         </div>
       </div>
 
-      <p className="text-[11px] text-slate/60 leading-relaxed italic">
+      <p className="text-xs text-slate/60 leading-relaxed italic">
         {pin.type === "kin" ? `Vibe: ${pin.vibe}` : pin.desc}
       </p>
 
       {pin.type === "safezone" && (
         <div className="flex items-center justify-between pt-2 border-t border-slate/5">
-          <span className="text-[9px] uppercase font-bold text-slate/30">Safety Score</span>
-          <span className="text-xs font-black text-green-600">{pin.safetyScore}/10</span>
+          <span className="text-xs uppercase font-bold text-slate/65">Safety Score</span>
+          <span className="text-xs font-bold text-green-600">{pin.safetyScore}/10</span>
         </div>
       )}
 
       {pin.type === "report" && (
         <div className="flex items-center justify-between pt-2 border-t border-slate/5">
-          <span className="text-[9px] uppercase font-bold text-slate/30">Community Verification</span>
-          <span className="text-[10px] font-black text-red-500 uppercase">3 Kins Confirmed</span>
+          <span className="text-xs uppercase font-bold text-slate/65">Community Verification</span>
+          <span className="text-xs font-bold text-red-500 uppercase">3 Kins Confirmed</span>
         </div>
       )}
 
       <button
         onClick={() => setActionAck(true)}
         className={cn(
-          "w-full py-2.5 rounded-lg text-[9px] uppercase font-black tracking-[0.1em] transition-all flex items-center justify-center gap-1.5",
+          "w-full py-2.5 rounded-lg text-xs uppercase font-bold tracking-wide transition-all flex items-center justify-center gap-1.5",
           actionAck
             ? "bg-green-500 text-white"
             : pin.type === "safezone"
@@ -456,14 +456,14 @@ export default function InteractiveMap() {
         : "Solo Kins Only";
 
   return (
-    <div className="w-full h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl relative border border-slate/5 bg-slate/5">
+    <div className="w-full h-[600px] rounded-2xl overflow-hidden shadow-2xl relative border border-slate/5 bg-slate/5">
       {/* Leaflet renders into this div */}
       <div ref={containerRef} className="w-full h-full z-0" />
 
       {/* Skeleton while loading */}
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none bg-slate/5">
-          <p className="text-slate/30 font-black uppercase tracking-widest italic text-sm animate-pulse">
+          <p className="text-slate/65 font-bold uppercase tracking-widest italic text-sm animate-pulse">
             Initialising Maps Engine...
           </p>
         </div>
@@ -488,8 +488,8 @@ export default function InteractiveMap() {
             ))}
           </div>
           <div className="text-xs">
-            <p className="font-black text-slate leading-none">12 Solo Kins</p>
-            <p className="text-slate/40 mt-0.5">Active in this area</p>
+            <p className="font-bold text-slate leading-none">12 Solo Kins</p>
+            <p className="text-slate/65 mt-0.5">Active in this area</p>
           </div>
         </div>
       </div>
@@ -498,35 +498,35 @@ export default function InteractiveMap() {
       <div className="absolute top-6 right-6 z-[500] max-w-[210px] hidden sm:block">
         <div className="p-4 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-slate/5 space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h4 className="text-[9px] font-black uppercase tracking-widest text-slate/40">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-slate/65">
               Zone Legend
             </h4>
-            <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
+            <span className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
               Live
             </span>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
-              <span className="text-[10px] font-bold text-slate/70 leading-tight">
+              <span className="text-xs font-bold text-slate/70 leading-tight">
                 Verified Safe Spaces
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] shrink-0" />
-              <span className="text-[10px] font-bold text-slate/70 leading-tight">
+              <span className="text-xs font-bold text-slate/70 leading-tight">
                 Recent Safety Reports
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-ocean shrink-0" />
-              <span className="text-[10px] font-bold text-slate/70 leading-tight">
+              <span className="text-xs font-bold text-slate/70 leading-tight">
                 SafeZone Hub
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-sunset shrink-0" />
-              <span className="text-[10px] font-bold text-slate/70 leading-tight">
+              <span className="text-xs font-bold text-slate/70 leading-tight">
                 Solo Kin Nearby
               </span>
             </div>
@@ -541,7 +541,7 @@ export default function InteractiveMap() {
           className="flex items-center gap-2 px-3.5 py-2 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/20 hover:bg-white transition-all"
         >
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] font-black uppercase text-slate/70 tracking-wider">
+          <span className="text-xs font-bold uppercase text-slate/70 tracking-wider">
             {filterLabel}
           </span>
         </button>
@@ -577,7 +577,7 @@ export default function InteractiveMap() {
 
       {/* Attribution */}
       <div className="absolute bottom-3 right-6 z-[500] pointer-events-none">
-        <span className="text-[9px] font-bold text-slate/40 uppercase tracking-widest bg-white/80 backdrop-blur px-2.5 py-1 rounded-full">
+        <span className="text-xs font-bold text-slate/65 uppercase tracking-widest bg-white/80 backdrop-blur px-2.5 py-1 rounded-full">
           Leaflet · OpenStreetMap
         </span>
       </div>

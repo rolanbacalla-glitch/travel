@@ -33,7 +33,7 @@ export default function GuideDetailPage() {
   if (!guide) {
     return (
       <div className="min-h-screen bg-sand flex flex-col items-center justify-center">
-        <h1 className="text-4xl font-serif font-bold text-slate mb-4">Guide not found</h1>
+        <h1 className="text-4xl font-bold text-slate mb-4">Guide not found</h1>
         <Link href="/guides" className="text-sunset font-bold hover:underline">
           Return to Guides
         </Link>
@@ -74,7 +74,7 @@ export default function GuideDetailPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
           >
             {guide.title}
           </motion.h1>
@@ -90,7 +90,7 @@ export default function GuideDetailPage() {
       </section>
 
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <div className="bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 -mt-32 relative z-30 border border-slate-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 -mt-32 relative z-30 border border-slate-100">
           <div className="flex flex-wrap items-center gap-6 mb-10 pb-10 border-b border-slate-100">
             <div className="flex items-center gap-2 text-slate font-bold">
               <Star className="w-5 h-5 text-sunset fill-sunset" />
@@ -104,7 +104,7 @@ export default function GuideDetailPage() {
             <div className="w-1 h-1 rounded-full bg-slate-300" />
             <div className="flex gap-2">
               {guide.tags.map(tag => (
-                <span key={tag} className="px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-widest border border-slate-200">
+                <span key={tag} className="px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-widest border border-slate-200">
                   {tag}
                 </span>
               ))}
@@ -116,7 +116,7 @@ export default function GuideDetailPage() {
               {guide.desc}
             </p>
             
-            <h3 className="text-2xl font-serif font-bold text-slate mb-4 mt-12">Solo Survival Tips</h3>
+            <h3 className="text-2xl font-bold text-slate mb-4 mt-12">Solo Survival Tips</h3>
             <ul className="space-y-4 text-slate-600">
               <li className="flex items-start gap-3">
                 <span className="text-sunset font-bold mt-1">1.</span>
@@ -132,7 +132,7 @@ export default function GuideDetailPage() {
               </li>
             </ul>
 
-            <h3 className="text-2xl font-serif font-bold text-slate mb-4 mt-12">Getting Around</h3>
+            <h3 className="text-2xl font-bold text-slate mb-4 mt-12">Getting Around</h3>
             <p className="text-slate-600 leading-relaxed mb-12">
               Tricycles and motorbikes are the main mode of transport. Always negotiate fares before hopping in, or use trusted local apps if available. If renting a scooter, ensure you have an international licence and always wear a helmet—safety first.
             </p>
@@ -140,7 +140,7 @@ export default function GuideDetailPage() {
             {/* Cross-Link Actions to Dashboard */}
             <div className="p-8 rounded-3xl bg-slate/5 border border-slate/10 flex flex-col sm:flex-row items-center justify-between gap-6 not-prose">
               <div>
-                <h4 className="text-xl font-serif font-bold text-slate mb-1">Travelling to {guide.title}?</h4>
+                <h4 className="text-xl font-bold text-slate mb-1">Travelling to {guide.title}?</h4>
                 <p className="text-sm text-slate-500">Connect with active solo travellers or add this island loop to your itinerary.</p>
               </div>
               <div className="flex flex-wrap items-center gap-3">

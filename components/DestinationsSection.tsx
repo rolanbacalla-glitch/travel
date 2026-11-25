@@ -25,7 +25,7 @@ export function DestinationsSection() {
       if (isAtEnd) {
         setActiveIndex(destinations.length - 1);
       } else {
-        const cardWidth = window.innerWidth < 768 ? 352 : 432;
+        const cardWidth = window.innerWidth < 768 ? 324 : 404;
         const index = Math.round(scrollLeft / cardWidth);
         setActiveIndex(Math.min(destinations.length - 1, Math.max(0, index)));
       }
@@ -36,7 +36,6 @@ export function DestinationsSection() {
     const el = scrollRef.current;
     if (el) {
       el.addEventListener("scroll", checkScroll);
-      // Wait for rendering to settle then check initial scroll state
       const timer = setTimeout(checkScroll, 100);
       window.addEventListener("resize", checkScroll);
       return () => {
@@ -49,9 +48,7 @@ export function DestinationsSection() {
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const { scrollLeft } = scrollRef.current;
-      // Scroll by card width (400px on desktop, 320px on mobile) + gap (32px)
-      const cardWidth = window.innerWidth < 768 ? 352 : 432; // 320+32 or 400+32
+      const cardWidth = window.innerWidth < 768 ? 324 : 404;
       const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
       logFirebaseEvent("carousel_nav_click", { direction });
@@ -69,7 +66,7 @@ export function DestinationsSection() {
           behavior: "smooth"
         });
       } else {
-        const cardWidth = window.innerWidth < 768 ? 352 : 432;
+        const cardWidth = window.innerWidth < 768 ? 324 : 404;
         scrollRef.current.scrollTo({
           left: index * cardWidth,
           behavior: "smooth"
@@ -79,102 +76,103 @@ export function DestinationsSection() {
   };
 
   return (
-    <section id="destinations" className="py-32 px-6 bg-background overflow-hidden scroll-mt-24">
+    <section id="destinations" className="py-24 md:py-32 px-6 bg-background overflow-hidden scroll-mt-24">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14">
           <div className="max-w-2xl">
             <span className="text-ocean font-bold text-xs tracking-widest uppercase mb-4 block">
-              Curated Destinations
+              Curated Hubs
             </span>
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate leading-tight text-balance">
-              Where to <span className="text-terra">lose yourself</span>{" "}
-              & find your kin.
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-slate leading-tight text-balance">
+              Where to <span className="text-terra">go solo</span>{" "}
+              &amp; find your crew.
             </h2>
           </div>
           <Link
             href="/destinations"
             className="group flex items-center gap-3 text-slate font-bold tracking-tight hover:text-ocean transition-colors duration-200"
           >
-            <span>Explore All 87 Islands</span>
-            <div className="w-10 h-10 rounded-full border border-slate/10 flex items-center justify-center group-hover:bg-ocean group-hover:border-ocean group-hover:text-white transition-all duration-300">
+            <span>Explore All {destinations.length} Destinations</span>
+            <div className="w-10 h-10 rounded-full border border-slate/15 flex items-center justify-center group-hover:bg-ocean group-hover:border-ocean group-hover:text-white transition-all duration-300">
               <ArrowRight className="w-4 h-4" />
             </div>
           </Link>
         </div>
 
-        {/* Scroll container wrapper */}
+        {/* Horizontal snap carousel */}
         <div className="relative group/carousel">
-          {/* Left Arrow */}
           {showLeftArrow && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate/80"
+              className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-slate/75 backdrop-blur-md border border-white/15 items-center justify-center text-white transition-all hover:scale-105 active:scale-95 shadow-xl focus-ring cursor-pointer hover:bg-slate"
               aria-label="Previous Destinations"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
           )}
 
-          {/* Right Arrow */}
           {showRightArrow && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95 shadow-2xl focus-ring cursor-pointer hover:bg-slate/80"
+              className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-slate/75 backdrop-blur-md border border-white/15 items-center justify-center text-white transition-all hover:scale-105 active:scale-95 shadow-xl focus-ring cursor-pointer hover:bg-slate"
               aria-label="Next Destinations"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </button>
           )}
 
-          <div ref={scrollRef} className="w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
+          <div
+            ref={scrollRef}
+            className="w-full overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-6"
+          >
+            <div className="flex gap-6 w-max">
               {destinations.map((place) => (
                 <Link
                   key={place.id}
                   href={`/destinations/${place.id}`}
-                  className="group relative w-full aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl focus-ring"
+                  className="group relative w-[300px] md:w-[380px] shrink-0 snap-start aspect-[4/5] rounded-2xl overflow-hidden shadow-xl focus-ring"
                 >
                   <Image
                     src={place.image}
                     alt={place.title}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 300px, 380px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/25 to-transparent opacity-75 group-hover:opacity-90 transition-opacity duration-300" />
 
-                  <div className="absolute top-8 left-8">
-                    <span className="px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-widest border border-white/30">
+                  <div className="absolute top-5 left-5">
+                    <span className="px-3.5 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white uppercase tracking-wider border border-white/25">
                       {place.tag}
                     </span>
                   </div>
 
-                  <div className="absolute bottom-10 left-10 right-10">
-                    <div className="flex items-center gap-2 mb-3">
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="flex items-center gap-2 mb-2.5">
                       <div className="flex items-center gap-1 text-sunset">
-                        <Star className="w-3 h-3 fill-current" />
-                        <span className="text-xs font-bold text-white">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span className="text-xs font-bold text-white tabular-nums">
                           {place.rating}
                         </span>
                       </div>
-                      <span className="text-[10px] text-white/50 uppercase tracking-tighter">
-                        • {place.reviews.toLocaleString()} reviews
+                      <span className="text-xs text-white/80 tabular-nums">
+                        · {place.reviews.toLocaleString()} reviews
                       </span>
                     </div>
 
-                    <h3 className="text-3xl font-serif font-bold text-white mb-2 leading-tight">
+                    <h3 className="text-2xl font-bold tracking-tight text-white mb-1.5 leading-tight">
                       {place.title}
                     </h3>
-                    <p className="text-white/70 text-sm font-medium line-clamp-1 mb-4">
+                    <p className="text-white/80 text-sm font-medium line-clamp-1 mb-4">
                       {place.tagline}
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <span className="text-lg font-serif font-bold text-white">
-                        {place.price}
+                    <div className="flex items-center justify-between pt-3.5 border-t border-white/15">
+                      <span className="text-base font-bold tabular-nums text-white">
+                        Est. {place.price}
                       </span>
-                      <span className="text-[10px] font-bold text-sunset uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                        VIEW TRIP <ArrowRight className="w-3 h-3" />
+                      <span className="text-xs font-bold text-sunset uppercase tracking-wider flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                        View Hub <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
                   </div>
@@ -185,14 +183,14 @@ export function DestinationsSection() {
         </div>
 
         {/* Pagination Dots */}
-        <div className="flex justify-center items-center gap-2 mt-8">
+        <div className="flex justify-center items-center gap-2 mt-6">
           {destinations.map((_, index) => (
             <button
               key={index}
               onClick={() => scrollToActive(index)}
-              className={`h-2.5 rounded-full transition-all duration-300 focus-ring cursor-pointer ${activeIndex === index
+              className={`h-2 rounded-full transition-all duration-300 focus-ring cursor-pointer ${activeIndex === index
                 ? "w-8 bg-sunset"
-                : "w-2.5 bg-slate/20 hover:bg-slate/40"
+                : "w-2 bg-slate/20 hover:bg-slate/40"
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />

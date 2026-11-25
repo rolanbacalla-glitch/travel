@@ -56,7 +56,7 @@ export default function SafetyCommitmentPage() {
     {
       icon: MapPin,
       title: "Safe-Zones & Guides",
-      desc: "We curate 'Travel Kin Safe Zones' and partner with licensed local guides who are vetted for their expertise, local knowledge, and commitment to solo traveler safety.",
+      desc: "We curate 'Travel Kin Safe Zones' and partner with licensed local guides who are vetted for their expertise, local knowledge, and commitment to solo traveller safety.",
       color: "bg-green-500",
       image: "/images/safety/guides.png"
     }
@@ -70,7 +70,7 @@ export default function SafetyCommitmentPage() {
     },
     {
       title: "Real-time Tracking",
-      detail: "Optional live location sharing with our response center while on solo treks.",
+      detail: "Optional live location sharing with our response centre while on solo treks.",
       icon: Zap
     },
     {
@@ -134,14 +134,14 @@ export default function SafetyCommitmentPage() {
               Global Safety Network Active
             </span>
 
-            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
+            <h1 className="text-6xl md:text-9xl font-bold text-white mb-8 leading-[1.15] tracking-tighter">
               <span className="md:whitespace-nowrap">Your Safety is Our</span> <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient md:whitespace-nowrap">
                 Sacred Commitment.
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-              We&apos;ve built the world&apos;s most sophisticated safety infrastructure for solo travelers.
+              We&apos;ve built the world&apos;s most sophisticated safety infrastructure for solo travellers.
               Because freedom only truly exists when you&apos;re protected.
             </p>
             <div className="flex flex-wrap gap-6 justify-center">
@@ -169,7 +169,7 @@ export default function SafetyCommitmentPage() {
               ].map((stat, i) => (
                 <div key={i} className="text-center md:text-left">
                   <p className="text-sunset text-2xl font-bold mb-1">{stat.value}</p>
-                  <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">{stat.label}</p>
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -181,7 +181,7 @@ export default function SafetyCommitmentPage() {
       <section className="py-24 bg-sand">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-slate mb-6">Our Three Pillars</h2>
+            <h2 className="text-4xl md:text-6xl font-bold text-slate mb-6">Our Three Pillars</h2>
             <p className="text-slate-mid text-lg max-w-2xl mx-auto">
               We built Travel Kin on a foundation of trust. Here is how we ensure
               your journey is as safe as it is spectacular.
@@ -214,7 +214,7 @@ export default function SafetyCommitmentPage() {
               ))}
             </div>
 
-            <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+            <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -233,7 +233,7 @@ export default function SafetyCommitmentPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-slate/60 to-transparent" />
                   <div className="absolute bottom-10 left-10 text-white">
                     <p className="text-sm font-bold uppercase tracking-widest text-sunset mb-2">Our Standard</p>
-                    <h4 className="text-4xl font-serif font-bold">{pillars[activeTab].title}</h4>
+                    <h4 className="text-4xl font-bold">{pillars[activeTab].title}</h4>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -247,7 +247,7 @@ export default function SafetyCommitmentPage() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-sunset/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="mb-20 text-center max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">Redundant Systems for<br></br>Absolute Peace</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Redundant Systems for<br></br>Absolute Peace</h2>
             <p className="text-white/60 text-lg">Our protocols are built on multiple layers of redundancy, ensuring that help is always available, even in the most remote locations.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -258,13 +258,13 @@ export default function SafetyCommitmentPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-10 rounded-[2.5rem] bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-sunset/50 transition-all duration-500"
+                className="group p-10 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-sunset/50 transition-all duration-500"
               >
                 <div className="w-16 h-16 rounded-2xl bg-sunset/20 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
                   <p.icon className="w-8 h-8 text-sunset" />
                 </div>
                 <h4 className="text-2xl font-bold mb-4">{p.title}</h4>
-                <p className="text-white/50 leading-relaxed text-sm">{p.detail}</p>
+                <p className="text-white/75 leading-relaxed text-sm">{p.detail}</p>
                 <div className="mt-8 pt-8 border-t border-white/5">
                   <span className="text-xs font-bold text-sunset uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Active Protocol</span>
                 </div>
@@ -280,7 +280,7 @@ export default function SafetyCommitmentPage() {
           <div className="flex flex-col lg:flex-row items-center gap-20">
             <div className="lg:w-1/2">
               <span className="inline-block px-4 py-2 bg-ocean/10 text-ocean rounded-full text-xs font-bold uppercase tracking-widest mb-6">Backend & Data</span>
-              <h2 className="text-5xl md:text-6xl font-serif font-bold text-slate mb-8">Bank-Grade Security for Your Identity.</h2>
+              <h2 className="text-5xl md:text-6xl font-bold text-slate mb-8">Bank-Grade Security for Your Identity.</h2>
               <p className="text-xl text-slate/70 leading-relaxed mb-10">
                 We take your privacy as seriously as your physical safety. Your data is encrypted using
                 AES-256 standards and hosted on dedicated, isolated servers in secure jurisdictions.
@@ -305,18 +305,18 @@ export default function SafetyCommitmentPage() {
             </div>
             <div className="lg:w-1/2 relative">
               <div className="absolute inset-0 bg-sunset/10 blur-[80px] rounded-full" />
-              <div className="relative p-4 bg-white rounded-[3rem] shadow-2xl border border-slate/5 overflow-hidden">
+              <div className="relative p-4 bg-white rounded-2xl shadow-2xl border border-slate/5 overflow-hidden">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="aspect-[4/5] relative rounded-2xl overflow-hidden">
                     <Image src="/images/bali.png" alt="Secure Bali" fill className="object-cover grayscale-[0.5] opacity-80" />
                     <div className="absolute inset-0 bg-slate/40 flex items-center justify-center">
-                      <Shield className="w-8 h-8 text-white/50" />
+                      <Shield className="w-8 h-8 text-white/75" />
                     </div>
                   </div>
                   <div className="aspect-[4/5] relative rounded-2xl overflow-hidden">
                     <Image src="/images/siargao.png" alt="Secure Siargao" fill className="object-cover grayscale-[0.5] opacity-80" />
                     <div className="absolute inset-0 bg-slate/40 flex items-center justify-center">
-                      <MapPin className="w-8 h-8 text-white/50" />
+                      <MapPin className="w-8 h-8 text-white/75" />
                     </div>
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function SafetyCommitmentPage() {
                       <Lock className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Network Integrity</p>
+                      <p className="text-xs font-bold text-white/75 uppercase tracking-widest">Network Integrity</p>
                       <p className="text-sm font-mono font-bold tracking-tighter">AES-256-GCM SECURE</p>
                     </div>
                   </div>
@@ -347,9 +347,9 @@ export default function SafetyCommitmentPage() {
             viewport={{ once: true }}
           >
             <ShieldCheck className="w-20 h-20 mx-auto mb-8 text-white drop-shadow-xl" />
-            <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8">Ready to travel with confidence?</h2>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to travel with confidence?</h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12">
-              Join 50,000+ solo travelers who have discovered the peace of mind
+              Join 50,000+ solo travellers who have discovered the peace of mind
               that comes with the Travel Kin community.
             </p>
             <Link

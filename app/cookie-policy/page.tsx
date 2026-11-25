@@ -53,9 +53,9 @@ export default function CookiePolicyPage() {
         <div className="container mx-auto px-6 relative z-20 text-center mt-16">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-4">
             <Cookie className="w-4 h-4 text-sunset" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Legal Center</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-white">Legal Centre</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-md">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
             Cookie Policy
           </h1>
           <p className="text-white/80 text-sm md:text-base max-w-xl mx-auto font-medium">
@@ -80,7 +80,7 @@ export default function CookiePolicyPage() {
             
             {/* Introduction */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Info className="w-6 h-6 text-sunset flex-shrink-0" />
                 1. What Are Cookies?
               </h2>
@@ -94,7 +94,7 @@ export default function CookiePolicyPage() {
 
             {/* PECR Compliance */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Shield className="w-6 h-6 text-sunset flex-shrink-0" />
                 2. UK PECR & ICO Compliance Guidelines
               </h2>
@@ -112,12 +112,12 @@ export default function CookiePolicyPage() {
 
             {/* Cookie Categories */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Settings className="w-6 h-6 text-sunset flex-shrink-0" />
                 3. Cookie Categories We Use
               </h2>
               <p className="mb-4">
-                We categorize the cookies used on our Platform into three main classes:
+                We categorise the cookies used on our Platform into three main classes:
               </p>
               <div className="space-y-4">
                 <div className="border-l-4 border-sunset pl-4">
@@ -126,18 +126,18 @@ export default function CookiePolicyPage() {
                 </div>
                 <div className="border-l-4 border-sunset pl-4">
                   <h4 className="font-bold text-slate text-sm">B. Performance & Analytics Cookies</h4>
-                  <p className="text-sm">These cookies collect aggregated, anonymous information about how you use our Platform (such as which pages you visit most often and any errors encountered). We use this data via tools like PostHog to optimize load times and improve navigation flows.</p>
+                  <p className="text-sm">These cookies collect aggregated, anonymous information about how you use our Platform (such as which pages you visit most often and any errors encountered). We use this data via tools like PostHog to optimise load times and improve navigation flows.</p>
                 </div>
                 <div className="border-l-4 border-sunset pl-4">
                   <h4 className="font-bold text-slate text-sm">C. Functional & Preferences Cookies</h4>
-                  <p className="text-sm">These cookies allow our website to remember choices you make (such as your preferred destination filters, active travel currency, or language settings) to provide a more personalized experience.</p>
+                  <p className="text-sm">These cookies allow our website to remember choices you make (such as your preferred destination filters, active travel currency, or language settings) to provide a more personalised experience.</p>
                 </div>
               </div>
             </div>
 
             {/* Cookies Used Table */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Info className="w-6 h-6 text-sunset flex-shrink-0" />
                 4. Inventory of Cookies
               </h2>
@@ -146,7 +146,7 @@ export default function CookiePolicyPage() {
               </p>
               <div className="overflow-x-auto border border-slate/10 rounded-2xl">
                 <table className="min-w-full divide-y divide-slate/10 text-left text-xs md:text-sm">
-                  <thead className="bg-mist text-slate font-bold uppercase tracking-wider text-[10px]">
+                  <thead className="bg-mist text-slate font-bold uppercase tracking-wider text-xs">
                     <tr>
                       <th className="p-4">Cookie Name</th>
                       <th className="p-4">Category</th>
@@ -171,7 +171,7 @@ export default function CookiePolicyPage() {
                       <td className="p-4 font-mono font-bold text-slate">_ph_token</td>
                       <td className="p-4">Performance/Analytics</td>
                       <td className="p-4">1 Year</td>
-                      <td className="p-4">Deploys anonymous tracking codes via PostHog to analyze interface usability.</td>
+                      <td className="p-4">Deploys anonymous tracking codes via PostHog to analyse interface usability.</td>
                     </tr>
                     <tr>
                       <td className="p-4 font-mono font-bold text-slate">prev_dest</td>
@@ -186,7 +186,7 @@ export default function CookiePolicyPage() {
 
             {/* How to Manage Cookies */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <Settings className="w-6 h-6 text-sunset flex-shrink-0" />
                 5. How to Manage and Disable Cookies
               </h2>
@@ -209,7 +209,7 @@ export default function CookiePolicyPage() {
 
             {/* Updates and Contact */}
             <div>
-              <h2 className="text-2xl font-serif font-bold text-slate mb-4 flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-slate mb-4 flex items-center gap-3">
                 <HelpCircle className="w-6 h-6 text-sunset flex-shrink-0" />
                 6. Questions & Contact
               </h2>

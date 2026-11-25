@@ -78,7 +78,7 @@ export default function AdminLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-slate text-white flex flex-col">
         <div className="p-6 border-b border-white/10">
-          <Link href="/" className="text-2xl font-serif font-black tracking-tight text-white hover:text-sunset transition-colors">
+          <Link href="/" className="text-2xl font-extrabold tracking-tight text-white hover:text-sunset transition-colors">
             TRAVEL KIN <span className="text-sunset text-xs uppercase block mt-1 tracking-widest font-sans">Admin Portal</span>
           </Link>
         </div>

@@ -200,7 +200,7 @@ export default function DestinationsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter"
+              className="text-6xl md:text-9xl font-bold text-white mb-8 leading-[1.15] tracking-tighter"
             >
               Find your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
@@ -225,14 +225,14 @@ export default function DestinationsPage() {
             >
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                  <Search className="w-5 h-5 text-white/40 group-focus-within:text-sunset transition-colors" />
+                  <Search className="w-5 h-5 text-white/75 group-focus-within:text-sunset transition-colors" />
                 </div>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by island, mountain, or vibe..."
-                  className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-6 pl-16 pr-8 text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-sunset/20 focus:border-sunset/40 transition-all text-lg font-medium"
+                  className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-6 pl-16 pr-8 text-white placeholder:text-white/70 focus:outline-none focus:ring-4 focus:ring-sunset/20 focus:border-sunset/40 transition-all text-lg font-medium"
                 />
               </div>
             </motion.div>
@@ -251,10 +251,10 @@ export default function DestinationsPage() {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   className={cn(
-                    "flex items-center gap-3 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2",
+                    "flex items-center gap-3 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border-2",
                     activeCategory === cat.id
                       ? "bg-slate border-slate text-white shadow-xl shadow-slate/20"
-                      : "bg-white border-slate/5 text-slate/40 hover:border-slate/20 hover:text-slate"
+                      : "bg-white border-slate/5 text-slate/65 hover:border-slate/20 hover:text-slate"
                   )}
                 >
                   <cat.icon className={cn("w-4 h-4", activeCategory === cat.id ? "text-sunset" : "")} />
@@ -288,14 +288,14 @@ export default function DestinationsPage() {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full right-0 mt-2 w-72 bg-white rounded-[2rem] shadow-2xl border border-slate/10 p-6 z-50"
+                      className="absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate/10 p-6 z-50"
                     >
                       <div className="space-y-6">
                         <div>
                           <div className="flex items-center justify-between mb-4">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate/40">Region</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate/65">Region</span>
                             {activeRegion !== "all" && (
-                              <button onClick={() => setActiveRegion("all")} className="text-[10px] text-sunset font-bold uppercase hover:underline">Clear</button>
+                              <button onClick={() => setActiveRegion("all")} className="text-xs text-sunset font-bold uppercase hover:underline">Clear</button>
                             )}
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -304,7 +304,7 @@ export default function DestinationsPage() {
                                 key={region}
                                 onClick={() => setActiveRegion(region)}
                                 className={cn(
-                                  "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all",
+                                  "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all",
                                   activeRegion === region
                                     ? "bg-slate text-white"
                                     : "bg-slate/5 text-slate/60 hover:bg-slate/10"
@@ -318,9 +318,9 @@ export default function DestinationsPage() {
 
                         <div>
                           <div className="flex items-center justify-between mb-4">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate/40">Vibe</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate/65">Vibe</span>
                             {activeVibe !== "all" && (
-                              <button onClick={() => setActiveVibe("all")} className="text-[10px] text-sunset font-bold uppercase hover:underline">Clear</button>
+                              <button onClick={() => setActiveVibe("all")} className="text-xs text-sunset font-bold uppercase hover:underline">Clear</button>
                             )}
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -329,7 +329,7 @@ export default function DestinationsPage() {
                                 key={vibe}
                                 onClick={() => setActiveVibe(vibe)}
                                 className={cn(
-                                  "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all",
+                                  "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all",
                                   activeVibe === vibe
                                     ? "bg-ocean text-white"
                                     : "bg-ocean/5 text-ocean/60 hover:bg-ocean/10"
@@ -352,7 +352,7 @@ export default function DestinationsPage() {
                   onClick={() => setSortOpen((v) => !v)}
                   className="flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate/5 text-xs font-bold text-slate shadow-sm hover:border-slate/20 transition-all"
                 >
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate/40 mr-1">Sort:</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate/65 mr-1">Sort:</span>
                   {activeSortLabel}
                   <ChevronDown className={`w-4 h-4 text-ocean transition-transform duration-200 ${sortOpen ? "rotate-180" : ""}`} />
                 </button>
@@ -402,7 +402,7 @@ export default function DestinationsPage() {
                     ease: [0.23, 1, 0.32, 1],
                     opacity: { duration: 0.2 }
                   }}
-                  className="relative aspect-[4/5] w-full rounded-[3rem] overflow-hidden shadow-2xl"
+                  className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-2xl"
                 >
                   <Link
                     href={`/destinations/${dest.id}`}
@@ -418,38 +418,38 @@ export default function DestinationsPage() {
 
                     <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
-                    <div className="absolute top-8 left-8">
-                      <span className="px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-widest border border-white/30">
+                    <div className="absolute top-5 left-5">
+                      <span className="px-3.5 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white uppercase tracking-wider border border-white/25">
                         {dest.tag}
                       </span>
                     </div>
 
-                    <div className="absolute bottom-10 left-10 right-10 text-left">
-                      <div className="flex items-center gap-2 mb-3">
+                    <div className="absolute bottom-6 left-6 right-6 text-left">
+                      <div className="flex items-center gap-2 mb-2.5">
                         <div className="flex items-center gap-1 text-sunset">
-                          <Star className="w-3 h-3 fill-current" />
-                          <span className="text-xs font-bold text-white">
+                          <Star className="w-3.5 h-3.5 fill-current" />
+                          <span className="text-xs font-bold text-white tabular-nums">
                             {dest.rating}
                           </span>
                         </div>
-                        <span className="text-[10px] text-white/50 uppercase tracking-tighter">
-                          • {dest.reviews.toLocaleString()} reviews
+                        <span className="text-xs text-white/80 tabular-nums">
+                          · {dest.reviews.toLocaleString()} reviews
                         </span>
                       </div>
 
-                      <h3 className="text-3xl font-serif font-bold text-white mb-2 leading-none">
+                      <h3 className="text-2xl font-bold tracking-tight text-white mb-1.5 leading-tight">
                         {dest.title}
                       </h3>
-                      <p className="text-white/70 text-sm font-medium line-clamp-1 mb-4">
+                      <p className="text-white/80 text-sm font-medium line-clamp-1 mb-4">
                         {dest.tagline}
                       </p>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                        <span className="text-lg font-serif font-bold text-white">
-                          {dest.price}
+                      <div className="flex items-center justify-between pt-3.5 border-t border-white/15">
+                        <span className="text-base font-bold tabular-nums text-white">
+                          Est. {dest.price}
                         </span>
-                        <span className="text-[10px] font-bold text-sunset uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                          VIEW TRIP <ArrowRight className="w-3 h-3" />
+                        <span className="text-xs font-bold text-sunset uppercase tracking-wider flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                          View Hub <ArrowRight className="w-3.5 h-3.5" />
                         </span>
                       </div>
                     </div>
@@ -463,16 +463,16 @@ export default function DestinationsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="py-32 text-center"
+              className="py-24 text-center"
             >
-              <div className="w-24 h-24 bg-slate/5 rounded-full flex items-center justify-center mx-auto mb-8">
-                <Search className="w-10 h-10 text-slate/20" />
+              <div className="w-20 h-20 bg-slate/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-8 h-8 text-slate/40" />
               </div>
-              <h2 className="text-3xl font-serif font-bold text-slate mb-4">No paradises found.</h2>
-              <p className="text-slate/40 font-medium text-lg">Try adjusting your filters or search query.</p>
+              <h2 className="text-2xl font-bold text-slate mb-3">No matching hubs found.</h2>
+              <p className="text-slate/70 font-medium text-base">Try adjusting your filters or search query.</p>
               <button
-                onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
-                className="mt-8 text-sunset font-black uppercase tracking-widest text-xs hover:underline"
+                onClick={() => { setSearchQuery(""); setActiveCategory("all"); setActiveRegion("all"); setActiveVibe("all"); }}
+                className="mt-6 text-sunset font-bold uppercase tracking-wider text-xs hover:underline"
               >
                 Clear all filters
               </button>

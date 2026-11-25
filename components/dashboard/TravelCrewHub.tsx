@@ -87,7 +87,7 @@ export function TravelCrewHub({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center justify-center py-32 bg-white/60 backdrop-blur-xl border border-slate/5 rounded-[60px] shadow-2xl space-y-10"
+            className="flex flex-col items-center justify-center py-32 bg-white/60 backdrop-blur-xl border border-slate/5 rounded-3xl shadow-2xl space-y-10"
           >
             <div className="relative">
               <div className="w-32 h-32 rounded-full border border-ocean/20 flex items-center justify-center text-ocean">
@@ -100,14 +100,14 @@ export function TravelCrewHub({
               />
             </div>
             <div className="text-center space-y-3">
-              <h2 className="text-3xl font-serif text-slate font-bold">Discover Your Ring</h2>
+              <h2 className="text-3xl text-slate font-bold">Discover Your Ring</h2>
               <p className="text-slate/60 max-w-xs mx-auto font-medium">
                 Kin uses spatial discovery to connect ID-verified solo travellers within a 5km island radius.
               </p>
             </div>
             <button
               onClick={startScan}
-              className="px-12 py-6 bg-slate text-white rounded-3xl font-black uppercase tracking-[0.2em] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4"
+              className="px-12 py-6 bg-slate text-white rounded-3xl font-bold uppercase tracking-wider shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4"
             >
               <Navigation className="w-5 h-5 fill-white" />
               Radar Sync Siargao &amp; Palawan
@@ -142,12 +142,12 @@ export function TravelCrewHub({
               />
             </div>
             <div className="text-center space-y-4">
-              <h3 className="text-2xl font-serif font-black text-slate uppercase tracking-tighter">
+              <h3 className="text-2xl font-extrabold text-slate uppercase tracking-tighter">
                 Scanning for Kinetic Vibes...
               </h3>
               <div className="flex items-center gap-1.5 justify-center">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate/40">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate/65">
                   Searching 5km Coastal Radius
                 </span>
               </div>
@@ -186,16 +186,16 @@ export function TravelCrewHub({
             ].map((stat, i) => (
               <div
                 key={i}
-                className="flex-1 flex items-center gap-6 p-8 bg-white border border-slate/5 rounded-[40px] shadow-sm hover:shadow-xl hover:shadow-slate/5 transition-all"
+                className="flex-1 flex items-center gap-6 p-8 bg-white border border-slate/5 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-slate/5 transition-all"
               >
                 <div className={`p-4 rounded-3xl ${stat.color}`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate/30">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate/65">
                     {stat.label}
                   </p>
-                  <p className="text-3xl font-serif font-black text-slate">{stat.val}</p>
+                  <p className="text-3xl font-extrabold tracking-tight tabular-nums text-slate">{stat.val}</p>
                 </div>
               </div>
             ))}
@@ -207,7 +207,7 @@ export function TravelCrewHub({
                 <TrendingUp className="w-3.5 h-3.5" />
                 Spatial Discovery
               </div>
-              <h2 className="text-4xl font-serif text-slate font-bold">
+              <h2 className="text-4xl text-slate font-bold">
                 Wanderers in {activeHubLabel}
               </h2>
               <p className="text-slate/60 font-medium">
@@ -219,7 +219,7 @@ export function TravelCrewHub({
               <button
                 type="button"
                 onClick={() => setVerifiedOnly((v) => !v)}
-                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs border transition-all ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold uppercase tracking-widest text-xs border transition-all ${
                   verifiedOnly
                     ? "bg-ocean text-white border-ocean shadow-lg shadow-ocean/20"
                     : "bg-white text-slate border-slate/10 hover:bg-slate/5"
@@ -231,7 +231,7 @@ export function TravelCrewHub({
               <button
                 type="button"
                 onClick={() => setSelectedHub("all")}
-                className="flex items-center gap-2 px-6 py-3.5 bg-slate text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-6 py-3.5 bg-slate text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
               >
                 <Search className="w-4 h-4" />
                 Reset Hub
@@ -246,10 +246,10 @@ export function TravelCrewHub({
                 key={hub.id}
                 type="button"
                 onClick={() => setSelectedHub(hub.id)}
-                className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border ${
+                className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${
                   selectedHub === hub.id
                     ? "bg-slate text-white border-slate shadow-md"
-                    : "bg-white text-slate/50 border-slate/10 hover:text-slate"
+                    : "bg-white text-slate/70 border-slate/10 hover:text-slate"
                 }`}
               >
                 {hub.label}
@@ -263,7 +263,7 @@ export function TravelCrewHub({
               <div key={kin.id} className="flex flex-col gap-3">
                 <motion.div
                   layoutId={`card-${kin.id}`}
-                  className="group relative aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-slate/5 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate/5 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
                 >
                   <Image
                     src={kin.image}
@@ -291,7 +291,7 @@ export function TravelCrewHub({
 
                   {/* Vibe badge — top left */}
                   <div className="absolute top-5 left-5">
-                    <span className="px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider text-white border border-white/25 truncate max-w-[175px] block">
+                    <span className="px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-white border border-white/25 truncate max-w-[175px] block">
                       {kin.vibe}
                     </span>
                   </div>
@@ -300,18 +300,18 @@ export function TravelCrewHub({
                   <div className="absolute inset-x-0 bottom-0 p-6 space-y-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-serif font-bold text-white leading-none">
+                        <h3 className="text-2xl font-bold text-white leading-none">
                           {kin.name}
                         </h3>
                         {kin.verified ? (
                           <span
                             title="Biometric ID Verified"
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-ocean/90 text-white text-[9px] font-black uppercase tracking-widest"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-ocean/90 text-white text-xs font-bold uppercase tracking-widest"
                           >
                             <ShieldCheck className="w-3 h-3" /> Verified
                           </span>
                         ) : (
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-white/50">
+                          <span className="text-xs font-bold uppercase tracking-widest text-white/75">
                             Pending ID
                           </span>
                         )}
@@ -321,7 +321,7 @@ export function TravelCrewHub({
                         {kin.location}
                       </div>
                       {kin.tripDates && (
-                        <div className="flex items-center gap-1.5 text-white/90 text-[11px] font-medium bg-white/10 px-2 py-0.5 rounded-md w-fit backdrop-blur-sm border border-white/10">
+                        <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium bg-white/10 px-2 py-0.5 rounded-md w-fit backdrop-blur-sm border border-white/10">
                           <Calendar className="w-3 h-3 text-ocean" />
                           <span>{kin.tripDates.label}</span>
                         </div>
@@ -332,7 +332,7 @@ export function TravelCrewHub({
                     <div className="flex gap-2">
                       <button
                         onClick={() => onChat(kin.id)}
-                        className="flex-1 py-3 bg-white text-slate text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-sunset hover:text-white transition-colors active:scale-95"
+                        className="flex-1 py-3 bg-white text-slate text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-sunset hover:text-white transition-colors active:scale-95"
                       >
                         Open Ring
                       </button>
@@ -363,18 +363,18 @@ export function TravelCrewHub({
                 setSelectedHub("all");
                 setVerifiedOnly(false);
               }}
-              className="group aspect-[3/4] border-2 border-dashed border-slate/15 rounded-[2.5rem] flex flex-col items-center justify-center gap-5 p-8 text-center hover:border-sunset/40 hover:bg-sunset/5 transition-all cursor-pointer"
+              className="group aspect-[3/4] border-2 border-dashed border-slate/15 rounded-2xl flex flex-col items-center justify-center gap-5 p-8 text-center hover:border-sunset/40 hover:bg-sunset/5 transition-all cursor-pointer"
             >
               <div className="w-14 h-14 rounded-2xl bg-slate/5 flex items-center justify-center group-hover:bg-sunset/10 transition-all text-slate/25 group-hover:text-sunset">
                 <Users className="w-7 h-7" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-lg font-serif font-bold text-slate">Looking for more?</h4>
-                <p className="text-xs font-medium text-slate/40 leading-relaxed">
+                <h4 className="text-lg font-bold text-slate">Looking for more?</h4>
+                <p className="text-xs font-medium text-slate/65 leading-relaxed">
                   Switch island hubs to see verified solo travellers arriving in Siargao &amp; El Nido this week.
                 </p>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-sunset group-hover:underline">
+              <span className="text-xs font-bold uppercase tracking-widest text-sunset group-hover:underline">
                 Show All Hubs →
               </span>
             </div>

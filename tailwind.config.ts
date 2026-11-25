@@ -20,8 +20,8 @@ const config: Config = {
         mist:    "#EEF5F8",
       },
       fontFamily: {
-        sans:  ["var(--font-inter)", "system-ui", "sans-serif"],
-        serif: ["var(--font-playfair)", "Georgia", "serif"],
+        sans:  ["var(--font-jakarta)", "system-ui", "sans-serif"],
+        serif: ["var(--font-jakarta)", "system-ui", "sans-serif"],
       },
       keyframes: {
         "fade-up": {

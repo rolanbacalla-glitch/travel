@@ -38,7 +38,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
       className="fixed inset-0 z-[100] bg-slate text-white flex flex-col overscroll-contain"
     >
       <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
-        <span className="text-2xl font-serif font-bold">
+        <span className="text-2xl font-bold">
           Travel <span className="text-sunset">Kin</span>
         </span>
         <button
@@ -56,14 +56,14 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
           if (item === "Guides") href = "/guides";
           else if (item === "Safety") href = "/safety-commitment";
           else if (item === "Destinations") href = "/destinations";
-          else if (item === "Crew") href = "/dashboard?tab=hub";
+          else if (item === "Crew") href = isLoggedIn ? "/dashboard?tab=hub" : "/#crew";
           else href = `/#${item.toLowerCase()}`;
 
           return (
             <Link
               key={item}
               href={href}
-              className="text-4xl font-serif text-white/80 hover:text-white transition-colors duration-200 focus-ring-white rounded-sm"
+              className="text-4xl font-bold tracking-tight text-white/85 hover:text-white transition-colors duration-200 focus-ring-white rounded-sm"
               onClick={onClose}
             >
               {item}
@@ -78,7 +78,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
             <Link
               href="/dashboard?tab=profile"
               onClick={onClose}
-              className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center flex items-center justify-center gap-2"
+              className="w-full py-4 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center flex items-center justify-center gap-2"
             >
               {profile.avatar && (
                 <div className="relative w-6 h-6 rounded-full overflow-hidden border border-white/20">
@@ -98,7 +98,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
             <Link
               href="/dashboard"
               onClick={onClose}
-              className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
+              className="w-full py-4 bg-sunset rounded-xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
             >
               Go to Dashboard
             </Link>
@@ -108,14 +108,14 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
             <Link
               href="/login"
               onClick={onClose}
-              className="w-full py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
+              className="w-full py-4 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
             >
               Sign In
             </Link>
             <Link
-              href="/verify"
+              href="/onboarding"
               onClick={onClose}
-              className="w-full py-4 bg-sunset rounded-2xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
+              className="w-full py-4 bg-sunset rounded-xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
             >
               Start Exploring
             </Link>

@@ -101,13 +101,13 @@ export default function RadarMiniMap({ kinLat, kinLng, trustStatus, isSOSActive 
       <div ref={containerRef} className="w-full h-full grayscale-[0.3] contrast-[1.1]" />
       
       {/* Decorative Overlay */}
-      <div className="absolute inset-0 pointer-events-none border-[12px] border-white/50 border-double rounded-b-[40px] z-[500]" />
+      <div className="absolute inset-0 pointer-events-none border-[12px] border-white/50 border-double rounded-b-3xl z-[500]" />
       
       {/* HUD Label */}
       <div className="absolute bottom-6 left-6 z-[500]">
         <div className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full shadow-xl border border-white/20 flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${trustStatus === 'BLURRED' ? 'bg-slate/30' : 'bg-green-500 animate-pulse'}`} />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate/50">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate/70">
                 {trustStatus === 'BLURRED' ? 'Blurred Proximity' : 'Precise Check-in'}
             </span>
         </div>

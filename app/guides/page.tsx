@@ -96,7 +96,7 @@ export default function GuidesPage() {
               Solo Expedition 2026
             </span>
 
-            <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-8 leading-[1.15] tracking-tighter">
+            <h1 className="text-6xl md:text-9xl font-bold text-white mb-8 leading-[1.15] tracking-tighter">
               The Solo <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
                 Survival Kit.
@@ -131,13 +131,13 @@ export default function GuidesPage() {
       <section id="checklist" className="py-24 px-6 bg-sand relative z-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-4 block">Preparation</span>
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-slate mb-6">The <span className="text-sunset">Solo Checklist</span>.</h2>
+            <span className="text-sunset font-bold tracking-widest uppercase text-xs mb-4 block">Preparation</span>
+            <h2 className="text-4xl md:text-6xl font-bold text-slate mb-6">The <span className="text-sunset">Solo Checklist</span>.</h2>
             <p className="text-slate-mid text-lg font-medium max-w-2xl mx-auto">Ensure you have everything covered before your adventure begins.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate/5 border border-slate-100">
-              <h3 className="text-2xl font-serif font-bold text-slate mb-6 flex items-center gap-3"><Shield className="text-sunset w-6 h-6"/> Documents & Admin</h3>
+              <h3 className="text-2xl font-bold text-slate mb-6 flex items-center gap-3"><Shield className="text-sunset w-6 h-6"/> Documents & Admin</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Passport (valid for at least 6 months)</span></li>
                 <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Travel Insurance Policy</span></li>
@@ -146,7 +146,7 @@ export default function GuidesPage() {
               </ul>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate/5 border border-slate-100">
-              <h3 className="text-2xl font-serif font-bold text-slate mb-6 flex items-center gap-3"><Heart className="text-sunset w-6 h-6"/> Health & Safety</h3>
+              <h3 className="text-2xl font-bold text-slate mb-6 flex items-center gap-3"><Heart className="text-sunset w-6 h-6"/> Health & Safety</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Basic First Aid Kit</span></li>
                 <li className="flex items-start gap-3"><div className="mt-1 w-5 h-5 rounded border-2 border-slate-300 flex-shrink-0"></div><span className="text-slate-600 font-medium">Personal Prescriptions & Meds</span></li>
@@ -198,21 +198,21 @@ export default function GuidesPage() {
       < section className="py-20 px-6 max-w-7xl mx-auto" >
         <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-4 block">The 2026 Selection</span>
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-6">Explore the <span className="text-sunset">Kin-Map</span>.</h2>
+            <span className="text-sunset font-bold tracking-widest uppercase text-xs mb-4 block">The 2026 Selection</span>
+            <h2 className="text-5xl md:text-7xl font-bold text-slate mb-6">Explore the <span className="text-sunset">Kin-Map</span>.</h2>
             <p className="text-slate-mid text-lg md:text-xl font-medium">
               We&rsquo;ve vetted these islands specifically for solo safety, social atmosphere, and the &ldquo;vibe&rdquo; factor.
             </p>
           </div>
           <div className="flex gap-4">
             <div className="text-right">
-              <p className="text-3xl font-serif font-bold text-slate">47k+</p>
-              <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Active Solo Kins</p>
+              <p className="text-3xl font-bold text-slate">47k+</p>
+              <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Active Solo Kins</p>
             </div>
             <div className="w-[1px] h-12 bg-slate-200" />
             <div className="text-right">
-              <p className="text-3xl font-serif font-bold text-slate">98%</p>
-              <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Safety Rating</p>
+              <p className="text-3xl font-bold text-slate">98%</p>
+              <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Safety Rating</p>
             </div>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function GuidesPage() {
               transition={{ delay: i * 0.1 }}
               className="group cursor-pointer"
             >
-              <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl">
+              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-8 shadow-2xl">
                 <Image
                   src={dest.image}
                   alt={dest.title}
@@ -239,20 +239,20 @@ export default function GuidesPage() {
                 {/* Floating Tags */}
                 <div className="absolute top-8 left-8 flex gap-2">
                   {dest.tags.map(tag => (
-                    <span key={tag} className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest border border-white/30">
+                    <span key={tag} className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest border border-white/30">
                       {tag}
                     </span>
                   ))}
                 </div>
 
                 <div className="absolute top-8 right-8 w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-white">
-                  <span className="text-xs font-black leading-none">{dest.safetyScore.split('/')[0]}</span>
-                  <span className="text-[8px] uppercase font-bold opacity-60 tracking-tighter">Safe</span>
+                  <span className="text-xs font-bold leading-none">{dest.safetyScore.split('/')[0]}</span>
+                  <span className="text-xs uppercase font-bold opacity-60 tracking-tighter">Safe</span>
                 </div>
 
                 <div className="absolute bottom-10 left-10 right-10">
-                  <p className="text-sunset font-black uppercase tracking-[0.3em] text-[10px] mb-2">{dest.tagline}</p>
-                  <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">{dest.title}</h3>
+                  <p className="text-sunset font-bold uppercase tracking-wider text-xs mb-2">{dest.tagline}</p>
+                  <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">{dest.title}</h3>
                   <div className="flex items-center gap-4 text-white/80">
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 fill-sunset text-sunset" />
@@ -270,7 +270,7 @@ export default function GuidesPage() {
                 </p>
                 <Link
                   href={`/guides/${dest.id}`}
-                  className="inline-flex items-center gap-3 text-slate font-black uppercase tracking-widest text-xs group/link"
+                  className="inline-flex items-center gap-3 text-slate font-bold uppercase tracking-widest text-xs group/link"
                 >
                   Read Full Survival Guide
                   <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center group-hover/link:bg-sunset group-hover/link:text-white transition-all shadow-sm">
@@ -292,8 +292,8 @@ export default function GuidesPage() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
-            <span className="text-sunset font-black tracking-widest uppercase text-[10px] mb-6 block">The Essentials</span>
-            <h2 className="text-5xl md:text-8xl font-serif text-white leading-tight">
+            <span className="text-sunset font-bold tracking-widest uppercase text-xs mb-6 block">The Essentials</span>
+            <h2 className="text-5xl md:text-8xl text-white leading-tight">
               Pack Like a <span className="text-sunset">Pro.</span>
             </h2>
             <p className="text-white/60 text-lg mb-10 max-w-lg mx-auto">
@@ -309,13 +309,13 @@ export default function GuidesPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all group"
+                className="p-10 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all group"
               >
                 <div className="w-16 h-16 rounded-2xl bg-sunset/20 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                   <item.icon className="w-8 h-8 text-sunset" />
                 </div>
-                <h4 className="text-2xl font-serif font-bold text-white mb-4">{item.title}</h4>
-                <p className="text-white/50 leading-relaxed">
+                <h4 className="text-2xl font-bold text-white mb-4">{item.title}</h4>
+                <p className="text-white/75 leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -328,10 +328,10 @@ export default function GuidesPage() {
           NEWSLETTER / CTA
           ══════════════════════════════════════════════════════════ */}
       < section className="py-40 px-6" >
-        <div className="max-w-5xl mx-auto relative rounded-[3.5rem] overflow-hidden bg-white shadow-2xl">
+        <div className="max-w-5xl mx-auto relative rounded-3xl overflow-hidden bg-white shadow-2xl">
           <div className="absolute inset-0 bg-gradient-to-br from-sunset/5 to-transparent" />
           <div className="relative z-10 p-12 md:p-24 text-center">
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-slate mb-8 leading-tight">
+            <h2 className="text-5xl md:text-7xl font-bold text-slate mb-8 leading-tight">
               Get the <span className="text-sunset">Weekly Loop</span>.
             </h2>
             <p className="text-slate-mid text-xl mb-12 max-w-xl mx-auto font-medium">
@@ -343,11 +343,11 @@ export default function GuidesPage() {
                 placeholder="kin@travel.com"
                 className="flex-1 px-8 py-5 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sunset transition-all text-slate font-bold"
               />
-              <button className="px-10 py-5 bg-slate text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate/20">
+              <button className="px-10 py-5 bg-slate text-white font-bold uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate/20">
                 Join
               </button>
             </form>
-            <p className="mt-8 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+            <p className="mt-8 text-xs text-slate-400 font-bold uppercase tracking-widest">
               Zero Spam. Just high-grade intel.
             </p>
           </div>

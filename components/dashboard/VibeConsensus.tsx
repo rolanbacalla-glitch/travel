@@ -27,11 +27,11 @@ export function VibeConsensus({ stats }: { stats: VibeStats }) {
                )} 
              />
           ))}
-          <span className="text-[10px] font-black text-slate ml-1 mt-0.5">{stats.rating.toFixed(1)}</span>
+          <span className="text-xs font-bold text-slate ml-1 mt-0.5">{stats.rating.toFixed(1)}</span>
         </div>
-        <div className="flex items-center gap-1 text-slate/40">
+        <div className="flex items-center gap-1 text-slate/65">
            <Users className="w-3 h-3" />
-           <span className="text-[10px] font-bold uppercase tracking-widest">{stats.reviews} Refs</span>
+           <span className="text-xs font-bold uppercase tracking-widest">{stats.reviews} Refs</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@ export function VibeConsensus({ stats }: { stats: VibeStats }) {
         {stats.tags.map((tag) => (
           <span 
             key={tag}
-            className="px-2 py-1 bg-white text-[9px] font-black uppercase tracking-widest text-slate/50 rounded-md border border-slate/5"
+            className="px-2 py-1 bg-white text-xs font-bold uppercase tracking-widest text-slate/70 rounded-md border border-slate/5"
           >
             #{tag}
           </span>
@@ -49,7 +49,7 @@ export function VibeConsensus({ stats }: { stats: VibeStats }) {
       <div className="pt-2 border-t border-slate/5 flex items-center justify-between">
          <div className="flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 bg-ocean rounded-full animate-pulse" />
-            <span className="text-[9px] font-bold text-slate/40 uppercase tracking-widest">Seen {stats.lastDiscovery}</span>
+            <span className="text-xs font-bold text-slate/65 uppercase tracking-widest">Seen {stats.lastDiscovery}</span>
          </div>
          <Shield className="w-3 h-3 text-ocean/40" />
       </div>

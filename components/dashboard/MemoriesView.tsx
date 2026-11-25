@@ -125,7 +125,7 @@ export function MemoriesView() {
             <Camera className="w-3.5 h-3.5" />
             Memory Vault · Stippl Reel Ready
           </div>
-          <h2 className="text-4xl font-serif text-slate font-bold">The Collective Scrapbook</h2>
+          <h2 className="text-4xl text-slate font-bold">The Collective Scrapbook</h2>
           <p className="text-slate/60 font-medium italic">
             Preserving every Philippine sunrise, boodle fight, and shared nautical mile.
           </p>
@@ -138,7 +138,7 @@ export function MemoriesView() {
               setReelIndex(0);
               setIsReelOpen(true);
             }}
-            className="flex items-center gap-2 px-6 py-4 bg-sunset text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-6 py-4 bg-sunset text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
           >
             <Sparkles className="w-4 h-4" />
             Play Trip Reel
@@ -146,7 +146,7 @@ export function MemoriesView() {
           <button
             type="button"
             onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-4 bg-white text-ocean border border-ocean/10 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-sm hover:shadow-xl hover:bg-ocean/5 transition-all"
+            className="flex items-center gap-2 px-6 py-4 bg-white text-ocean border border-ocean/10 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-sm hover:shadow-xl hover:bg-ocean/5 transition-all"
           >
             <Cloud className="w-4 h-4" />
             Sync Cloud
@@ -154,7 +154,7 @@ export function MemoriesView() {
           <button
             type="button"
             onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center gap-2 px-8 py-4 bg-slate text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-8 py-4 bg-slate text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
           >
             <Plus className="w-4 h-4" />
             Upload
@@ -179,7 +179,7 @@ export function MemoriesView() {
               initial={{ scale: 0.92, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.92, y: 20 }}
-              className="relative w-full max-w-md aspect-[9/16] max-h-[85vh] rounded-[44px] overflow-hidden shadow-2xl border-4 border-white/20 bg-black"
+              className="relative w-full max-w-md aspect-[9/16] max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 bg-black"
             >
               {/* Progress bars at top */}
               <div className="absolute top-5 left-6 right-6 z-30 flex gap-1.5">
@@ -223,10 +223,10 @@ export function MemoriesView() {
               </AnimatePresence>
 
               <div className="absolute bottom-8 left-8 right-8 z-20 space-y-4 text-white">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sunset/90 text-white text-[10px] font-black uppercase tracking-widest">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sunset/90 text-white text-xs font-bold uppercase tracking-widest">
                   <MapPin className="w-3 h-3" /> {activeReelMemory.location}
                 </span>
-                <p className="text-xl font-serif italic leading-snug">
+                <p className="text-xl italic leading-snug">
                   &ldquo;{activeReelMemory.caption}&rdquo;
                 </p>
                 <div className="flex items-center justify-between pt-2 border-t border-white/15 text-xs text-white/70">
@@ -256,10 +256,10 @@ export function MemoriesView() {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-[40px] shadow-2xl p-10 space-y-8"
+              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-10 space-y-8"
             >
               <div className="space-y-2 text-center">
-                <h3 className="text-2xl font-serif font-black text-slate">Import Memories</h3>
+                <h3 className="text-2xl font-extrabold text-slate">Import Memories</h3>
                 <p className="text-xs font-medium text-slate/60">
                   Select a source to synchronise your Philippine loop shots.
                 </p>
@@ -275,7 +275,7 @@ export function MemoriesView() {
               <button
                 type="button"
                 onClick={() => setIsImportModalOpen(false)}
-                className="w-full py-5 bg-[#F9F8F6] text-slate/60 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:text-slate transition-all"
+                className="w-full py-5 bg-[#F9F8F6] text-slate/60 font-bold uppercase tracking-widest text-xs rounded-2xl hover:text-slate transition-all"
               >
                 Close
               </button>
@@ -297,7 +297,7 @@ export function MemoriesView() {
               onClick={() => setSelectedId(memory.id)}
               className="break-inside-avoid cursor-pointer group"
             >
-              <div className="relative rounded-[40px] overflow-hidden bg-white border border-slate/5 shadow-lg shadow-slate/5 group-hover:shadow-2xl transition-all duration-700">
+              <div className="relative rounded-2xl overflow-hidden bg-white border border-slate/5 shadow-lg shadow-slate/5 group-hover:shadow-2xl transition-all duration-700">
                 <div className="relative aspect-[3/4]">
                   <Image
                     src={memory.url}
@@ -308,14 +308,14 @@ export function MemoriesView() {
 
                   <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                     <div className="absolute bottom-8 left-8 right-8 space-y-4">
-                      <p className="text-white text-lg font-serif italic leading-tight">
+                      <p className="text-white text-lg italic leading-tight">
                         &ldquo;{memory.caption}&rdquo;
                       </p>
                       <div className="flex flex-wrap items-center gap-2">
                         {memory.taggedKins.map((kin) => (
                           <span
                             key={kin}
-                            className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold text-white border border-white/20"
+                            className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white border border-white/20"
                           >
                             @{kin}
                           </span>
@@ -327,7 +327,7 @@ export function MemoriesView() {
                   {/* Location Badge */}
                   <div className="absolute top-6 left-6 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center gap-2">
                     <MapPin className="w-3 h-3 text-white" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white">
+                    <span className="text-xs font-bold uppercase tracking-widest text-white">
                       {memory.location}
                     </span>
                   </div>
@@ -335,7 +335,7 @@ export function MemoriesView() {
                   {/* Likes */}
                   <div className="absolute top-6 right-6 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center gap-2">
                     <Heart className="w-3 h-3 text-sunset fill-sunset" />
-                    <span className="text-[10px] font-black text-white">{displayLikes}</span>
+                    <span className="text-xs font-bold text-white">{displayLikes}</span>
                   </div>
                 </div>
               </div>
@@ -359,7 +359,7 @@ export function MemoriesView() {
             />
             <motion.div
               layoutId={selectedId}
-              className="relative w-full max-w-6xl h-[80vh] bg-white rounded-[50px] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+              className="relative w-full max-w-6xl h-[80vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
             >
               {/* Image Area */}
               <div className="flex-1 relative bg-black flex items-center justify-center group/image">
@@ -384,10 +384,10 @@ export function MemoriesView() {
                 <div className="space-y-8">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-ocean">
+                      <p className="text-xs font-bold uppercase tracking-wider text-ocean">
                         {selectedMemory.location}
                       </p>
-                      <h3 className="text-2xl font-serif font-black text-slate leading-none">
+                      <h3 className="text-2xl font-extrabold text-slate leading-none">
                         Trip Moment
                       </h3>
                     </div>
@@ -400,7 +400,7 @@ export function MemoriesView() {
                   </div>
 
                   <div className="space-y-4">
-                    <p className="text-lg font-serif italic text-slate/60 leading-relaxed">
+                    <p className="text-lg italic text-slate/60 leading-relaxed">
                       &ldquo;{selectedMemory.caption}&rdquo;
                     </p>
                     <div className="flex items-center gap-3 text-slate/60 text-xs font-bold uppercase tracking-widest">
@@ -409,7 +409,7 @@ export function MemoriesView() {
                   </div>
 
                   <div className="space-y-4 pt-4 border-t border-slate/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate/60">
+                    <p className="text-xs font-bold uppercase tracking-widest text-slate/60">
                       Tagged Kins
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -432,14 +432,14 @@ export function MemoriesView() {
                   <button
                     type="button"
                     onClick={() => toggleLike(selectedMemory.id)}
-                    className="flex-1 py-5 bg-sunset text-white font-black uppercase tracking-widest text-[10px] rounded-[30px] shadow-xl shadow-sunset/20 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all"
+                    className="flex-1 py-5 bg-sunset text-white font-bold uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-sunset/20 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all"
                   >
                     <Heart className="w-4 h-4 fill-white" />
                     {likedIds[selectedMemory.id] ? "Loved by You" : "Love this Moment"}
                   </button>
                   <button
                     type="button"
-                    className="p-5 bg-white border border-slate/5 text-slate rounded-[30px] shadow-sm hover:bg-slate/5 transition-all"
+                    className="p-5 bg-white border border-slate/5 text-slate rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
                   >
                     <Share2 className="w-4 h-4" />
                   </button>
@@ -467,7 +467,7 @@ function ImportSource({
   return (
     <button
       type="button"
-      className="w-full flex items-center justify-between p-5 bg-[#F9F8F6] hover:bg-white border border-transparent hover:border-slate/5 rounded-[2rem] transition-all group shadow-sm hover:shadow-xl hover:shadow-slate/5"
+      className="w-full flex items-center justify-between p-5 bg-[#F9F8F6] hover:bg-white border border-transparent hover:border-slate/5 rounded-2xl transition-all group shadow-sm hover:shadow-xl hover:shadow-slate/5"
     >
       <div className="flex items-center gap-4">
         <div className="p-3 bg-white rounded-2xl border border-slate/5 group-hover:scale-110 transition-transform">
@@ -475,14 +475,14 @@ function ImportSource({
         </div>
         <div className="text-left">
           <p className="text-sm font-bold text-slate">{label}</p>
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate/60">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate/60">
             Sync Photos
           </p>
         </div>
       </div>
       <div
         className={cn(
-          "px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border",
+          "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border",
           status === "Connected"
             ? "bg-green-50 text-green-500 border-green-100"
             : "bg-white text-slate/60 border-slate/5"

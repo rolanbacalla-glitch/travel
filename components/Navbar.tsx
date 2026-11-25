@@ -41,7 +41,7 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-serif font-bold text-white drop-shadow-md focus-ring rounded-sm"
+          className="text-2xl font-bold text-white drop-shadow-md focus-ring rounded-sm"
           aria-label="Travel Kin — home"
         >
           Travel <span className="text-sunset">Kin</span>
@@ -54,14 +54,14 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
             if (item === "Guides") href = "/guides";
             else if (item === "Safety") href = "/safety-commitment";
             else if (item === "Destinations") href = "/destinations";
-            else if (item === "Crew") href = "/dashboard?tab=hub";
+            else if (item === "Crew") href = isLoggedIn ? "/dashboard?tab=hub" : "/#crew";
             else href = `/#${item.toLowerCase()}`;
 
             return (
               <Link
                 key={item}
                 href={href}
-                className="text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-sm"
+                className="text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-sm"
               >
                 {item}
               </Link>
@@ -102,12 +102,12 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
             <>
               <Link
                 href="/login"
-                className="px-5 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
+                className="px-5 py-2 text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
               >
                 Sign In
               </Link>
               <Link
-                href="/verify"
+                href="/onboarding"
                 className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
               >
                 Start Exploring

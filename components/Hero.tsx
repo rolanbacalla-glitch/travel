@@ -80,35 +80,34 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sunset/20 border border-sunset/30 text-sunset text-xs sm:text-sm font-bold tracking-wider uppercase mb-8 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sunset opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-sunset"></span>
               </span>
-              47,000+ Verified Solo Travellers
+              12,000+ ID-Verified Solo Travellers
             </span>
 
-            <h1 className="text-5xl md:text-8xl font-serif font-bold text-white mb-8 leading-[1.12] tracking-tighter">
-              Explore with confidence, <br />
+            <h1 className="text-5xl md:text-8xl font-extrabold text-white mb-6 leading-[1.08] tracking-tight">
+              Explore solo with confidence, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sunset via-terra to-sunset bg-[length:200%_auto] animate-gradient">
                 travel with your crew.
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-white/85 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-              Travel solo, never stranded. Meet ID-verified travellers, join trusted local guides,
-              and share day plans across Southeast Asia.
+            <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
+              Share the boat, keep your independence. Match with ID-verified solo travellers on your dates, split vetted local skippers, and explore with 24/7 safety backing.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
-              <Link href="/onboarding" className="group relative px-10 py-5 bg-sunset text-white font-bold rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
-                <span className="relative z-10 flex items-center gap-2 text-lg">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <Link href="/onboarding" className="group relative w-full sm:w-auto px-8 py-4 bg-sunset text-white font-bold rounded-xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center">
+                <span className="relative z-10 flex items-center gap-2 text-base">
                   Find Your Crew <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-terra to-sunset opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
 
-              <Link href="/destinations" className="flex items-center gap-4 px-10 py-5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition-all duration-300">
+              <Link href="/destinations" className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl backdrop-blur-md border border-white/20 transition-all duration-300 text-base">
                 <Search className="w-5 h-5 text-sunset" />
                 <span>Explore Destinations</span>
               </Link>
