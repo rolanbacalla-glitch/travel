@@ -154,11 +154,13 @@ const TOMORROW_TRIP = {
 };
 
 const STORAGE_KEY = "travelkin-itinerary-v3";
+const VOTES_STORAGE_KEY = "travelkin-itinerary-votes-v1";
 
 export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
   const perms = getTierPermissions(tier);
 
   const [items, setItems] = useState<ItineraryItem[]>(SAMPLE_ITEMS);
+  const [votedIds, setVotedIds] = useState<string[]>([]);
   const [selectedStopId, setSelectedStopId] = useState<string>("2");
   const [detailStopId, setDetailStopId] = useState<string | null>(null);
   const [isEditingDetail, setIsEditingDetail] = useState<boolean>(false);
@@ -195,6 +197,13 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
           setItems(parsed);
         }
       }
+      const savedVotes = localStorage.getItem(VOTES_STORAGE_KEY);
+      if (savedVotes) {
+        const parsedVotes = JSON.parse(savedVotes);
+        if (Array.isArray(parsedVotes)) {
+          setVotedIds(parsedVotes);
+        }
+      }
     } catch {
       // Ignore storage errors
     }
@@ -214,14 +223,31 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
     }
   };
 
+  const persistVotedIds = (updatedVotes: string[]) => {
+    setVotedIds(updatedVotes);
+    try {
+      localStorage.setItem(VOTES_STORAGE_KEY, JSON.stringify(updatedVotes));
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
   const toggleVote = (id: string) => {
     if (!perms.canUpvote) {
       showNotice("Sign in for free to vote on group trip ideas.");
       return;
     }
+    const alreadyVoted = votedIds.includes(id);
+    const nextVotedIds = alreadyVoted
+      ? votedIds.filter((vId) => vId !== id)
+      : [...votedIds, id];
+
+    persistVotedIds(nextVotedIds);
     persistItems(
       items.map((item) =>
-        item.id === id ? { ...item, votes: item.votes + 1 } : item
+        item.id === id
+          ? { ...item, votes: Math.max(0, item.votes + (alreadyVoted ? -1 : 1)) }
+          : item
       )
     );
   };
@@ -310,6 +336,7 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
 
     const updated = [...items, activity];
     persistItems(updated);
+    persistVotedIds([...votedIds, activity.id]);
     setSelectedStopId(activity.id);
     setIsAdding(false);
     setNewItem({
@@ -853,10 +880,24 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                         <button
                           type="button"
                           onClick={() => toggleVote(detailStop.id)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate/5 hover:bg-slate/10 text-slate text-xs font-bold transition-colors"
+                          aria-pressed={votedIds.includes(detailStop.id)}
+                          title={
+                            votedIds.includes(detailStop.id)
+                              ? "Click to remove your vote"
+                              : "Vote for this stop"
+                          }
+                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${
+                            votedIds.includes(detailStop.id)
+                              ? "bg-sunset/10 text-sunset border-sunset/25 hover:bg-sunset/15"
+                              : "bg-slate/5 hover:bg-slate/10 text-slate border-transparent"
+                          }`}
                         >
-                          <ThumbsUp className="w-3.5 h-3.5" />
-                          Upvote ({detailStop.votes})
+                          <ThumbsUp
+                            className={`w-3.5 h-3.5 ${
+                              votedIds.includes(detailStop.id) ? "fill-current" : ""
+                            }`}
+                          />
+                          {votedIds.includes(detailStop.id) ? "Voted" : "Vote"} ({detailStop.votes})
                         </button>
                         <button
                           type="button"
@@ -1224,10 +1265,23 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                               e.stopPropagation();
                               toggleVote(item.id);
                             }}
-                            className="flex items-center gap-1.5 text-slate/75 hover:text-slate bg-slate/5 hover:bg-slate/10 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer"
-                            title="Vote for this stop"
+                            aria-pressed={votedIds.includes(item.id)}
+                            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                              votedIds.includes(item.id)
+                                ? "text-sunset bg-sunset/10 hover:bg-sunset/15"
+                                : "text-slate/75 hover:text-slate bg-slate/5 hover:bg-slate/10"
+                            }`}
+                            title={
+                              votedIds.includes(item.id)
+                                ? "Voted — click to unvote"
+                                : "Vote for this stop"
+                            }
                           >
-                            <ThumbsUp className="w-3.5 h-3.5" />
+                            <ThumbsUp
+                              className={`w-3.5 h-3.5 ${
+                                votedIds.includes(item.id) ? "fill-current" : ""
+                              }`}
+                            />
                             <span className="text-xs font-bold tabular-nums">{item.votes}</span>
                           </button>
                           <button
@@ -1347,9 +1401,24 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                   <button
                     type="button"
                     onClick={() => toggleVote(activeStop.id)}
-                    className="px-4 py-2 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-all"
+                    aria-pressed={votedIds.includes(activeStop.id)}
+                    title={
+                      votedIds.includes(activeStop.id)
+                        ? "Click to remove your vote"
+                        : "Vote for this stop"
+                    }
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
+                      votedIds.includes(activeStop.id)
+                        ? "bg-sunset/10 text-sunset border-sunset/25 hover:bg-sunset/15"
+                        : "bg-sunset text-white border-transparent hover:bg-sunset-dark"
+                    }`}
                   >
-                    Upvote ({activeStop.votes})
+                    <ThumbsUp
+                      className={`w-3.5 h-3.5 ${
+                        votedIds.includes(activeStop.id) ? "fill-current" : ""
+                      }`}
+                    />
+                    {votedIds.includes(activeStop.id) ? "Voted" : "Vote"} ({activeStop.votes})
                   </button>
                 </div>
               </div>
