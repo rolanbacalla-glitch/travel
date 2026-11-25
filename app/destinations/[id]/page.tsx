@@ -431,7 +431,7 @@ export default function DestinationDetail() {
           {/* Sidebar / Booking Card */}
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-8">
-              <div className="bg-white rounded-[3.5rem] p-10 border border-slate/5 shadow-2xl shadow-slate/10 overflow-hidden relative">
+              <div className="bg-white rounded-[2.5rem] sm:rounded-[3.5rem] p-6 sm:p-8 xl:p-10 border border-slate/5 shadow-2xl shadow-slate/10 overflow-hidden relative">
                 <div className="flex justify-between items-start mb-10">
                   <div className="pr-4">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate/30 block mb-2">Private Room or Shared Villa</span>
@@ -463,17 +463,17 @@ export default function DestinationDetail() {
                 <div className="space-y-4">
                   <Link
                     href={`/dashboard?tab=hub&hub=${destination.id}`}
-                    className="w-full py-6 bg-slate text-white rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-slate/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                    className="w-full px-6 py-4 sm:py-5 bg-slate text-white rounded-full text-xs font-black uppercase tracking-[0.15em] shadow-xl shadow-slate/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 text-center"
                   >
-                    <span>Apply to Join Crew</span>
-                    <ArrowRight className="w-4 h-4 text-sunset" />
+                    <span className="leading-snug">Apply to Join Crew</span>
+                    <ArrowRight className="w-4 h-4 text-sunset shrink-0" />
                   </Link>
                   <Link
                     href={`/dashboard?tab=itinerary`}
-                    className="w-full py-4 bg-sunset/10 border border-sunset/20 text-sunset rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-sunset hover:text-white transition-all flex items-center justify-center gap-2"
+                    className="w-full px-6 py-4 bg-sunset/10 border border-sunset/20 text-sunset rounded-full font-black uppercase tracking-widest text-xs hover:bg-sunset hover:text-white transition-all flex items-center justify-center gap-2 text-center"
                   >
-                    <Calendar className="w-4 h-4" />
-                    <span>Save to My Wander List</span>
+                    <Calendar className="w-4 h-4 shrink-0" />
+                    <span className="leading-snug">Save to My Wander List</span>
                   </Link>
                   <p className="text-[10px] text-center text-slate/30 font-bold uppercase tracking-widest leading-loose">
                     Vetting required for all members. <br /> Safety is our priority.
