@@ -11,7 +11,17 @@ import {
   Save, 
   RotateCcw,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  AlertTriangle,
+  Coffee,
+  Zap,
+  Backpack,
+  Leaf,
+  Laptop,
+  Compass,
+  Utensils,
+  Waves,
+  Sun
 } from "lucide-react";
 import { useProfileStore } from "@/lib/stores/useProfile";
 import { useMessagesStore } from "@/lib/stores/useMessages";
@@ -30,12 +40,12 @@ const AVATAR_PRESETS = [
 ];
 
 const STYLES_LIST = [
-  { id: "slow", label: "Slow Wanderbox", icon: "🐢" },
-  { id: "fast", label: "Fast-Paced Action", icon: "⚡" },
-  { id: "budget", label: "Budget Backpacker", icon: "🎒" },
-  { id: "luxury", label: "Luxury Nomad", icon: "🥂" },
-  { id: "eco", label: "Eco Adventurer", icon: "🌿" },
-  { id: "remote", label: "Remote Pro", icon: "💻" },
+  { id: "slow", label: "Slow Wanderer", icon: Coffee },
+  { id: "fast", label: "Fast-Paced Action", icon: Zap },
+  { id: "budget", label: "Budget Backpacker", icon: Backpack },
+  { id: "luxury", label: "Luxury Nomad", icon: Sparkles },
+  { id: "eco", label: "Eco Adventurer", icon: Leaf },
+  { id: "remote", label: "Remote Pro", icon: Laptop },
 ];
 
 const VIBES_LIST = [
@@ -52,10 +62,10 @@ const VIBES_LIST = [
 ];
 
 const DESTINATIONS_LIST = [
-  { name: "Thailand", icon: "🐘" },
-  { name: "Vietnam", icon: "🍜" },
-  { name: "Indonesia", icon: "🏝️" },
-  { name: "Philippines", icon: "☀" }
+  { name: "Thailand", icon: Compass },
+  { name: "Vietnam", icon: Utensils },
+  { name: "Indonesia", icon: Waves },
+  { name: "Philippines", icon: Sun }
 ];
 
 export function ProfileSettings() {
@@ -340,14 +350,14 @@ export function ProfileSettings() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-5 bg-amber-500/10 border border-amber-500/20 text-amber-800 rounded-3xl space-y-2 text-sm font-semibold overflow-hidden"
+                  className="p-5 bg-amber-500/10 border border-amber-500/20 text-amber-800 rounded-2xl space-y-2 text-sm font-semibold overflow-hidden"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">⚠️</span>
+                    <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" strokeWidth={2} />
                     <span className="font-bold">Identity Change Detected</span>
                   </div>
-                  <p className="text-xs text-amber-800/70 leading-relaxed font-medium">
-                    Changing your Legal Name or Profile Photo will revoke your **Passport Verified** status. You will need to submit a new ID matching the updated details to recover your verified checkmark.
+                  <p className="text-xs text-amber-900/80 leading-relaxed font-medium">
+                    Changing your Legal Name or Profile Photo will revoke your Passport Verified status. You will need to submit a new ID matching the updated details to recover your verified badge.
                   </p>
                 </motion.div>
               )}
@@ -398,22 +408,28 @@ export function ProfileSettings() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {STYLES_LIST.map((style) => {
                 const isActive = styles.includes(style.id);
+                const StyleIcon = style.icon;
                 return (
                   <button
                     key={style.id}
                     onClick={() => toggleStyle(style.id)}
                     className={cn(
-                      "p-5 border rounded-2xl text-center transition-all group active:scale-95 relative",
+                      "p-5 border rounded-2xl text-center transition-all group active:scale-95 relative flex flex-col items-center",
                       isActive
                         ? "border-sunset bg-sunset/5 text-sunset scale-[1.02] shadow-sm font-bold"
-                        : "border-slate/5 hover:border-sunset/30 text-slate/60 hover:text-slate hover:bg-slate/5"
+                        : "border-slate/10 hover:border-sunset/30 text-slate/70 hover:text-slate hover:bg-slate/5"
                     )}
                   >
-                    <div className="text-3xl mb-2 group-hover:scale-105 transition-transform">{style.icon}</div>
-                    <span className="text-xs font-bold uppercase tracking-widest block leading-tight">{style.label}</span>
+                    <div className={cn(
+                      "w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 transition-all",
+                      isActive ? "bg-sunset text-white shadow-sm" : "bg-[#F9F8F6] text-slate/70 group-hover:text-sunset"
+                    )}>
+                      <StyleIcon className="w-5 h-5" strokeWidth={1.75} />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wider block leading-tight">{style.label}</span>
                     {isActive && (
-                      <span className="absolute top-2 right-2 bg-sunset text-white p-0.5 rounded-full">
-                        <Check className="w-2.5 h-2.5" />
+                      <span className="absolute top-2.5 right-2.5 bg-sunset text-white p-0.5 rounded-full">
+                        <Check className="w-3 h-3" />
                       </span>
                     )}
                   </button>
@@ -460,27 +476,28 @@ export function ProfileSettings() {
             <div className="grid grid-cols-2 gap-4">
               {DESTINATIONS_LIST.map((dest) => {
                 const isActive = destinations.includes(dest.name);
+                const DestIcon = dest.icon;
                 return (
                   <button
                     key={dest.name}
                     onClick={() => toggleDestination(dest.name)}
                     className={cn(
-                      "p-4 border rounded-2xl flex items-center gap-4 transition-all font-bold group relative active:scale-95",
+                      "p-4 border rounded-2xl flex items-center gap-3.5 transition-all font-bold group relative active:scale-95",
                       isActive
                         ? "bg-sunset/5 border-sunset text-slate scale-[1.02] shadow-sm"
-                        : "border-slate/5 text-slate/60 hover:text-slate hover:bg-slate/5"
+                        : "border-slate/10 text-slate/70 hover:text-slate hover:bg-slate/5"
                     )}
                   >
                     <div className={cn(
-                      "w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-transform group-hover:scale-105",
-                      isActive ? "bg-sunset text-white" : "bg-[#F9F8F6] border border-slate/5"
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105",
+                      isActive ? "bg-sunset text-white" : "bg-[#F9F8F6] text-slate/70 border border-slate/5 group-hover:text-sunset"
                     )}>
-                      {dest.icon}
+                      <DestIcon className="w-5 h-5" strokeWidth={1.75} />
                     </div>
                     <span className="text-sm font-semibold">{dest.name}</span>
                     {isActive && (
                       <span className="absolute right-4 bg-sunset text-white p-0.5 rounded-full">
-                        <Check className="w-2.5 h-2.5" />
+                        <Check className="w-3 h-3" />
                       </span>
                     )}
                   </button>

@@ -6,17 +6,21 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import {
   Users,
-  Shield,
+  ShieldCheck,
   MessageSquare,
   Bell,
-  Settings,
+  SlidersHorizontal,
   LogOut,
+  LogIn,
+  UserPlus,
   Search,
   Calendar,
   Camera,
   Zap,
   Compass,
-  User
+  User,
+  Sparkles,
+  ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,6 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useMessagesStore } from "@/lib/stores/useMessages";
 import { useProfileStore } from "@/lib/stores/useProfile";
+import { useAuthContext } from "@/components/providers/AuthProvider";
 
 // Components
 import { TravelCrewHub } from "@/components/dashboard/TravelCrewHub";
@@ -49,6 +54,8 @@ type DashboardView = "explore" | "plans" | "messages" | "safety" | "memories" | 
 type ExploreSubTab = "crew" | "pulse";
 
 export default function DashboardPage() {
+  const { user } = useAuthContext();
+  const isGuest = !user;
   const [activeTab, setActiveTab] = useState<DashboardView>("explore");
   const [exploreSubTab, setExploreSubTab] = useState<ExploreSubTab>("crew");
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
@@ -187,7 +194,7 @@ export default function DashboardPage() {
           <SidebarItem
             active={activeTab === "safety"}
             onClick={() => handleTabChange("safety")}
-            icon={Shield}
+            icon={ShieldCheck}
             label="Safety"
           />
         </nav>
@@ -196,9 +203,9 @@ export default function DashboardPage() {
           {isAdmin && (
             <Link
               href="/admin/destinations"
-              className="w-full px-6 py-4 rounded-2xl flex items-center gap-4 font-bold text-sunset hover:bg-sunset/10 transition-all group"
+              className="w-full px-5 py-3.5 rounded-xl flex items-center gap-3.5 font-bold text-sunset hover:bg-sunset/10 transition-all group"
             >
-              <Settings className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <SlidersHorizontal className="w-5 h-5 group-hover:scale-105 transition-transform" strokeWidth={1.75} />
               <span className="text-sm tracking-tight">Admin Portal</span>
             </Link>
           )}
@@ -212,15 +219,34 @@ export default function DashboardPage() {
           <SidebarItem
             active={activeTab === "profile"}
             onClick={() => handleTabChange("profile")}
-            icon={Settings}
+            icon={SlidersHorizontal}
             label="Settings"
           />
-          <SidebarItem
-            icon={LogOut}
-            label="Log Out"
-            className="text-red-400 hover:bg-red-50 hover:text-red-500"
-            onClick={handleSignOut}
-          />
+          {isGuest ? (
+            <div className="pt-2 space-y-2">
+              <Link
+                href="/onboarding"
+                className="w-full px-5 py-3.5 rounded-xl bg-sunset text-white flex items-center justify-center gap-2 text-sm font-bold shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all"
+              >
+                <UserPlus className="w-4 h-4" strokeWidth={2} />
+                <span>Join Free</span>
+              </Link>
+              <Link
+                href="/login"
+                className="w-full px-5 py-3 rounded-xl border border-slate/15 text-slate flex items-center justify-center gap-2 text-sm font-semibold hover:bg-slate/5 transition-all"
+              >
+                <LogIn className="w-4 h-4" strokeWidth={1.75} />
+                <span>Sign In</span>
+              </Link>
+            </div>
+          ) : (
+            <SidebarItem
+              icon={LogOut}
+              label="Log Out"
+              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+              onClick={handleSignOut}
+            />
+          )}
         </div>
       </aside>
 
@@ -229,15 +255,45 @@ export default function DashboardPage() {
 
       {/* ── Main Content Area ── */}
       <main className="flex-1 min-h-screen">
+        {/* Guest Preview Banner */}
+        {isGuest && (
+          <div className="bg-slate text-white px-6 md:px-10 py-3 border-b border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-white/90">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sunset/20 text-sunset font-bold text-xs uppercase tracking-wider shrink-0">
+                  <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />
+                  Guest Preview
+                </span>
+                <span>Explore crews, itineraries, chat &amp; safety tools freely—join free whenever you&rsquo;re ready.</span>
+              </div>
+              <div className="flex items-center gap-2.5 shrink-0">
+                <Link
+                  href="/login"
+                  className="px-3.5 py-1.5 rounded-lg border border-white/20 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/onboarding"
+                  className="px-4 py-1.5 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Create Free Account</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Compact Mindtrip / Airbnb-inspired Header */}
         <header className="px-6 md:px-10 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/90 backdrop-blur-xl border-b border-slate/10 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl md:text-2xl font-sans tracking-tight text-slate font-extrabold">
-                Welcome back, {profile.name.split(" ")[0]}
+                {isGuest ? "Explore Travel Kin" : `Welcome back, ${profile.name.split(" ")[0]}`}
               </h1>
-              <p className="text-slate/60 text-xs font-medium">
-                12 verified Kins nearby · Chiang Mai &amp; Siargao
+              <p className="text-slate/65 text-xs font-medium">
+                12 verified Kins nearby · Siargao &amp; El Nido
               </p>
             </div>
           </div>
@@ -247,7 +303,7 @@ export default function DashboardPage() {
             <div className="hidden lg:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate shadow-sm">
               <span className="px-3 py-1">Siargao</span>
               <span className="px-3 py-1 text-slate/70">Today</span>
-              <span className="px-3 py-1 text-ocean font-bold">8 Kins</span>
+              <span className="px-3 py-1 text-ocean font-bold tabular-nums">8 Kins</span>
             </div>
 
             <div className="relative">
@@ -296,8 +352,12 @@ export default function DashboardPage() {
                     className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate/10 p-2 z-40"
                   >
                     <div className="px-3 py-2 border-b border-slate/5 mb-1">
-                      <p className="text-sm font-bold text-slate truncate">{profile.name}</p>
-                      <p className="text-xs text-slate/70 truncate">@{profile.username}</p>
+                      <p className="text-sm font-bold text-slate truncate">
+                        {isGuest ? "Guest Explorer" : profile.name}
+                      </p>
+                      <p className="text-xs text-slate/70 truncate">
+                        {isGuest ? "Previewing live app" : `@${profile.username}`}
+                      </p>
                     </div>
                     <button
                       onClick={() => handleTabChange("memories")}
@@ -306,7 +366,7 @@ export default function DashboardPage() {
                         activeTab === "memories" ? "bg-ocean/10 text-ocean" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
                       )}
                     >
-                      <Camera className="w-4 h-4" />
+                      <Camera className="w-4 h-4" strokeWidth={1.75} />
                       Memory Vault
                     </button>
                     <button
@@ -316,17 +376,36 @@ export default function DashboardPage() {
                         activeTab === "profile" ? "bg-sunset/10 text-sunset" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
                       )}
                     >
-                      <User className="w-4 h-4" />
+                      <User className="w-4 h-4" strokeWidth={1.75} />
                       Profile &amp; Settings
                     </button>
                     <div className="h-px bg-slate/5 my-1" />
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Log Out
-                    </button>
+                    {isGuest ? (
+                      <div className="space-y-1">
+                        <Link
+                          href="/onboarding"
+                          className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-bold text-sunset hover:bg-sunset/10 transition-colors"
+                        >
+                          <UserPlus className="w-4 h-4" strokeWidth={1.75} />
+                          Create Free Account
+                        </Link>
+                        <Link
+                          href="/login"
+                          className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold text-slate hover:bg-slate/5 transition-colors"
+                        >
+                          <LogIn className="w-4 h-4" strokeWidth={1.75} />
+                          Sign In
+                        </Link>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" strokeWidth={1.75} />
+                        Log Out
+                      </button>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -451,7 +530,7 @@ export default function DashboardPage() {
         <MobileNavItem active={activeTab === "explore"} onClick={() => handleTabChange("explore", exploreSubTab)} icon={Compass} label="Explore" />
         <MobileNavItem active={activeTab === "plans"} onClick={() => handleTabChange("plans")} icon={Calendar} label="Plans" />
         <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); handleTabChange("messages"); }} icon={MessageSquare} label="Chat" badge={totalUnread} />
-        <MobileNavItem active={activeTab === "safety"} onClick={() => handleTabChange("safety")} icon={Shield} label="Safety" />
+        <MobileNavItem active={activeTab === "safety"} onClick={() => handleTabChange("safety")} icon={ShieldCheck} label="Safety" />
       </nav>
     </div>
   );
@@ -467,17 +546,17 @@ function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: {
     <button
       onClick={onClick}
       className={cn(
-        "w-full px-6 py-4 rounded-2xl flex items-center justify-between gap-4 font-bold transition-all group",
-        active ? "bg-slate text-white shadow-xl shadow-slate/20" : "text-slate/60 hover:bg-slate/5 hover:text-slate",
+        "w-full px-5 py-3.5 rounded-xl flex items-center justify-between gap-3.5 font-bold transition-all group",
+        active ? "bg-slate text-white shadow-lg shadow-slate/15" : "text-slate/65 hover:bg-slate/5 hover:text-slate",
         className
       )}
     >
-      <div className="flex items-center gap-4">
-        <Icon className={cn("w-5 h-5", active ? "text-sunset" : "group-hover:text-sunset transition-colors")} />
+      <div className="flex items-center gap-3.5">
+        <Icon className={cn("w-5 h-5", active ? "text-sunset" : "group-hover:text-sunset transition-colors")} strokeWidth={1.75} />
         <span className="text-sm tracking-tight">{label}</span>
       </div>
       {badge && (
-        <span className="px-2 py-0.5 bg-sunset text-white text-xs rounded-lg font-bold">{badge}</span>
+        <span className="px-2 py-0.5 bg-sunset text-white text-xs rounded-lg font-bold tabular-nums">{badge}</span>
       )}
     </button>
   );
@@ -490,19 +569,19 @@ function MobileNavItem({ icon: Icon, label, active, onClick, badge }: {
     <button
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all relative",
+        "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative",
         active ? "text-sunset" : "text-slate/70"
       )}
     >
       <div className="relative">
-        <Icon className="w-6 h-6" />
+        <Icon className="w-5 h-5" strokeWidth={1.75} />
         {badge && (
-          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-sunset text-white text-xs font-bold flex items-center justify-center">
+          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-sunset text-white text-[11px] font-bold tabular-nums flex items-center justify-center">
             {badge}
           </span>
         )}
       </div>
-      <span className="text-xs font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-xs font-bold tracking-wide">{label}</span>
     </button>
   );
 }

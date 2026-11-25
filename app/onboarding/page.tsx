@@ -9,7 +9,17 @@ import {
   ChevronRight,
   ChevronLeft,
   Check,
-  AlertTriangle
+  AlertTriangle,
+  Coffee,
+  Zap,
+  Backpack,
+  Sparkles,
+  Leaf,
+  Laptop,
+  Compass,
+  Utensils,
+  Waves,
+  Sun
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -277,41 +287,49 @@ function StyleForm({
   toggle: (val: string) => void
 }) {
   const styles = [
-    { id: "slow", label: "Slow Wanderbox", icon: "🐢" },
-    { id: "fast", label: "Fast-Paced Action", icon: "⚡" },
-    { id: "budget", label: "Budget Backpacker", icon: "🎒" },
-    { id: "luxury", label: "Luxury Nomad", icon: "🥂" },
-    { id: "eco", label: "Eco Adventurer", icon: "🌿" },
-    { id: "remote", label: "Remote Pro", icon: "💻" },
+    { id: "slow", label: "Slow Wanderer", icon: Coffee },
+    { id: "fast", label: "Fast-Paced Action", icon: Zap },
+    { id: "budget", label: "Budget Backpacker", icon: Backpack },
+    { id: "luxury", label: "Luxury Nomad", icon: Sparkles },
+    { id: "eco", label: "Eco Adventurer", icon: Leaf },
+    { id: "remote", label: "Remote Pro", icon: Laptop },
   ];
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {styles.map(s => (
-        <button
-          key={s.id}
-          onClick={() => toggle(s.id)}
-          className={cn(
-            "p-6 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-md transition-all text-center group active:scale-95",
-            selected.includes(s.id)
-              ? "border-sunset bg-sunset/10 ring-1 ring-sunset/30 scale-[1.02] shadow-md"
-              : "border-white/40 hover:bg-white/80 hover:border-sunset/50"
-          )}
-        >
-          <div className={cn(
-            "text-4xl mb-4 transition-transform duration-300 drop-shadow-sm",
-            selected.includes(s.id) ? "scale-110" : "group-hover:scale-110"
-          )}>{s.icon}</div>
-          <span className={cn(
-            "text-xs font-bold tracking-widest uppercase transition-colors",
-            selected.includes(s.id) ? "text-sunset-dark" : "text-slate/70 group-hover:text-slate/80"
-          )}>{s.label}</span>
-          {selected.includes(s.id) && (
-            <motion.div layoutId="check" className="mt-3 flex justify-center">
-              <Check className="w-5 h-5 text-sunset" />
-            </motion.div>
-          )}
-        </button>
-      ))}
+      {styles.map(s => {
+        const Icon = s.icon;
+        const isSelected = selected.includes(s.id);
+        return (
+          <button
+            key={s.id}
+            onClick={() => toggle(s.id)}
+            className={cn(
+              "p-6 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-md transition-all text-center group active:scale-95 flex flex-col items-center",
+              isSelected
+                ? "border-sunset bg-sunset/10 ring-1 ring-sunset/30 scale-[1.02] shadow-md"
+                : "border-white/40 hover:bg-white/80 hover:border-sunset/50"
+            )}
+          >
+            <div className={cn(
+              "w-12 h-12 rounded-xl flex items-center justify-center mb-3.5 transition-all duration-300",
+              isSelected
+                ? "bg-sunset text-white shadow-md shadow-sunset/20 scale-105"
+                : "bg-slate/5 text-slate/70 group-hover:bg-sunset/10 group-hover:text-sunset"
+            )}>
+              <Icon className="w-6 h-6" strokeWidth={1.75} />
+            </div>
+            <span className={cn(
+              "text-xs font-bold tracking-wider uppercase transition-colors",
+              isSelected ? "text-sunset-dark" : "text-slate/70 group-hover:text-slate"
+            )}>{s.label}</span>
+            {isSelected && (
+              <motion.div layoutId="check" className="mt-3 flex justify-center">
+                <Check className="w-5 h-5 text-sunset" />
+              </motion.div>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -351,46 +369,50 @@ function VibeForm({
         <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Main Destinations</label>
         <div className="grid grid-cols-2 gap-4">
           {[
-            { name: "Thailand", icon: "🐘" },
-            { name: "Vietnam", icon: "🍜" },
-            { name: "Indonesia", icon: "🏝️" },
-            { name: "Philippines", icon: "☀" }
-          ].map(dest => (
-            <button
-              key={dest.name}
-              onClick={() => toggleDest(dest.name)}
-              className={cn(
-                "p-5 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm flex items-center gap-4 transition-all font-bold group relative overflow-hidden",
-                selectedDest.includes(dest.name)
-                  ? "bg-sunset/10 border-sunset text-slate shadow-md scale-[1.02]"
-                  : "border-white/40 text-slate/70 hover:bg-white/80 hover:border-sunset/50"
-              )}
-            >
-              <div className={cn(
-                "w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-300",
-                selectedDest.includes(dest.name)
-                  ? "bg-sunset text-white shadow-md"
-                  : "bg-white border border-white/60 shadow-sm group-hover:scale-110"
-              )}>
-                {dest.icon}
-              </div>
-              <span className={cn(
-                "transition-colors",
-                selectedDest.includes(dest.name) ? "text-slate" : "group-hover:text-slate"
-              )}>{dest.name}</span>
+            { name: "Thailand", icon: Compass },
+            { name: "Vietnam", icon: Utensils },
+            { name: "Indonesia", icon: Waves },
+            { name: "Philippines", icon: Sun }
+          ].map(dest => {
+            const DestIcon = dest.icon;
+            const isSelected = selectedDest.includes(dest.name);
+            return (
+              <button
+                key={dest.name}
+                onClick={() => toggleDest(dest.name)}
+                className={cn(
+                  "p-5 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm flex items-center gap-4 transition-all font-bold group relative overflow-hidden",
+                  isSelected
+                    ? "bg-sunset/10 border-sunset text-slate shadow-md scale-[1.02]"
+                    : "border-white/40 text-slate/70 hover:bg-white/80 hover:border-sunset/50"
+                )}
+              >
+                <div className={cn(
+                  "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300",
+                  isSelected
+                    ? "bg-sunset text-white shadow-md"
+                    : "bg-white text-slate/70 border border-white/60 shadow-sm group-hover:scale-105 group-hover:text-sunset"
+                )}>
+                  <DestIcon className="w-5 h-5" strokeWidth={1.75} />
+                </div>
+                <span className={cn(
+                  "transition-colors",
+                  isSelected ? "text-slate" : "group-hover:text-slate"
+                )}>{dest.name}</span>
 
-              {selectedDest.includes(dest.name) && (
-                <motion.div
-                  layoutId="dest-check"
-                  className="absolute right-4"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                >
-                  <Check className="w-5 h-5 text-sunset" />
-                </motion.div>
-              )}
-            </button>
-          ))}
+                {isSelected && (
+                  <motion.div
+                    layoutId="dest-check"
+                    className="absolute right-4"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                  >
+                    <Check className="w-5 h-5 text-sunset" />
+                  </motion.div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

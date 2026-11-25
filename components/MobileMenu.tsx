@@ -56,7 +56,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
           if (item === "Guides") href = "/guides";
           else if (item === "Safety") href = "/safety-commitment";
           else if (item === "Destinations") href = "/destinations";
-          else if (item === "Crew") href = isLoggedIn ? "/dashboard?tab=hub" : "/#crew";
+          else if (item === "Crew") href = "/dashboard?tab=hub";
           else href = `/#${item.toLowerCase()}`;
 
           return (
@@ -106,6 +106,13 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
         ) : (
           <>
             <Link
+              href="/dashboard"
+              onClick={onClose}
+              className="w-full py-4 bg-white/10 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 transition-colors duration-200 focus-ring-white text-center"
+            >
+              Explore Live Demo
+            </Link>
+            <Link
               href="/login"
               onClick={onClose}
               className="w-full py-4 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
@@ -117,7 +124,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
               onClick={onClose}
               className="w-full py-4 bg-sunset rounded-xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
             >
-              Start Exploring
+              Join Free
             </Link>
           </>
         )}

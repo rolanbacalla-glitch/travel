@@ -8,7 +8,7 @@ import {
   MapPin,
   Star,
   TrendingUp,
-  Ghost,
+  Waves,
   Radar,
   Navigation,
   ShieldCheck,
@@ -180,7 +180,7 @@ export function TravelCrewHub({
               {
                 label: "Dominant Vibe",
                 val: "Lagoon & Surf",
-                icon: Ghost,
+                icon: Waves,
                 color: "text-purple-600 bg-purple-50",
               },
             ].map((stat, i) => (

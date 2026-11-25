@@ -54,7 +54,7 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
             if (item === "Guides") href = "/guides";
             else if (item === "Safety") href = "/safety-commitment";
             else if (item === "Destinations") href = "/destinations";
-            else if (item === "Crew") href = isLoggedIn ? "/dashboard?tab=hub" : "/#crew";
+            else if (item === "Crew") href = "/dashboard?tab=hub";
             else href = `/#${item.toLowerCase()}`;
 
             return (
@@ -101,16 +101,22 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
           ) : (
             <>
               <Link
+                href="/dashboard"
+                className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 rounded-full transition-colors duration-200 focus-ring cursor-pointer"
+              >
+                Live Demo
+              </Link>
+              <Link
                 href="/login"
-                className="px-5 py-2 text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
+                className="px-4 py-2 text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
               >
                 Sign In
               </Link>
               <Link
                 href="/onboarding"
-                className="px-6 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
+                className="px-5 py-2.5 bg-sunset text-white text-sm font-semibold rounded-full shadow-lg hover:bg-sunset-dark transition-all duration-200 focus-ring active:scale-95 cursor-pointer"
               >
-                Start Exploring
+                Join Free
               </Link>
             </>
           )}

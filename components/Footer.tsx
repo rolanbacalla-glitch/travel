@@ -2,14 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
-import { Camera, X, Globe, Video } from "lucide-react";
+import { Camera, AtSign, Globe, Play } from "lucide-react";
 
 export function Footer() {
   const socialLinks = [
     { icon: Camera, label: "Instagram" },
-    { icon: X, label: "Twitter" },
-    { icon: Globe, label: "Facebook" },
-    { icon: Video, label: "Youtube" },
+    { icon: AtSign, label: "Threads & Social" },
+    { icon: Globe, label: "Community" },
+    { icon: Play, label: "YouTube" },
   ];
 
   return (
@@ -30,11 +30,11 @@ export function Footer() {
               {socialLinks.map((social, i) => (
                 <Link
                   key={i}
-                  href="/destinations"
-                  aria-label={`${social.label} — Explore Travel Kin`}
+                  href="/dashboard"
+                  aria-label={`${social.label} — Preview Travel Kin`}
                   className="w-11 h-11 rounded-full border border-white/15 flex items-center justify-center hover:bg-white hover:text-slate transition-all duration-300"
                 >
-                  <social.icon className="w-4 h-4" />
+                  <social.icon className="w-4 h-4" strokeWidth={1.75} />
                 </Link>
               ))}
             </div>

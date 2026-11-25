@@ -15,6 +15,9 @@ import {
   Cloud,
   Clock,
   Sparkles,
+  Image as ImageIcon,
+  HardDrive,
+  Link2,
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -266,9 +269,9 @@ export function MemoriesView() {
               </div>
 
               <div className="grid grid-cols-1 gap-4">
-                <ImportSource icon={GoogleIcon} label="Google Photos" status="Connected" />
-                <ImportSource icon={AmazonIcon} label="Amazon Photos" status="Ready" />
-                <ImportSource icon={InstagramIcon} label="Instagram Link" status="Ready" />
+                <ImportSource icon={ImageIcon} label="Google Photos" status="Connected" />
+                <ImportSource icon={HardDrive} label="Amazon Photos" status="Ready" />
+                <ImportSource icon={Link2} label="Instagram Link" status="Ready" />
                 <ImportSource icon={Cloud} label="iCloud (Photos app)" status="Ready" />
               </div>
 
@@ -491,39 +494,5 @@ function ImportSource({
         {status}
       </div>
     </button>
-  );
-}
-
-function GoogleIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.96 3.4-2.12 4.49-1.48 1.49-3.78 2.59-7.24 2.59-6.38 0-11.64-5.16-11.64-11.54C1.32 5.16 6.58 0 12.96 0c3.92 0 6.64 1.64 8.48 3.5l-2.32 2.32c-1.32-1.32-3.16-2.28-6.16-2.28-4.24 0-7.88 3.52-7.88 7.68s3.64 7.68 7.88 7.68c3.04 0 4.88-1.28 6-2.48.96-.96 1.48-2.36 1.64-4.28h-6.24z" />
-    </svg>
-  );
-}
-
-function AmazonIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.177 15.353c-.326-1.125-2.073-1.464-4.225-1.464-3.08 0-4.041.564-4.041 1.611 0 1.258 1.8 1.495 3.518 1.495 2.193 0 5.074-.515 4.748-1.642zm-9.011 2.213c.189.658.556 1.22 1.096 1.641l.995-.898c-.463-.33-.787-.733-.974-1.25l-1.117.507zm14.156-5.836l-1.458-.663c-.1-.045-.213-.024-.294.053l-1.022.955c-.21.196-.07.49.206.514l1.192.106c.387.034.69.349.69.737v2.247c0 2.223-1.693 4.025-3.78 4.025-1.01 0-1.92-.416-2.585-1.084-.132-.132-.132-.345 0-.477l.617-.617c.184-.184.444-.22 1.002.325.2.2.476.324.78.324.61 0 1.104-.494 1.104-1.104v-.2c0-.528-.31-.986-.757-1.195l-7.01-3.238c-.347-.16-.763-.16-1.11 0L2.146 16.03c-.347.16-.763.16-1.11 0L0 15.522v5.717s1.42 1.127 2.146 1.127c.48 0 1.956-.563 2.146-.66.19-.1.353-.294.353-.48 0-.115-.125-.19-.481-.19-.53 0-1.11-.265-1.11-.661 0-.16.142-.265.48-.42l4.904-2.27c2.146-.995 4.904-.995 7.051 0l7.151 3.3c.347.16.763.16 1.11 0l1.458-.675V11.73z" />
-    </svg>
-  );
-}
-
-function InstagramIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37a4 4 0 1 1-7.14 0 4 4 0 0 1 7.14 0z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    </svg>
   );
 }

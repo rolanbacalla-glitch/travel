@@ -16,7 +16,9 @@ import {
   FileText,
   Lock,
   Download,
-  Phone
+  Phone,
+  Navigation,
+  Filter
 } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -540,14 +542,6 @@ function PermissionRow({ title, desc, active }: { title: string; desc: string; a
       </div>
     </div>
   );
-}
-
-function Navigation({ className }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>;
-}
-
-function Filter({ className }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>;
 }
 
 function cn(...inputs: any[]) {
