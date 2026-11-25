@@ -30,7 +30,9 @@ import {
   Check
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { UserTier, getTierPermissions } from "@/lib/access";
+import { useMemoriesStore, getKinName } from "@/lib/stores/useMemories";
 
 export interface ItineraryItem {
   id: string;
@@ -158,6 +160,7 @@ const VOTES_STORAGE_KEY = "travelkin-itinerary-votes-v1";
 
 export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
   const perms = getTierPermissions(tier);
+  const { memories } = useMemoriesStore();
 
   const [items, setItems] = useState<ItineraryItem[]>(SAMPLE_ITEMS);
   const [votedIds, setVotedIds] = useState<string[]>([]);
@@ -371,6 +374,10 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
   const activeStop = items.find((i) => i.id === selectedStopId) || items[0];
   const detailStop = items.find((i) => i.id === detailStopId) || null;
   const detailStopIndex = detailStop ? items.findIndex((i) => i.id === detailStop.id) : -1;
+  const detailStopPhotos = detailStop
+    ? memories.filter((m) => m.eventId === `stop-${detailStop.id}`)
+    : [];
+  const tomorrowTripPhotos = memories.filter((m) => m.eventId === "tomorrow-boat");
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20 relative">
@@ -853,6 +860,48 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                       </div>
                     )}
 
+                    {/* Tagged Event Photos Automatically Routed Here */}
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate/60 inline-flex items-center gap-1.5">
+                          <Camera className="w-3.5 h-3.5" />
+                          Photos from this Stop ({detailStopPhotos.length})
+                        </p>
+                      </div>
+                      {detailStopPhotos.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                          {detailStopPhotos.map((photo) => (
+                            <div
+                              key={photo.id}
+                              className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate/5 border border-slate/10"
+                            >
+                              <Image
+                                src={photo.url}
+                                alt={photo.caption}
+                                fill
+                                referrerPolicy="no-referrer"
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                <p className="text-[11px] font-semibold text-white truncate">
+                                  {photo.caption}
+                                </p>
+                                {photo.taggedKinIds.length > 0 && (
+                                  <p className="text-[10px] text-white/75 truncate">
+                                    With {photo.taggedKinIds.map(getKinName).join(", ")}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs font-medium text-slate/55 bg-[#F9F8F6] border border-slate/10 rounded-xl px-4 py-3">
+                          No photos tagged for this stop yet. Upload a photo in Trip Photos and link it to this stop so everyone sees it here.
+                        </p>
+                      )}
+                    </div>
+
                     {!perms.canEditItinerary && (
                       <div className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5 text-xs font-medium text-slate/75">
@@ -1037,6 +1086,41 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                   </div>
                 </div>
 
+                {/* Tagged Boat Trip Photos */}
+                <div className="space-y-2.5">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate/60 inline-flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5" />
+                    Tagged Trip Photos ({tomorrowTripPhotos.length})
+                  </p>
+                  {tomorrowTripPhotos.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {tomorrowTripPhotos.map((photo) => (
+                        <div
+                          key={photo.id}
+                          className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate/5 border border-slate/10"
+                        >
+                          <Image
+                            src={photo.url}
+                            alt={photo.caption}
+                            fill
+                            referrerPolicy="no-referrer"
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                            <p className="text-[11px] font-semibold text-white truncate">
+                              {photo.caption}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs font-medium text-slate/55 bg-[#F9F8F6] border border-slate/10 rounded-xl px-4 py-3">
+                      Photos tagged with &ldquo;Sugba Lagoon &amp; Kawhagan Boat Trip&rdquo; in Trip Photos will automatically appear here.
+                    </p>
+                  )}
+                </div>
+
                 {/* Actions */}
                 <div className="pt-4 border-t border-slate/10 flex flex-wrap items-center justify-between gap-3">
                   {!perms.canJoinTripSplits ? (
@@ -1209,9 +1293,17 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
                             </span>
                           )}
                         </div>
-                        <span className="px-2.5 py-1 rounded-full bg-slate/5 text-slate/70 text-xs font-bold capitalize">
-                          Stop #{index + 1} · {item.category}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {memories.filter((m) => m.eventId === `stop-${item.id}`).length > 0 && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate/5 border border-slate/10 text-slate/75 text-xs font-bold">
+                              <Camera className="w-3 h-3" />
+                              {memories.filter((m) => m.eventId === `stop-${item.id}`).length}
+                            </span>
+                          )}
+                          <span className="px-2.5 py-1 rounded-full bg-slate/5 text-slate/70 text-xs font-bold capitalize">
+                            Stop #{index + 1} · {item.category}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="mb-4">

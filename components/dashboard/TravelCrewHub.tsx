@@ -13,7 +13,9 @@ import {
   Heart,
   Calendar,
   ArrowRight,
-  Lock
+  Lock,
+  Camera,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +23,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Kin } from "@/lib/data/kins";
 import { VibeConsensus } from "@/components/dashboard/VibeConsensus";
 import { UserTier, getTierPermissions } from "@/lib/access";
+import {
+  useMemoriesStore,
+  getEventLabel,
+  getHubLabel,
+} from "@/lib/stores/useMemories";
 
 const HUBS = [
   { id: "all", label: "All Islands" },
@@ -49,6 +56,7 @@ export function TravelCrewHub({
   tier?: UserTier;
 }) {
   const perms = getTierPermissions(tier);
+  const { memories, untagKinFromMemory } = useMemoriesStore();
 
   const [isScanning, setIsScanning] = useState(false);
   const [hasScanned, setHasScanned] = useState(true);
@@ -57,6 +65,7 @@ export function TravelCrewHub({
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(false);
   const [likedIds, setLikedIds] = useState<Record<string, boolean>>({});
   const [showHubDirectory, setShowHubDirectory] = useState<boolean>(false);
+  const [activePhotosKin, setActivePhotosKin] = useState<Kin | null>(null);
   const [guestPrompt, setGuestPrompt] = useState<string | null>(null);
 
   useEffect(() => {
@@ -430,6 +439,47 @@ export function TravelCrewHub({
 
                   {/* Peer Reviews & Tags */}
                   {kin.vibeStats && <VibeConsensus stats={kin.vibeStats} />}
+
+                  {/* Tagged Photos Routed to This Travel Kin */}
+                  {(() => {
+                    const kinPhotos = memories.filter((m) =>
+                      m.taggedKinIds.includes(kin.id)
+                    );
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => setActivePhotosKin(kin)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate/10 hover:border-slate/25 transition-all flex items-center justify-between gap-2 text-left"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Camera className="w-3.5 h-3.5 text-slate/60 shrink-0" />
+                          <span className="text-xs font-bold text-slate truncate">
+                            Tagged Photos ({kinPhotos.length})
+                          </span>
+                        </div>
+                        {kinPhotos.length > 0 ? (
+                          <div className="flex -space-x-1.5 shrink-0">
+                            {kinPhotos.slice(0, 3).map((photo) => (
+                              <span
+                                key={photo.id}
+                                className="relative w-6 h-6 rounded-md overflow-hidden border border-white shadow-sm block"
+                              >
+                                <Image
+                                  src={photo.url}
+                                  alt={photo.caption}
+                                  fill
+                                  referrerPolicy="no-referrer"
+                                  className="object-cover"
+                                />
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-slate/45">None yet</span>
+                        )}
+                      </button>
+                    );
+                  })()}
                 </div>
               );
             })}
@@ -490,44 +540,195 @@ export function TravelCrewHub({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {MORE_HUBS_DIRECTORY.map((hub) => (
-                    <div
-                      key={hub.id}
-                      className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 flex flex-col justify-between gap-4"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="text-sm font-bold text-slate">{hub.name}</span>
-                          <span className="text-xs font-bold text-slate/60 tabular-nums">{hub.activeCount} active</span>
+                  {MORE_HUBS_DIRECTORY.map((hub) => {
+                    const hubPhotos = memories.filter(
+                      (m) => m.hubId === hub.id && m.visibility === "hub_public"
+                    );
+                    return (
+                      <div
+                        key={hub.id}
+                        className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 flex flex-col justify-between gap-3.5"
+                      >
+                        <div className="space-y-2.5">
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="text-sm font-bold text-slate">{hub.name}</span>
+                              <span className="text-xs font-bold text-slate/60 tabular-nums">{hub.activeCount} active</span>
+                            </div>
+                            <p className="text-xs text-slate/65 font-medium">{hub.highlight}</p>
+                          </div>
+
+                          {/* Public Hub-Tagged Photos Automatically Routed Here */}
+                          {hubPhotos.length > 0 && (
+                            <div className="space-y-1.5">
+                              <p className="text-[11px] font-bold text-slate/55 inline-flex items-center gap-1">
+                                <Camera className="w-3 h-3" />
+                                {hubPhotos.length} Hub {hubPhotos.length === 1 ? "Photo" : "Photos"}
+                              </p>
+                              <div className="grid grid-cols-3 gap-1.5">
+                                {hubPhotos.slice(0, 3).map((photo) => (
+                                  <div
+                                    key={photo.id}
+                                    className="relative aspect-square rounded-lg overflow-hidden bg-slate/10 border border-slate/10"
+                                  >
+                                    <Image
+                                      src={photo.url}
+                                      alt={photo.caption}
+                                      fill
+                                      referrerPolicy="no-referrer"
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <p className="text-xs text-slate/65 font-medium">{hub.highlight}</p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedHub(hub.id);
+                              setAvailabilityFilter("all");
+                            }}
+                            className="flex-1 py-2 rounded-lg bg-white border border-slate/15 text-xs font-bold text-slate hover:bg-slate/5 transition-colors"
+                          >
+                            Filter Here
+                          </button>
+                          <Link
+                            href={`/destinations/${hub.id}`}
+                            className="flex-1 py-2 rounded-lg bg-slate text-white text-xs font-bold hover:bg-slate/90 transition-colors text-center"
+                          >
+                            Open Guide
+                          </Link>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedHub(hub.id);
-                            setAvailabilityFilter("all");
-                          }}
-                          className="flex-1 py-2 rounded-lg bg-white border border-slate/15 text-xs font-bold text-slate hover:bg-slate/5 transition-colors"
-                        >
-                          Filter Here
-                        </button>
-                        <Link
-                          href={`/destinations/${hub.id}`}
-                          className="flex-1 py-2 rounded-lg bg-slate text-white text-xs font-bold hover:bg-slate/90 transition-colors text-center"
-                        >
-                          Open Guide
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </motion.section>
             )}
           </AnimatePresence>
         </motion.div>
       )}
+
+      {/* Tagged Photos Modal for a Specific Travel Kin */}
+      <AnimatePresence>
+        {activePhotosKin && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6"
+          >
+            <div
+              className="absolute inset-0 bg-slate/45 backdrop-blur-sm"
+              onClick={() => setActivePhotosKin(null)}
+            />
+            <motion.div
+              initial={{ scale: 0.96, y: 12 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.96, y: 12 }}
+              className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate/10 overflow-hidden max-h-[85vh] flex flex-col"
+            >
+              <div className="px-6 py-4 border-b border-slate/10 bg-[#F9F8F6] flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-base font-bold text-slate">
+                    Tagged Photos with {activePhotosKin.name}
+                  </h3>
+                  <p className="text-xs font-medium text-slate/60">
+                    Photos tagged with {activePhotosKin.name} appear here automatically.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActivePhotosKin(null)}
+                  aria-label="Close tagged photos"
+                  className="p-2 hover:bg-slate/10 rounded-full transition-colors text-slate/70"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 overflow-y-auto">
+                {(() => {
+                  const kinPhotos = memories.filter((m) =>
+                    m.taggedKinIds.includes(activePhotosKin.id)
+                  );
+                  if (kinPhotos.length === 0) {
+                    return (
+                      <div className="py-10 text-center space-y-2">
+                        <Camera className="w-8 h-8 text-slate/35 mx-auto" />
+                        <p className="text-sm font-bold text-slate">
+                          No photos tagged with {activePhotosKin.name} yet
+                        </p>
+                        <p className="text-xs font-medium text-slate/60">
+                          Upload a photo in Trip Photos and tag {activePhotosKin.name} to see it here.
+                        </p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {kinPhotos.map((photo) => {
+                        const evLabel = getEventLabel(photo.eventId);
+                        return (
+                          <div
+                            key={photo.id}
+                            className="rounded-xl overflow-hidden border border-slate/10 bg-[#F9F8F6] flex flex-col"
+                          >
+                            <div className="relative aspect-[4/3] bg-slate/10">
+                              <Image
+                                src={photo.url}
+                                alt={photo.caption}
+                                fill
+                                referrerPolicy="no-referrer"
+                                className="object-cover"
+                              />
+                              <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                {getHubLabel(photo.hubId)}
+                              </span>
+                            </div>
+                            <div className="p-3.5 space-y-2 flex-1 flex flex-col justify-between">
+                              <div className="space-y-1">
+                                {evLabel && (
+                                  <p className="text-[11px] font-bold text-slate/60 inline-flex items-center gap-1">
+                                    <Calendar className="w-3 h-3" />
+                                    {evLabel}
+                                  </p>
+                                )}
+                                <p className="text-xs font-semibold text-slate leading-relaxed">
+                                  &ldquo;{photo.caption}&rdquo;
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-between pt-2 border-t border-slate/10">
+                                <span className="text-[11px] font-medium text-slate/55">
+                                  {photo.date}
+                                </span>
+                                {perms.canUploadMemories && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      untagKinFromMemory(photo.id, activePhotosKin.id)
+                                    }
+                                    className="text-[11px] font-bold text-slate/60 hover:text-red-600 transition-colors"
+                                  >
+                                    Remove Tag
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
