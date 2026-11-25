@@ -1,86 +1,83 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Send,
-  ArrowLeft,
-  MoreVertical,
-  Phone,
-  MapPin,
-  Smile,
   ShieldCheck,
   Lock,
-  Zap,
-  CheckCircle2,
   AlertTriangle,
   History,
   Navigation
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMessagesStore, TrustStatus, Message } from "@/lib/stores/useMessages";
-import { useProfileStore } from "@/lib/stores/useProfile";
+import { useMessagesStore, Message } from "@/lib/stores/useMessages";
 import { KINS, Kin } from "@/lib/data/kins";
 import Link from "next/link";
+import { UserTier, getTierPermissions } from "@/lib/access";
 
-// Dynamic Import for Leaflet to fix SSR
 const RadarMiniMap = dynamic(() => import("./RadarMiniMap"), {
   ssr: false,
-  loading: () => <div className="w-full h-full bg-slate/5 animate-pulse flex items-center justify-center text-slate/70 font-bold uppercase tracking-widest italic">Syncing Radar...</div>
+  loading: () => (
+    <div className="w-full h-full bg-slate/5 animate-pulse flex items-center justify-center text-slate/60 text-xs font-semibold">
+      Loading map...
+    </div>
+  ),
 });
 
-/* ─── Types & Mock Data (Extended) ─────────────────────────────────────────── */
-
-// Types moved to @/lib/data/kins and @/lib/stores/useMessages
-
-// Seed data logic added to MessagesView component
-
-/* ─── Handshake Card ───────────────────────────────────────────────────────── */
-
-function HandshakeCard({ kinName, status, onAccept, onDecline }: {
+function HandshakeCard({
+  kinName,
+  status,
+  onAccept,
+  onDecline,
+}: {
   kinName: string;
-  status: 'pending' | 'accepted' | 'declined';
+  status: "pending" | "accepted" | "declined";
   onAccept: () => void;
   onDecline: () => void;
 }) {
   return (
-    <div className="w-full max-w-sm bg-white rounded-3xl border border-slate/5 shadow-2xl p-6 space-y-4">
-      <div className="flex items-center gap-4">
-        <div className={cn(
-          "p-3 rounded-2xl",
-          status === 'pending' ? "bg-ocean/5 text-ocean" : (status === 'accepted' ? "bg-green-50 text-green-500" : "bg-slate/5 text-slate/65")
-        )}>
-          <ShieldCheck className="w-6 h-6" />
+    <div className="w-full max-w-sm bg-white rounded-2xl border border-slate/10 shadow-sm p-5 space-y-3.5">
+      <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            "p-2.5 rounded-xl",
+            status === "accepted" ? "bg-green-50 text-green-600" : "bg-slate/5 text-slate"
+          )}
+        >
+          <ShieldCheck className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-slate uppercase tracking-widest">Kin Protocol</h4>
-          <p className="text-xs text-slate/60 font-bold uppercase tracking-tighter">Location Verification</p>
+          <h4 className="text-sm font-bold text-slate">Safe Meet-Up Request</h4>
+          <p className="text-xs text-slate/60 font-medium">Share exact location for 2 hours</p>
         </div>
       </div>
 
-      <p className="text-xs text-slate/60 leading-relaxed italic">
-        {status === 'pending'
-          ? `${kinName} is requesting a Trust Handshake. Accept to share precise coordinates for 2 hours.`
-          : (status === 'accepted' ? "Trust Handshake Active. Precise pins unlocked." : "Handshake Expired.")}
+      <p className="text-xs text-slate/70 leading-relaxed font-medium">
+        {status === "pending"
+          ? `${kinName} wants to share exact map locations for 2 hours so you can meet up easily.`
+          : status === "accepted"
+          ? "Exact location sharing is active for 2 hours."
+          : "Request declined."}
       </p>
 
-      {status === 'pending' && (
-        <div className="flex items-center gap-2 pt-2">
+      {status === "pending" && (
+        <div className="flex items-center gap-2 pt-1">
           <button
+            type="button"
             onClick={onAccept}
-            className="flex-1 py-3 bg-ocean text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-ocean/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
-            aria-label={`Accept trust handshake with ${kinName}`}
+            className="flex-1 py-2.5 bg-sunset text-white rounded-xl text-xs font-bold hover:bg-sunset-dark transition-all cursor-pointer"
           >
             Accept (2h Share)
           </button>
           <button
+            type="button"
             onClick={onDecline}
-            className="px-4 py-3 bg-slate/5 text-slate/65 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate/10 transition-all text-center cursor-pointer"
-            aria-label="Decline trust handshake"
+            className="px-4 py-2.5 bg-slate/5 text-slate/70 rounded-xl text-xs font-bold hover:bg-slate/10 transition-all cursor-pointer"
           >
-            X
+            Decline
           </button>
         </div>
       )}
@@ -88,12 +85,18 @@ function HandshakeCard({ kinName, status, onAccept, onDecline }: {
   );
 }
 
-/* ─── Main Chat Thread Container ───────────────────────────────────────────── */
-
-function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
+function ChatThread({
+  conv,
+  tier,
+}: {
+  conv: Kin;
+  tier: UserTier;
+}) {
   const store = useMessagesStore();
+  const perms = getTierPermissions(tier);
+
   const session = store.sessions[conv.id] || {
-    trustStatus: 'BLURRED',
+    trustStatus: "BLURRED",
     handshakeExpiry: null,
     isSOSActive: false,
     proximityLevel: 1,
@@ -103,46 +106,41 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [verifyPrompt, setVerifyPrompt] = useState(false);
-  const profileVerified = useProfileStore((s) => s.isVerified);
-  const isUserVerified = store.isVerified || profileVerified;
   const bottomRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll logic
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [session.messages]);
 
-  // Handshake Handlers (NomadHer Verification Gate)
   const handleRequestHandshake = () => {
-    if (!isUserVerified) {
+    if (!perms.canShareExactLocation) {
       setVerifyPrompt(true);
       return;
     }
     setVerifyPrompt(false);
     store.addMessage(conv.id, {
       fromMe: true,
-      text: "Requested Trust Handshake",
-      type: 'handshake_request',
-      handshakeStatus: 'pending'
+      text: "Requested 2-hour exact location share",
+      type: "handshake_request",
+      handshakeStatus: "pending",
     });
   };
 
-  const handleAcceptHandshake = (msgId: string) => {
-    if (!isUserVerified) {
+  const handleAcceptHandshake = () => {
+    if (!perms.canShareExactLocation) {
       setVerifyPrompt(true);
       return;
     }
     setVerifyPrompt(false);
-    store.updateTrustStatus(conv.id, 'PRECISE', 2);
+    store.updateTrustStatus(conv.id, "PRECISE", 2);
     store.addMessage(conv.id, {
       fromMe: true,
-      text: "Trust Handshake Accepted. Pins are live.",
+      text: "Exact location sharing accepted for 2 hours.",
     });
   };
 
   const handleSend = async () => {
-    if (!input.trim() || isTyping) return;
+    if (!perms.canMessage || !input.trim() || isTyping) return;
 
     const userText = input.trim();
     store.addMessage(conv.id, { fromMe: true, text: userText });
@@ -158,8 +156,8 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
           kinName: conv.name,
           kinVibe: conv.vibe,
           location: conv.location,
-          history: session.messages
-        })
+          history: session.messages,
+        }),
       });
 
       if (!response.ok) throw new Error("Connection failed");
@@ -168,13 +166,12 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
       if (data.text) {
         store.addMessage(conv.id, { fromMe: false, text: data.text });
       } else {
-        throw new Error("No response from AI");
+        throw new Error("No reply");
       }
-    } catch (err) {
-      console.error("Chat Error:", err);
+    } catch {
       store.addMessage(conv.id, {
         fromMe: false,
-        text: "I'm having a slight problem connecting to the Ring network. Give me a second!"
+        text: "Sorry, my signal dropped for a moment. Send that again in a second!",
       });
     } finally {
       setIsTyping(false);
@@ -183,9 +180,8 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
 
   return (
     <div className="flex flex-col h-full bg-[#F9F8F6]">
-
-      {/* ── TOP: Integrated Map (The Command Center Split) ── */}
-      <div className="h-[35%] w-full relative overflow-hidden flex-shrink-0">
+      {/* Map Area */}
+      <div className="h-[34%] w-full relative overflow-hidden flex-shrink-0 border-b border-slate/10">
         <RadarMiniMap
           kinLat={conv.lat}
           kinLng={conv.lng}
@@ -193,120 +189,136 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
           isSOSActive={session.isSOSActive}
         />
 
-        {/* Overlay Info Layer */}
-        <div className="absolute top-6 left-6 right-6 z-[600] pointer-events-none">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl pointer-events-auto">
-              <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm">
-                <Image src={conv.image} alt="kin" fill className="object-cover" />
+        <div className="absolute top-4 left-4 right-4 z-[600] pointer-events-none">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 p-2.5 bg-white/95 backdrop-blur-md border border-slate/10 rounded-xl shadow-sm pointer-events-auto">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                <Image src={conv.image} alt={conv.name} fill className="object-cover" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate uppercase tracking-widest">{conv.name}</h4>
+                <h4 className="text-xs font-bold text-slate">{conv.name}</h4>
                 <div className="flex items-center gap-1">
-                  <Lock className={cn("w-2.5 h-2.5", session.trustStatus === 'BLURRED' ? "text-slate/65" : "text-green-500")} />
-                  <span className="text-xs font-bold text-slate/60 uppercase">
-                    {session.trustStatus === 'BLURRED' ? 'Blurred Privacy' : 'Full Precision'}
+                  <Lock
+                    className={cn(
+                      "w-3 h-3",
+                      session.trustStatus === "BLURRED" ? "text-slate/60" : "text-green-600"
+                    )}
+                  />
+                  <span className="text-xs font-medium text-slate/65">
+                    {session.trustStatus === "BLURRED" ? "Approximate Area" : "Exact Location"}
                   </span>
                 </div>
               </div>
             </div>
 
-            {session.trustStatus === 'BLURRED' && (
+            {session.trustStatus === "BLURRED" && (
               <button
+                type="button"
                 onClick={handleRequestHandshake}
-                className="p-3 bg-ocean text-white rounded-2xl shadow-xl shadow-ocean/20 pointer-events-auto active:scale-95 transition-all flex items-center gap-2"
-                title="Kin Handshake"
+                className="px-3.5 py-2.5 bg-white hover:bg-slate hover:text-white text-slate border border-slate/15 rounded-xl shadow-sm pointer-events-auto transition-all flex items-center gap-2 text-xs font-bold"
               >
-                <ShieldCheck className="w-5 h-5" />
-                <span className="text-xs font-bold uppercase tracking-widest hidden sm:block">Verify Pins</span>
+                {perms.canShareExactLocation ? (
+                  <ShieldCheck className="w-4 h-4" />
+                ) : (
+                  <Lock className="w-3.5 h-3.5" />
+                )}
+                <span className="hidden sm:inline">Share Exact Location</span>
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* ── MIDDLE: The Safe-Share Control Bar ── */}
-      <div className="sticky top-0 z-50 p-4 border-b border-slate/5 bg-white/60 backdrop-blur-3xl flex-shrink-0 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-slate/60" title="Proximity Distance">
+      {/* Info Bar */}
+      <div className="px-5 py-3 border-b border-slate/10 bg-white flex-shrink-0 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 text-slate/70">
             <Navigation className="w-3.5 h-3.5" />
-            <span className="text-xs font-bold uppercase tracking-widest">~800m Away</span>
+            <span className="text-xs font-semibold">About 800m away</span>
           </div>
-          <div className={cn(
-            "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border shadow-sm transition-all flex items-center gap-1.5",
-            conv.verified ? "bg-green-50 text-green-600 border-green-100" : "bg-slate/5 text-slate/60 border-slate/5"
-          )}>
-            <div className={cn("w-1 h-1 rounded-full", conv.verified ? "bg-green-500 animate-pulse" : "bg-slate/20")} />
-            {conv.verified ? "Verified Identity" : "Basic Hub Access"}
+          <div
+            className={cn(
+              "px-2.5 py-0.5 rounded-full text-xs font-bold border flex items-center gap-1.5",
+              conv.verified
+                ? "bg-green-50 text-green-700 border-green-200"
+                : "bg-slate/5 text-slate/65 border-slate/10"
+            )}
+          >
+            {conv.verified ? "ID Verified" : "Not Verified"}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={() => store.archiveChat(conv.id, conv.name, conv.location, conv.vibe)}
-            className="flex items-center gap-2 text-slate/70 hover:text-ocean transition-all cursor-pointer"
-            title="Archive to Memories"
-            aria-label={`Archive chat with ${conv.name}`}
+            className="flex items-center gap-1.5 text-slate/65 hover:text-slate transition-all cursor-pointer text-xs font-semibold"
           >
             <History className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest hidden md:block">Archive</span>
+            <span className="hidden md:inline">Save to Photos</span>
           </button>
           <div className="w-px h-4 bg-slate/10" />
           <button
-            className="text-red-500/40 hover:text-red-600 transition-all cursor-pointer"
-            title="Report or SOS"
-            aria-label="Trigger Emergency SOS or Report User"
+            type="button"
+            className="text-red-600/70 hover:text-red-600 transition-all cursor-pointer"
+            title="Report user"
+            aria-label="Report user"
           >
             <AlertTriangle className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* ── BOTTOM: The Thread ── */}
-      <div className="flex-1 overflow-y-auto px-5 py-8 space-y-6 flex flex-col items-center">
-
-        {/* System Info Bubble */}
-        <div className="px-6 py-2 bg-slate/5 rounded-full text-xs font-bold text-slate/60 uppercase tracking-wider mb-4">
-          Session Active · End-to-End Secure
+      {/* Messages Thread */}
+      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-4 flex flex-col items-center">
+        <div className="px-4 py-1.5 bg-slate/5 rounded-full text-xs font-semibold text-slate/65">
+          Private chat · Your exact location stays hidden until you choose to share it
         </div>
 
         {verifyPrompt && (
-          <div className="w-full max-w-md p-5 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <p className="text-xs font-bold uppercase tracking-widest text-amber-800">
-                ID Verification Required
-              </p>
-              <p className="text-xs text-slate/70">
-                Complete your biometric ID check to unlock 2-hour precise GPS handshakes.
+          <div className="w-full max-w-md p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <p className="text-xs font-bold text-amber-900">Verified Kin Feature</p>
+              <p className="text-xs text-amber-900/80 font-medium">
+                {tier === "guest"
+                  ? "Sign up and verify your ID to share exact 2-hour meet-up locations."
+                  : "Verify your ID to unlock exact 2-hour meet-up locations."}
               </p>
             </div>
             <Link
-              href="/verify"
-              className="px-4 py-2.5 bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 hover:bg-amber-600 transition-colors"
+              href={tier === "guest" ? "/onboarding" : "/verify"}
+              className="px-4 py-2 bg-sunset text-white rounded-xl text-xs font-bold shrink-0 hover:bg-sunset-dark transition-colors"
             >
-              Verify ID
+              {tier === "guest" ? "Join Free" : "Verify ID"}
             </Link>
           </div>
         )}
 
-        {session.messages.map((msg: Message, i: number) => (
+        {session.messages.map((msg: Message) => (
           <div key={msg.id} className={cn("w-full flex", msg.fromMe ? "justify-end" : "justify-start")}>
-            {msg.type === 'handshake_request' ? (
+            {msg.type === "handshake_request" ? (
               <HandshakeCard
                 kinName={conv.name}
-                status={msg.handshakeStatus || 'pending'}
-                onAccept={() => handleAcceptHandshake(msg.id)}
-                onDecline={() => { }}
+                status={msg.handshakeStatus || "pending"}
+                onAccept={handleAcceptHandshake}
+                onDecline={() => {}}
               />
             ) : (
-              <div className={cn(
-                "max-w-[85%] px-6 py-4 text-sm leading-relaxed",
-                msg.fromMe
-                  ? "bg-slate text-white rounded-3xl rounded-br-sm shadow-xl shadow-slate/10"
-                  : "bg-white text-slate rounded-3xl rounded-bl-sm border border-slate/5 shadow-sm"
-              )}>
+              <div
+                className={cn(
+                  "max-w-[82%] px-5 py-3.5 text-sm leading-relaxed",
+                  msg.fromMe
+                    ? "bg-slate text-white rounded-2xl rounded-br-sm"
+                    : "bg-white text-slate rounded-2xl rounded-bl-sm border border-slate/10"
+                )}
+              >
                 {msg.text}
-                <div className={cn("text-xs mt-1 font-bold opacity-60 uppercase tracking-wide", msg.fromMe ? "text-right" : "text-left")}>
+                <div
+                  className={cn(
+                    "text-xs mt-1 font-medium opacity-65",
+                    msg.fromMe ? "text-right" : "text-left"
+                  )}
+                >
                   {msg.time}
                 </div>
               </div>
@@ -316,115 +328,130 @@ function ChatThread({ conv, onBack }: { conv: Kin; onBack: () => void }) {
 
         {isTyping && (
           <div className="w-full flex justify-start">
-            <div className="bg-white px-6 py-4 rounded-3xl rounded-bl-sm border border-slate/5 shadow-sm flex items-center gap-1.5">
-              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
-              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
-              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate/40 rounded-full" />
+            <div className="bg-white px-5 py-3.5 rounded-2xl border border-slate/10 flex items-center gap-1.5">
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate/50 rounded-full" />
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate/50 rounded-full" />
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate/50 rounded-full" />
             </div>
           </div>
         )}
-        <div ref={bottomRef} className="h-4" />
+        <div ref={bottomRef} className="h-2" />
       </div>
 
-      {/* ── INPUT AREA ── */}
-      <div className="p-6 pb-10 bg-white/80 backdrop-blur-3xl border-t border-slate/5">
-        <div className="flex items-center gap-3">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={`Coordinate with ${conv.name}...`}
-            className="flex-1 h-14 px-6 bg-[#F9F8F6] border border-slate/5 rounded-2xl text-sm text-slate placeholder:text-slate/60 focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all font-medium"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className="w-14 h-14 bg-slate text-white rounded-2xl flex items-center justify-center shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-30 cursor-pointer"
-            title="Send message"
-            aria-label="Send message"
-          >
-            <Send className="w-5 h-5 mx-auto" />
-          </button>
-        </div>
+      {/* Input Area */}
+      <div className="p-4 bg-white border-t border-slate/10">
+        {!perms.canMessage ? (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-[#F9F8F6] border border-slate/10">
+            <span className="text-xs font-semibold text-slate/75 flex items-center gap-2">
+              <Lock className="w-4 h-4 text-slate/60 shrink-0" />
+              Create a free account to send messages to {conv.name}.
+            </span>
+            <Link
+              href="/onboarding"
+              className="px-4 py-2 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors text-center shrink-0"
+            >
+              Join Free
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2.5">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              placeholder={`Write a message to ${conv.name}...`}
+              className="flex-1 h-12 px-4 bg-[#F9F8F6] border border-slate/10 rounded-xl text-sm text-slate placeholder:text-slate/55 focus:outline-none focus:bg-white focus:border-slate/25 transition-all font-medium"
+            />
+            <button
+              type="button"
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="w-12 h-12 bg-sunset text-white rounded-xl flex items-center justify-center hover:bg-sunset-dark transition-all disabled:opacity-40 cursor-pointer"
+              aria-label="Send message"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-/* ── Main Export (Conversations Navigator) ─────────────────────────────────── */
-
-export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
+export default function MessagesView({
+  onVerify,
+  tier = "verified",
+}: {
+  onVerify?: () => void;
+  tier?: UserTier;
+}) {
   const store = useMessagesStore();
+  const perms = getTierPermissions(tier);
 
-  // Seed the store with initial messages if it's completely empty
   useEffect(() => {
     if (Object.keys(store.sessions).length === 0) {
-      // Initial messages for Suki (Siargao)
-      store.addMessage("1", { fromMe: false, text: "Hey! Saw your profile — are you catching dawn surf at Cloud 9 tomorrow?" });
-      store.addMessage("1", { fromMe: true, text: "Yes! Meeting at the boardwalk at 6am, then hunting for fresh kinilaw in General Luna 😄" });
-      store.addMessage("1", { fromMe: false, text: "Count me in! There's an incredible coastal spot right by the pier 🥥🌊" });
+      store.addMessage("1", { fromMe: false, text: "Hey! Saw your profile — are you surfing at Cloud 9 tomorrow morning?" });
+      store.addMessage("1", { fromMe: true, text: "Yes! Meeting at the boardwalk at 6am, then getting fresh seafood lunch in General Luna." });
+      store.addMessage("1", { fromMe: false, text: "Count me in! There is a great local spot right by the pier." });
 
-      // Initial messages for Liam (El Nido)
-      store.addMessage("2", { fromMe: true, text: "Hey Liam! Are you joining the early outrigger to Big Lagoon in El Nido?" });
-      store.addMessage("2", { fromMe: false, text: "100% — departing Corong-Corong at 6:30am beats all the tour boats!" });
+      store.addMessage("2", { fromMe: true, text: "Hey Liam! Are you joining the early boat to Big Lagoon in El Nido?" });
+      store.addMessage("2", { fromMe: false, text: "Yes! Leaving Corong-Corong at 6:30am beats the crowds." });
     }
   }, [store]);
 
-  const activeConv = KINS.find(c => c.id === store.activeId) || null;
+  const activeConv = KINS.find((c) => c.id === store.activeId) || KINS[0];
 
   return (
-    <div className="flex h-[calc(100vh-140px)] bg-white rounded-2xl border border-slate/10 shadow-2xl overflow-hidden">
-
-      {/* List (Sidebar) */}
-      <div className={cn(
-        "w-full md:w-96 border-r border-slate/5 flex flex-col bg-[#F9F8F6]/40",
-        activeConv ? "hidden md:flex" : "flex"
-      )}>
-        <div className="p-8 border-b border-slate/5">
-          <h2 className="text-3xl font-extrabold text-slate">Ring</h2>
-          <p className="text-xs font-bold text-slate/60 uppercase tracking-wider mt-1 mb-8">Active Conversations</p>
-
-          {/* Search */}
-          <div className="relative group">
-            <input
-              placeholder="Find Kin..."
-              className="w-full pl-12 pr-4 py-4 bg-white border border-slate/5 rounded-xl text-xs font-bold text-slate shadow-sm focus:shadow-xl transition-all"
-            />
-            <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ocean" />
-          </div>
+    <div className="flex h-[calc(100vh-160px)] bg-white rounded-2xl border border-slate/10 shadow-sm overflow-hidden">
+      {/* Sidebar List */}
+      <div
+        className={cn(
+          "w-full md:w-80 border-r border-slate/10 flex flex-col bg-[#F9F8F6]/50",
+          activeConv ? "hidden md:flex" : "flex"
+        )}
+      >
+        <div className="p-6 border-b border-slate/10">
+          <h2 className="text-2xl font-bold text-slate">Messages</h2>
+          <p className="text-xs font-medium text-slate/60 mt-0.5 mb-5">Your active chats</p>
+          <input
+            placeholder="Search people..."
+            className="w-full px-4 py-2.5 bg-white border border-slate/10 rounded-xl text-xs font-medium text-slate focus:outline-none focus:border-slate/25"
+          />
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3">
-          {KINS.map(c => {
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {KINS.map((c) => {
             const session = store.sessions[c.id];
             const lastMsg = session?.messages[session.messages.length - 1];
+            const isSelected = activeConv?.id === c.id;
 
             return (
               <button
+                type="button"
                 key={c.id}
                 onClick={() => store.setActiveId(c.id)}
                 className={cn(
-                  "w-full p-6 text-left rounded-2xl transition-all flex items-center gap-5 cursor-pointer",
-                  store.activeId === c.id ? "bg-slate text-white shadow-2xl shadow-slate/30" : "hover:bg-white"
+                  "w-full p-3.5 text-left rounded-xl transition-all flex items-center gap-3.5 cursor-pointer",
+                  isSelected ? "bg-slate text-white" : "hover:bg-white"
                 )}
               >
-                <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+                <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0">
                   <Image src={c.image} alt={c.name} fill className="object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-base leading-none">{c.name}</h4>
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="font-bold text-sm leading-none truncate">{c.name}</h4>
                     {lastMsg && (
-                      <span className={cn("text-xs font-bold opacity-40 uppercase tracking-widest", store.activeId === c.id ? "text-white" : "text-slate")}>
+                      <span className={cn("text-xs opacity-60 shrink-0", isSelected ? "text-white" : "text-slate")}>
                         {lastMsg.time}
                       </span>
                     )}
                   </div>
-                  <p className={cn("text-xs uppercase font-bold tracking-widest mt-2", store.activeId === c.id ? "text-white/75" : "text-slate/60")}>
-                    {c.location} · {c.vibe.split(',')[0]}
+                  <p className={cn("text-xs mt-1 truncate", isSelected ? "text-white/75" : "text-slate/60")}>
+                    {c.location}
                   </p>
                   {lastMsg && (
-                    <p className={cn("text-xs font-medium mt-2 truncate opacity-80", store.activeId === c.id ? "text-white" : "text-slate")}>
+                    <p className={cn("text-xs mt-1 truncate opacity-80", isSelected ? "text-white" : "text-slate")}>
                       {lastMsg.text}
                     </p>
                   )}
@@ -434,41 +461,29 @@ export default function MessagesView({ onVerify }: { onVerify?: () => void }) {
           })}
         </div>
 
-        {/* Verification Callout */}
-        <div className="p-4 border-t border-slate/5">
-          <button
-            onClick={onVerify}
-            className="w-full text-left group p-4 bg-ocean text-white rounded-xl shadow-md shadow-ocean/10 relative overflow-hidden hover:bg-ocean/90 active:scale-[0.98] transition-all duration-200 cursor-pointer"
-          >
-            <div className="relative z-10 space-y-1.5">
-              <div className="flex items-center gap-2 mb-1">
-                <Lock className="w-4 h-4 opacity-60" />
-                <h5 className="text-xs font-bold uppercase tracking-widest">Kin Protocol</h5>
+        {!perms.canShareExactLocation && (
+          <div className="p-4 border-t border-slate/10">
+            <button
+              type="button"
+              onClick={onVerify}
+              className="w-full text-left p-4 bg-white border border-slate/15 rounded-xl hover:bg-slate/5 transition-all cursor-pointer space-y-1"
+            >
+              <div className="flex items-center gap-2 text-xs font-bold text-slate">
+                <ShieldCheck className="w-4 h-4 text-sunset" />
+                <span>Unlock Exact Meet-Up Pins</span>
               </div>
-              <p className="text-xs leading-relaxed opacity-70">Complete your ID check to unlock precise proximity pins.</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-white/90 pt-1">Verify Now →</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Chat Thread (Main Content) */}
-      <div className="flex-1 flex flex-col">
-        {activeConv ? (
-          <ChatThread conv={activeConv} onBack={() => store.setActiveId(null)} />
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-[#F9F8F6]/20">
-            <div className="w-24 h-24 bg-white border border-slate/5 rounded-2xl shadow-xl flex items-center justify-center mb-8">
-              <Lock className="w-8 h-8 text-slate/20" />
-            </div>
-            <h3 className="text-3xl font-extrabold text-slate">Secure Line</h3>
-            <p className="text-xs text-slate/60 max-w-sm mt-4 font-medium leading-relaxed">
-              Select a Kin to start coordinating. Every conversation in the Ring is end-to-end shielded by the Traveller Protocol.
-            </p>
+              <p className="text-xs text-slate/65 font-medium">
+                Verify your ID to share exact map locations for 2 hours.
+              </p>
+            </button>
           </div>
         )}
       </div>
 
+      {/* Chat Thread */}
+      <div className="flex-1 flex flex-col">
+        {activeConv && <ChatThread conv={activeConv} tier={tier} />}
+      </div>
     </div>
   );
 }

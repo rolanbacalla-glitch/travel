@@ -12,16 +12,16 @@ export function StatCards() {
           <Link
             key={i}
             href={stat.href}
-            className="bg-white/90 backdrop-blur-md p-6 md:p-8 rounded-2xl text-center border border-slate/10 shadow-sm hover:shadow-lg hover:bg-white transition-all duration-300 flex flex-col justify-center group focus-ring"
+            className="bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-2xl text-center border border-slate/10 shadow-sm hover:shadow-md hover:bg-white transition-all duration-300 flex flex-col justify-start items-center group focus-ring"
           >
-            <div className="text-3xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate mb-2 group-hover:text-ocean transition-colors duration-300">
+            <div className="text-3xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate mb-2 transition-colors duration-300">
               {stat.value}
             </div>
-            <div className="text-xs uppercase tracking-wider font-bold text-ocean mb-1.5">
+            <div className="text-xs uppercase tracking-wider font-bold text-slate/75 mb-2">
               {stat.label}
             </div>
             {stat.description && (
-              <p className="text-xs text-slate/70 leading-relaxed font-medium max-w-[220px] mx-auto mt-1">
+              <p className="text-xs text-slate/65 leading-relaxed font-medium max-w-[220px] mx-auto">
                 {stat.description}
               </p>
             )}

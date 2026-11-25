@@ -61,16 +61,11 @@ export function FeaturesSection() {
                   f.title === "Solo-First Matching" && "scroll-mt-32"
                 )}
               >
-                <div
-                  className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105",
-                    f.color
-                  )}
-                >
-                  <f.icon className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-xl bg-white/10 text-white border border-white/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                  <f.icon className="w-5 h-5" strokeWidth={1.75} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold mb-1.5 group-hover:text-sunset transition-colors">
+                  <h3 className="text-lg font-bold mb-1.5 group-hover:text-white transition-colors">
                     {f.title}
                   </h3>
                   <p className="text-white/75 text-sm leading-relaxed max-w-sm">

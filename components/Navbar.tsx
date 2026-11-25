@@ -99,16 +99,17 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
               </Link>
             </>
           ) : (
-            <>
+            <div className="flex items-center gap-5">
               <Link
                 href="/dashboard"
-                className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 rounded-full transition-colors duration-200 focus-ring cursor-pointer"
+                className="text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 focus-ring rounded-sm cursor-pointer"
               >
-                Live Demo
+                Explore App
               </Link>
+              <span className="h-4 w-px bg-white/20" aria-hidden="true" />
               <Link
                 href="/login"
-                className="px-4 py-2 text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-full cursor-pointer"
+                className="text-sm font-medium text-white/85 hover:text-white transition-colors duration-200 focus-ring rounded-sm cursor-pointer"
               >
                 Sign In
               </Link>
@@ -118,7 +119,7 @@ export function Navbar({ isScrolled, navLinks, onOpenMobileMenu }: NavbarProps) 
               >
                 Join Free
               </Link>
-            </>
+            </div>
           )}
         </div>
 

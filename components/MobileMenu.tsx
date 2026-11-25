@@ -106,26 +106,28 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
         ) : (
           <>
             <Link
-              href="/dashboard"
-              onClick={onClose}
-              className="w-full py-4 bg-white/10 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 transition-colors duration-200 focus-ring-white text-center"
-            >
-              Explore Live Demo
-            </Link>
-            <Link
-              href="/login"
-              onClick={onClose}
-              className="w-full py-4 border border-white/20 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
-            >
-              Sign In
-            </Link>
-            <Link
               href="/onboarding"
               onClick={onClose}
               className="w-full py-4 bg-sunset rounded-xl text-white font-semibold hover:bg-sunset-dark transition-colors duration-200 focus-ring-white text-center"
             >
               Join Free
             </Link>
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/dashboard"
+                onClick={onClose}
+                className="py-3.5 border border-white/20 rounded-xl text-white/90 text-sm font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
+              >
+                Explore App
+              </Link>
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="py-3.5 border border-white/20 rounded-xl text-white/90 text-sm font-semibold hover:bg-white/10 transition-colors duration-200 focus-ring-white text-center"
+              >
+                Sign In
+              </Link>
+            </div>
           </>
         )}
       </div>

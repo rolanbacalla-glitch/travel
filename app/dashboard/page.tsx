@@ -19,7 +19,6 @@ import {
   Zap,
   Compass,
   User,
-  Sparkles,
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
@@ -29,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { useMessagesStore } from "@/lib/stores/useMessages";
 import { useProfileStore } from "@/lib/stores/useProfile";
 import { useAuthContext } from "@/components/providers/AuthProvider";
+import { UserTier, getTierPermissions } from "@/lib/access";
 
 // Components
 import { TravelCrewHub } from "@/components/dashboard/TravelCrewHub";
@@ -38,33 +38,32 @@ import { MemoriesView } from "@/components/dashboard/MemoriesView";
 import { CommunityFeed } from "@/components/dashboard/CommunityFeed";
 import MessagesView from "@/components/messages/MessagesView";
 import { ProfileSettings } from "@/components/dashboard/ProfileSettings";
-import { KINS, Kin } from "@/lib/data/kins";
-
-/* ─────────────────────────────────────────────────────────── */
-/* Types                                                         */
-/* ─────────────────────────────────────────────────────────── */
-
-// KINS imported from @/lib/data/kins
-
-/* ─────────────────────────────────────────────────────────── */
-/* Page                                                         */
-/* ─────────────────────────────────────────────────────────── */
+import { KINS } from "@/lib/data/kins";
 
 type DashboardView = "explore" | "plans" | "messages" | "safety" | "memories" | "profile";
 type ExploreSubTab = "crew" | "pulse";
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
-  const isGuest = !user;
+  const isGuestAccount = !user;
+
+  // For guests exploring the portfolio/demo, allow switching between Guest, Member, and Verified Kin
+  const [previewTier, setPreviewTier] = useState<UserTier>("guest");
   const [activeTab, setActiveTab] = useState<DashboardView>("explore");
   const [exploreSubTab, setExploreSubTab] = useState<ExploreSubTab>("crew");
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const profile = useProfileStore();
-  // Stores the conversation id to open when jumping from a Kin card → Messages
-  const [openConvId, setOpenConvId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const store = useMessagesStore();
+
+  const effectiveTier: UserTier = isGuestAccount
+    ? previewTier
+    : profile.isVerified
+    ? "verified"
+    : "member";
+
+  const tierInfo = getTierPermissions(effectiveTier);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -83,22 +82,21 @@ export default function DashboardPage() {
       }
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const providerPhoto = user.providerData?.find((p) => p?.photoURL)?.photoURL;
-        const providerName = user.providerData?.find((p) => p?.displayName)?.displayName;
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        const providerPhoto = authUser.providerData?.find((p) => p?.photoURL)?.photoURL;
+        const providerName = authUser.providerData?.find((p) => p?.displayName)?.displayName;
         useProfileStore.getState().updateProfile({
-          name: user.displayName || providerName || user.email?.split("@")[0] || "Traveller",
-          avatar: user.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${user.uid}`,
-          username: user.email?.split("@")[0] || "wanderer",
+          name: authUser.displayName || providerName || authUser.email?.split("@")[0] || "Traveller",
+          avatar: authUser.photoURL || providerPhoto || `https://api.dicebear.com/7.x/notionists/png?seed=${authUser.uid}`,
+          username: authUser.email?.split("@")[0] || "wanderer",
         });
 
-        // Check Admin Status
-        if (user.email === "rolan.bacalla@gmail.com") {
+        if (authUser.email === "rolan.bacalla@gmail.com") {
           setIsAdmin(true);
         } else if (db && db.doc) {
           try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
+            const userDoc = await getDoc(doc(db, "users", authUser.uid));
             if (userDoc.exists() && userDoc.data()?.role === "admin") {
               setIsAdmin(true);
             }
@@ -157,38 +155,35 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row">
-
-      {/* ── Desktop Sidebar (Mindtrip-inspired slim rail) ── */}
+      {/* ── Desktop Sidebar ── */}
       <aside className="hidden md:flex w-64 bg-white border-r border-slate/10 flex-col p-6 space-y-8 fixed h-screen overflow-y-auto">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-xl font-bold text-slate tracking-tight">
             Travel <span className="text-sunset">Kin</span>
           </Link>
-          <span className="px-2 py-0.5 rounded-full bg-slate/5 text-xs font-bold uppercase tracking-wider text-slate/60">
+          <span className="px-2 py-0.5 rounded-full bg-slate/5 text-xs font-bold uppercase tracking-wider text-slate/65">
             SEA
           </span>
         </div>
 
-        <nav className="flex-1 space-y-2" aria-label="Primary navigation">
+        <nav className="flex-1 space-y-1.5" aria-label="Primary navigation">
           <SidebarItem
             active={activeTab === "explore"}
             onClick={() => handleTabChange("explore", exploreSubTab)}
             icon={Compass}
             label="Explore"
-            badge={exploreSubTab === "pulse" ? "Live" : undefined}
           />
           <SidebarItem
             active={activeTab === "plans"}
             onClick={() => handleTabChange("plans")}
             icon={Calendar}
-            label="Plans"
-            badge="Vote!"
+            label="Day Plan"
           />
           <SidebarItem
             active={activeTab === "messages"}
-            onClick={() => { setOpenConvId(null); handleTabChange("messages"); }}
+            onClick={() => handleTabChange("messages")}
             icon={MessageSquare}
-            label="Chat"
+            label="Messages"
             badge={totalUnread > 0 ? String(totalUnread) : undefined}
           />
           <SidebarItem
@@ -199,13 +194,13 @@ export default function DashboardPage() {
           />
         </nav>
 
-        <div className="pt-8 border-t border-slate/5 space-y-2">
+        <div className="pt-6 border-t border-slate/10 space-y-1.5">
           {isAdmin && (
             <Link
               href="/admin/destinations"
-              className="w-full px-5 py-3.5 rounded-xl flex items-center gap-3.5 font-bold text-sunset hover:bg-sunset/10 transition-all group"
+              className="w-full px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-slate hover:bg-slate/5 transition-all"
             >
-              <SlidersHorizontal className="w-5 h-5 group-hover:scale-105 transition-transform" strokeWidth={1.75} />
+              <SlidersHorizontal className="w-5 h-5 text-slate/70" strokeWidth={1.75} />
               <span className="text-sm tracking-tight">Admin Portal</span>
             </Link>
           )}
@@ -213,8 +208,7 @@ export default function DashboardPage() {
             active={activeTab === "memories"}
             onClick={() => handleTabChange("memories")}
             icon={Camera}
-            label="Memory Vault"
-            className={cn(activeTab === "memories" ? "bg-ocean text-white shadow-ocean/20" : "hover:text-ocean")}
+            label="Trip Photos"
           />
           <SidebarItem
             active={activeTab === "profile"}
@@ -222,18 +216,19 @@ export default function DashboardPage() {
             icon={SlidersHorizontal}
             label="Settings"
           />
-          {isGuest ? (
-            <div className="pt-2 space-y-2">
+
+          {isGuestAccount ? (
+            <div className="pt-3 space-y-2">
               <Link
                 href="/onboarding"
-                className="w-full px-5 py-3.5 rounded-xl bg-sunset text-white flex items-center justify-center gap-2 text-sm font-bold shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-sunset text-white flex items-center justify-center gap-2 text-sm font-bold shadow-sm hover:bg-sunset-dark transition-all"
               >
                 <UserPlus className="w-4 h-4" strokeWidth={2} />
                 <span>Join Free</span>
               </Link>
               <Link
                 href="/login"
-                className="w-full px-5 py-3 rounded-xl border border-slate/15 text-slate flex items-center justify-center gap-2 text-sm font-semibold hover:bg-slate/5 transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate/15 text-slate flex items-center justify-center gap-2 text-sm font-semibold hover:bg-slate/5 transition-all"
               >
                 <LogIn className="w-4 h-4" strokeWidth={1.75} />
                 <span>Sign In</span>
@@ -243,33 +238,58 @@ export default function DashboardPage() {
             <SidebarItem
               icon={LogOut}
               label="Log Out"
-              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={handleSignOut}
             />
           )}
         </div>
       </aside>
 
-      {/* Sidebar Spacer for Fixed Aside */}
+      {/* Sidebar Spacer */}
       <div className="hidden md:block w-64 flex-shrink-0" />
 
       {/* ── Main Content Area ── */}
       <main className="flex-1 min-h-screen">
-        {/* Guest Preview Banner */}
-        {isGuest && (
-          <div className="bg-slate text-white px-6 md:px-10 py-3 border-b border-white/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-white/90">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sunset/20 text-sunset font-bold text-xs uppercase tracking-wider shrink-0">
-                  <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />
-                  Guest Preview
+        {/* Guest Preview & Access Tier Bar (Light, Clean, Interactive for Demo) */}
+        {isGuestAccount ? (
+          <div className="bg-white text-slate px-6 md:px-10 py-3 border-b border-slate/10">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-slate/75">
+                <span className="font-bold text-slate">Preview Access Level:</span>
+                <div className="inline-flex items-center p-0.5 bg-slate/5 border border-slate/10 rounded-lg">
+                  {(
+                    [
+                      { id: "guest", label: "Guest" },
+                      { id: "member", label: "Standard Member" },
+                      { id: "verified", label: "Verified Kin" },
+                    ] as const
+                  ).map((role) => (
+                    <button
+                      key={role.id}
+                      type="button"
+                      onClick={() => setPreviewTier(role.id)}
+                      className={cn(
+                        "px-3 py-1 rounded-md text-xs font-bold transition-all",
+                        previewTier === role.id
+                          ? "bg-slate text-white shadow-sm"
+                          : "text-slate/70 hover:text-slate"
+                      )}
+                    >
+                      {role.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="hidden xl:inline text-slate/60">
+                  {previewTier === "guest" && "Browse freely. Sign up to message or vote."}
+                  {previewTier === "member" && "Can chat & vote. Verify ID for boat splits, editing & SOS."}
+                  {previewTier === "verified" && "Full Verified Kin access unlocked."}
                 </span>
-                <span>Explore crews, itineraries, chat &amp; safety tools freely—join free whenever you&rsquo;re ready.</span>
               </div>
+
               <div className="flex items-center gap-2.5 shrink-0">
                 <Link
                   href="/login"
-                  className="px-3.5 py-1.5 rounded-lg border border-white/20 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg border border-slate/15 text-xs font-semibold text-slate hover:bg-slate/5 transition-colors"
                 >
                   Sign In
                 </Link>
@@ -277,65 +297,100 @@ export default function DashboardPage() {
                   href="/onboarding"
                   className="px-4 py-1.5 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors inline-flex items-center gap-1.5"
                 >
-                  <span>Create Free Account</span>
+                  <span>Join Free</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
           </div>
+        ) : (
+          effectiveTier === "member" && (
+            <div className="bg-amber-50 text-amber-950 px-6 md:px-10 py-2.5 border-b border-amber-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>
+                    <strong>Standard Member:</strong> Verify your ID to unlock group plan editing, shared boat splits, exact meet-up pins, and emergency SOS alerts.
+                  </span>
+                </div>
+                <Link
+                  href="/verify"
+                  className="px-3.5 py-1.5 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0 w-fit"
+                >
+                  Verify ID Now
+                </Link>
+              </div>
+            </div>
+          )
         )}
 
-        {/* Compact Mindtrip / Airbnb-inspired Header */}
-        <header className="px-6 md:px-10 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/90 backdrop-blur-xl border-b border-slate/10 sticky top-0 z-20">
-          <div className="flex items-center gap-4">
+        {/* Header */}
+        <header className="px-6 md:px-10 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/95 backdrop-blur-md border-b border-slate/10 sticky top-0 z-20">
+          <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-xl md:text-2xl font-sans tracking-tight text-slate font-extrabold">
-                {isGuest ? "Explore Travel Kin" : `Welcome back, ${profile.name.split(" ")[0]}`}
-              </h1>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl md:text-2xl font-sans tracking-tight text-slate font-extrabold">
+                  {effectiveTier === "guest" ? "Explore Travel Kin" : `Welcome back, ${profile.name.split(" ")[0]}`}
+                </h1>
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border",
+                    effectiveTier === "verified"
+                      ? "bg-green-50 text-green-700 border-green-200"
+                      : effectiveTier === "member"
+                      ? "bg-amber-50 text-amber-800 border-amber-200"
+                      : "bg-slate/5 text-slate/70 border-slate/10"
+                  )}
+                >
+                  {effectiveTier === "verified" && <ShieldCheck className="w-3.5 h-3.5" />}
+                  {tierInfo.label}
+                </span>
+              </div>
               <p className="text-slate/65 text-xs font-medium">
-                12 verified Kins nearby · Siargao &amp; El Nido
+                12 ID-verified travellers nearby · Siargao &amp; El Nido
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
-            {/* Segmented Pill Context Bar (Mindtrip / Airbnb pattern) */}
-            <div className="hidden lg:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate shadow-sm">
+            <div className="hidden lg:flex items-center divide-x divide-slate/10 bg-[#F8F9FA] border border-slate/10 rounded-full px-2 py-1 text-xs font-semibold text-slate">
               <span className="px-3 py-1">Siargao</span>
-              <span className="px-3 py-1 text-slate/70">Today</span>
-              <span className="px-3 py-1 text-ocean font-bold tabular-nums">8 Kins</span>
+              <span className="px-3 py-1 text-slate/65">Today</span>
+              <span className="px-3 py-1 text-slate font-bold tabular-nums">8 Travellers</span>
             </div>
 
             <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/70" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/60" />
               <input
-                placeholder="Search travellers or spots..."
-                className="py-2.5 pl-10 pr-4 w-52 md:w-64 bg-[#F8F9FA] border border-slate/10 rounded-full text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
+                placeholder="Search travellers or places..."
+                className="py-2 pl-10 pr-4 w-52 md:w-60 bg-[#F8F9FA] border border-slate/10 rounded-full text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate/15 transition-all"
               />
             </div>
+
             <button
               aria-label="Notifications"
-              className="p-2.5 bg-white border border-slate/10 rounded-full shadow-sm hover:bg-slate/5 transition-all"
+              className="p-2.5 bg-white border border-slate/10 rounded-full hover:bg-slate/5 transition-all"
             >
-              <Bell className="w-4 h-4 text-slate/60" />
+              <Bell className="w-4 h-4 text-slate/70" />
             </button>
+
             <div className="relative">
               <button
                 onClick={() => setIsAccountMenuOpen((prev) => !prev)}
                 aria-label="Account menu"
                 aria-expanded={isAccountMenuOpen}
                 className={cn(
-                  "w-12 h-12 relative rounded-2xl overflow-hidden border transition-all active:scale-95 shadow-sm flex-shrink-0",
+                  "w-10 h-10 relative rounded-xl overflow-hidden border transition-all flex-shrink-0",
                   activeTab === "profile" || activeTab === "memories" || isAccountMenuOpen
                     ? "border-sunset ring-2 ring-sunset/20"
-                    : "border-slate/5 hover:border-slate/20"
+                    : "border-slate/15 hover:border-slate/30"
                 )}
               >
                 <Image
                   src={profile.avatar}
                   alt="Profile"
                   fill
-                  sizes="48px"
+                  sizes="40px"
                   referrerPolicy="no-referrer"
                   unoptimized
                   className="object-cover"
@@ -351,43 +406,43 @@ export default function DashboardPage() {
                     transition={{ duration: 0.15 }}
                     className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate/10 p-2 z-40"
                   >
-                    <div className="px-3 py-2 border-b border-slate/5 mb-1">
+                    <div className="px-3 py-2 border-b border-slate/10 mb-1">
                       <p className="text-sm font-bold text-slate truncate">
-                        {isGuest ? "Guest Explorer" : profile.name}
+                        {effectiveTier === "guest" ? "Guest Explorer" : profile.name}
                       </p>
-                      <p className="text-xs text-slate/70 truncate">
-                        {isGuest ? "Previewing live app" : `@${profile.username}`}
+                      <p className="text-xs text-slate/65 truncate">
+                        {tierInfo.label}
                       </p>
                     </div>
                     <button
                       onClick={() => handleTabChange("memories")}
                       className={cn(
                         "w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold transition-colors",
-                        activeTab === "memories" ? "bg-ocean/10 text-ocean" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
+                        activeTab === "memories" ? "bg-slate/5 text-slate" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
                       )}
                     >
                       <Camera className="w-4 h-4" strokeWidth={1.75} />
-                      Memory Vault
+                      Trip Photos
                     </button>
                     <button
                       onClick={() => handleTabChange("profile")}
                       className={cn(
                         "w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold transition-colors",
-                        activeTab === "profile" ? "bg-sunset/10 text-sunset" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
+                        activeTab === "profile" ? "bg-slate/5 text-slate" : "text-slate/70 hover:bg-slate/5 hover:text-slate"
                       )}
                     >
                       <User className="w-4 h-4" strokeWidth={1.75} />
                       Profile &amp; Settings
                     </button>
-                    <div className="h-px bg-slate/5 my-1" />
-                    {isGuest ? (
+                    <div className="h-px bg-slate/10 my-1" />
+                    {isGuestAccount ? (
                       <div className="space-y-1">
                         <Link
                           href="/onboarding"
                           className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-bold text-sunset hover:bg-sunset/10 transition-colors"
                         >
                           <UserPlus className="w-4 h-4" strokeWidth={1.75} />
-                          Create Free Account
+                          Join Free
                         </Link>
                         <Link
                           href="/login"
@@ -400,7 +455,7 @@ export default function DashboardPage() {
                     ) : (
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                        className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
                       >
                         <LogOut className="w-4 h-4" strokeWidth={1.75} />
                         Log Out
@@ -414,50 +469,51 @@ export default function DashboardPage() {
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-6 md:p-12">
+        <div className="p-6 md:p-10">
           <AnimatePresence mode="wait">
             {activeTab === "explore" && (
               <motion.div
                 key="explore"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.02 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className="space-y-8"
               >
-                {/* Sub-navigation for Explore: Crew Hub vs Pulse Feed */}
-                <div className="inline-flex items-center p-1.5 bg-white border border-slate/10 rounded-2xl shadow-sm">
+                {/* Sub-navigation */}
+                <div className="inline-flex items-center p-1 bg-white border border-slate/10 rounded-xl shadow-sm">
                   <button
+                    type="button"
                     onClick={() => handleTabChange("explore", "crew")}
                     className={cn(
-                      "px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all",
+                      "px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all",
                       exploreSubTab === "crew"
-                        ? "bg-slate text-white shadow-md"
-                        : "text-slate/60 hover:text-slate"
+                        ? "bg-slate text-white"
+                        : "text-slate/65 hover:text-slate"
                     )}
                   >
-                    <Users className="w-4 h-4" />
-                    Crew Hub
+                    <Users className="w-4 h-4" strokeWidth={1.75} />
+                    Travellers
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleTabChange("explore", "pulse")}
                     className={cn(
-                      "px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all",
+                      "px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all",
                       exploreSubTab === "pulse"
-                        ? "bg-slate text-white shadow-md"
-                        : "text-slate/60 hover:text-slate"
+                        ? "bg-slate text-white"
+                        : "text-slate/65 hover:text-slate"
                     )}
                   >
-                    <Zap className="w-4 h-4" />
-                    Local Updates
-                    <span className="px-1.5 py-0.5 bg-sunset text-white text-xs rounded-md font-bold">Live</span>
+                    <Zap className="w-4 h-4" strokeWidth={1.75} />
+                    Group Board
                   </button>
                 </div>
 
                 {exploreSubTab === "crew" ? (
-                  <TravelCrewHub kins={KINS} onChat={goToChat} />
+                  <TravelCrewHub kins={KINS} onChat={goToChat} tier={effectiveTier} />
                 ) : (
-                  <CommunityFeed />
+                  <CommunityFeed tier={effectiveTier} />
                 )}
               </motion.div>
             )}
@@ -470,66 +526,66 @@ export default function DashboardPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <ItineraryView />
+                <ItineraryView tier={effectiveTier} />
               </motion.div>
             )}
 
             {activeTab === "safety" && (
               <motion.div
                 key="safety"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <SafetyDashboard />
+                <SafetyDashboard tier={effectiveTier} />
               </motion.div>
             )}
 
             {activeTab === "messages" && (
               <motion.div
                 key="messages"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <MessagesView onVerify={() => handleTabChange("safety")} />
+                <MessagesView onVerify={() => handleTabChange("safety")} tier={effectiveTier} />
               </motion.div>
             )}
 
             {activeTab === "memories" && (
               <motion.div
                 key="memories"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <MemoriesView />
+                <MemoriesView tier={effectiveTier} />
               </motion.div>
             )}
 
             {activeTab === "profile" && (
               <motion.div
                 key="profile"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <ProfileSettings />
+                <ProfileSettings tier={effectiveTier} />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </main>
 
-      {/* ── Mobile Navigation (4 Core Tabs) ── */}
-      <nav aria-label="Mobile navigation" className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/5 flex items-center justify-around px-4 z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+      {/* ── Mobile Navigation ── */}
+      <nav aria-label="Mobile navigation" className="md:hidden sticky bottom-0 left-0 right-0 h-20 bg-white border-t border-slate/10 flex items-center justify-around px-4 z-30">
         <MobileNavItem active={activeTab === "explore"} onClick={() => handleTabChange("explore", exploreSubTab)} icon={Compass} label="Explore" />
-        <MobileNavItem active={activeTab === "plans"} onClick={() => handleTabChange("plans")} icon={Calendar} label="Plans" />
-        <MobileNavItem active={activeTab === "messages"} onClick={() => { setOpenConvId(null); handleTabChange("messages"); }} icon={MessageSquare} label="Chat" badge={totalUnread} />
+        <MobileNavItem active={activeTab === "plans"} onClick={() => handleTabChange("plans")} icon={Calendar} label="Day Plan" />
+        <MobileNavItem active={activeTab === "messages"} onClick={() => handleTabChange("messages")} icon={MessageSquare} label="Messages" badge={totalUnread} />
         <MobileNavItem active={activeTab === "safety"} onClick={() => handleTabChange("safety")} icon={ShieldCheck} label="Safety" />
       </nav>
     </div>
@@ -544,19 +600,25 @@ function SidebarItem({ icon: Icon, label, active, onClick, className, badge }: {
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
-        "w-full px-5 py-3.5 rounded-xl flex items-center justify-between gap-3.5 font-bold transition-all group",
-        active ? "bg-slate text-white shadow-lg shadow-slate/15" : "text-slate/65 hover:bg-slate/5 hover:text-slate",
+        "w-full px-4 py-3 rounded-xl flex items-center justify-between gap-3 font-bold transition-all group",
+        active ? "bg-slate text-white shadow-sm" : "text-slate/70 hover:bg-slate/5 hover:text-slate",
         className
       )}
     >
-      <div className="flex items-center gap-3.5">
-        <Icon className={cn("w-5 h-5", active ? "text-sunset" : "group-hover:text-sunset transition-colors")} strokeWidth={1.75} />
+      <div className="flex items-center gap-3">
+        <Icon className={cn("w-5 h-5", active ? "text-white" : "text-slate/65 group-hover:text-slate")} strokeWidth={1.75} />
         <span className="text-sm tracking-tight">{label}</span>
       </div>
       {badge && (
-        <span className="px-2 py-0.5 bg-sunset text-white text-xs rounded-lg font-bold tabular-nums">{badge}</span>
+        <span className={cn(
+          "px-2 py-0.5 text-xs rounded-md font-bold tabular-nums",
+          active ? "bg-white/20 text-white" : "bg-slate/10 text-slate"
+        )}>
+          {badge}
+        </span>
       )}
     </button>
   );
@@ -567,21 +629,22 @@ function MobileNavItem({ icon: Icon, label, active, onClick, badge }: {
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
         "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative",
-        active ? "text-sunset" : "text-slate/70"
+        active ? "text-sunset" : "text-slate/65"
       )}
     >
       <div className="relative">
         <Icon className="w-5 h-5" strokeWidth={1.75} />
         {badge && (
-          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-sunset text-white text-[11px] font-bold tabular-nums flex items-center justify-center">
+          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-sunset text-white text-xs font-bold tabular-nums flex items-center justify-center">
             {badge}
           </span>
         )}
       </div>
-      <span className="text-xs font-bold tracking-wide">{label}</span>
+      <span className="text-xs font-bold">{label}</span>
     </button>
   );
 }

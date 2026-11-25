@@ -1,14 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  User, 
-  Mail, 
-  MapPin, 
-  Heart, 
-  Camera, 
-  Check, 
-  Save, 
+import {
+  Camera,
+  Check,
+  Save,
   RotateCcw,
   Sparkles,
   ShieldCheck,
@@ -18,11 +14,9 @@ import {
   Backpack,
   Leaf,
   Laptop,
-  Compass,
-  Utensils,
-  Waves,
-  Sun
+  Lock
 } from "lucide-react";
+import { TH, VN, ID, PH } from "country-flag-icons/react/3x2";
 import { useProfileStore } from "@/lib/stores/useProfile";
 import { useMessagesStore } from "@/lib/stores/useMessages";
 import { logFirebaseEvent } from "@/lib/firebase";
@@ -30,48 +24,48 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { UserTier, getTierPermissions } from "@/lib/access";
 
-// Preset avatars user can choose from
 const AVATAR_PRESETS = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600", // Mia (default)
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=100&w=1600",
   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=100&w=1600",
   "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=100&w=1600",
   "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&q=100&w=1600",
 ];
 
 const STYLES_LIST = [
-  { id: "slow", label: "Slow Wanderer", icon: Coffee },
-  { id: "fast", label: "Fast-Paced Action", icon: Zap },
-  { id: "budget", label: "Budget Backpacker", icon: Backpack },
-  { id: "luxury", label: "Luxury Nomad", icon: Sparkles },
-  { id: "eco", label: "Eco Adventurer", icon: Leaf },
-  { id: "remote", label: "Remote Pro", icon: Laptop },
+  { id: "slow", label: "Slow Traveller", icon: Coffee },
+  { id: "fast", label: "Active Explorer", icon: Zap },
+  { id: "budget", label: "Budget Friendly", icon: Backpack },
+  { id: "luxury", label: "Comfort & Stays", icon: Sparkles },
+  { id: "eco", label: "Nature Lover", icon: Leaf },
+  { id: "remote", label: "Remote Worker", icon: Laptop },
 ];
 
 const VIBES_LIST = [
-  "Introvert",
-  "Extrovert",
+  "Quiet & Relaxed",
+  "Social & Outgoing",
   "Night Owl",
-  "Early Bird",
-  "Foodie",
-  "History Buff",
-  "Action Junkie",
-  "Zen Seeker",
-  "Photographer",
-  "Culture Vulture"
+  "Early Riser",
+  "Food Lover",
+  "History & Culture",
+  "Adventure Sports",
+  "Wellness & Yoga",
+  "Photography",
+  "Local Markets"
 ];
 
 const DESTINATIONS_LIST = [
-  { name: "Thailand", icon: Compass },
-  { name: "Vietnam", icon: Utensils },
-  { name: "Indonesia", icon: Waves },
-  { name: "Philippines", icon: Sun }
+  { name: "Thailand", Flag: TH },
+  { name: "Vietnam", Flag: VN },
+  { name: "Indonesia", Flag: ID },
+  { name: "Philippines", Flag: PH }
 ];
 
-export function ProfileSettings() {
+export function ProfileSettings({ tier = "verified" }: { tier?: UserTier }) {
   const profile = useProfileStore();
+  const perms = getTierPermissions(tier);
 
-  // Local Form States
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
@@ -84,6 +78,7 @@ export function ProfileSettings() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!perms.canEditProfile) return;
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -97,9 +92,8 @@ export function ProfileSettings() {
     }
   };
 
-  const isIdentityChanged = name !== profile.name || avatar !== profile.avatar;
+  const isIdentityChanged = perms.canEditProfile && (name !== profile.name || avatar !== profile.avatar);
 
-  // Sync with store on mount
   useEffect(() => {
     setName(profile.name);
     setUsername(profile.username);
@@ -111,31 +105,40 @@ export function ProfileSettings() {
   }, [profile]);
 
   const toggleStyle = (styleId: string) => {
-    setStyles(prev => 
-      prev.includes(styleId) 
-        ? prev.filter(id => id !== styleId) 
+    if (!perms.canEditProfile) return;
+    setStyles(prev =>
+      prev.includes(styleId)
+        ? prev.filter(id => id !== styleId)
         : [...prev, styleId]
     );
   };
 
   const toggleVibe = (vibeName: string) => {
-    setVibes(prev => 
-      prev.includes(vibeName) 
-        ? prev.filter(v => v !== vibeName) 
+    if (!perms.canEditProfile) return;
+    setVibes(prev =>
+      prev.includes(vibeName)
+        ? prev.filter(v => v !== vibeName)
         : [...prev, vibeName]
     );
   };
 
   const toggleDestination = (destName: string) => {
-    setDestinations(prev => 
-      prev.includes(destName) 
-        ? prev.filter(d => d !== destName) 
+    if (!perms.canEditProfile) return;
+    setDestinations(prev =>
+      prev.includes(destName)
+        ? prev.filter(d => d !== destName)
         : [...prev, destName]
     );
   };
 
   const handleSave = () => {
-    const isIdentityChanged = name !== profile.name || avatar !== profile.avatar;
+    if (!perms.canEditProfile) {
+      setToastMessage("Create a free account to save your profile.");
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    const identityModified = name !== profile.name || avatar !== profile.avatar;
 
     profile.updateProfile({
       name,
@@ -145,10 +148,10 @@ export function ProfileSettings() {
       styles,
       vibes,
       destinations,
-      isVerified: isIdentityChanged ? false : profile.isVerified
+      isVerified: identityModified ? false : profile.isVerified
     });
 
-    if (isIdentityChanged) {
+    if (identityModified) {
       useMessagesStore.getState().setVerified(false);
     }
 
@@ -156,127 +159,153 @@ export function ProfileSettings() {
       styles_count: styles.length,
       vibes_count: vibes.length,
       destinations_count: destinations.length,
-      verification_revoked: isIdentityChanged
+      verification_revoked: identityModified
     });
 
-    // Show toast
-    setToastMessage(isIdentityChanged ? "Profile saved. ID Re-verification required!" : "Profile saved successfully!");
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3000);
+    setToastMessage(identityModified ? "Profile saved. Please check your ID again." : "Profile saved.");
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
   const handleReset = () => {
+    if (!perms.canEditProfile) return;
     profile.resetProfile();
     logFirebaseEvent("profile_reset");
-    
     setToastMessage("Profile reset to defaults.");
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3000);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
+  const isVerifiedAccount = tier === "verified";
+
   return (
-    <div className="space-y-12 max-w-4xl mx-auto pb-24 relative">
-      
+    <div className="space-y-10 max-w-4xl mx-auto pb-24 relative">
       {/* ── Toast Notification ── */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            initial={{ opacity: 0, y: -40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-50 px-8 py-4 bg-slate text-white rounded-2xl shadow-2xl font-bold tracking-wide flex items-center gap-3 border border-white/10 backdrop-blur-md"
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-8 left-1/2 -translate-x-1/2 z-50 px-6 py-3.5 bg-slate text-white rounded-xl shadow-xl text-sm font-semibold flex items-center gap-3 border border-white/10"
           >
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-green-400" />
             {toastMessage}
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Guest Read-Only Callout */}
+      {tier === "guest" && (
+        <div className="p-5 bg-white border border-slate/15 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 rounded-xl bg-slate/5 text-slate shrink-0">
+              <Lock className="w-5 h-5" strokeWidth={1.75} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate">Previewing Sample Profile</p>
+              <p className="text-xs text-slate/65 font-medium mt-0.5">
+                Sign up for free to create your own profile, choose countries, and verify your ID.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/onboarding"
+            className="px-5 py-2.5 bg-sunset text-white text-xs font-bold rounded-full hover:bg-sunset-dark transition-colors shrink-0 text-center"
+          >
+            Create Free Account
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 text-sunset font-bold tracking-widest text-xs uppercase bg-sunset/5 rounded-full px-4 py-1.5 w-fit border border-sunset/10 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            Your Persona
-          </div>
-          <h2 className="text-4xl text-slate font-bold">Profile Settings</h2>
-          <p className="text-slate/60 font-medium">Update your bio and preferences to find matched travellers near you.</p>
+        <div className="space-y-1.5">
+          <p className="text-xs font-bold uppercase tracking-wider text-slate/60">Your Profile</p>
+          <h2 className="text-3xl text-slate font-bold">Profile Settings</h2>
+          <p className="text-sm text-slate/65 font-medium">
+            Update your intro and travel preferences so nearby travellers can get to know you.
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <button 
+          <button
+            type="button"
+            disabled={!perms.canEditProfile}
             onClick={handleReset}
-            className="flex items-center gap-2 px-6 py-3.5 bg-white text-slate/60 hover:text-slate border border-slate/5 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-sm transition-all hover:bg-slate/5 active:scale-95"
+            className="flex items-center gap-2 px-5 py-3 bg-white text-slate/70 hover:text-slate border border-slate/10 rounded-xl font-bold text-xs shadow-sm transition-all hover:bg-slate/5 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4" strokeWidth={1.75} />
             Reset
           </button>
-          <button 
+          <button
+            type="button"
+            disabled={!perms.canEditProfile}
             onClick={handleSave}
-            className="flex items-center gap-2 px-8 py-3.5 bg-sunset text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-6 py-3 bg-sunset text-white rounded-xl font-bold text-xs shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-4 h-4" strokeWidth={1.75} />
             Save Profile
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        {/* Left Side: Avatar & Bio */}
-        <div className="md:col-span-1 space-y-8">
-          
-          {/* Avatar Section */}
-          <div className="bg-white border border-slate/5 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group">
-            <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-sunset/10 group-hover:border-sunset/30 transition-all shadow-inner">
-              <Image 
-                src={avatar || AVATAR_PRESETS[0]} 
-                alt="Avatar" 
-                fill 
-                sizes="144px"
+        {/* Left Side: Avatar & Verification Status */}
+        <div className="md:col-span-1 space-y-6">
+          <div className="bg-white border border-slate/10 rounded-2xl p-7 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-slate/10">
+              <Image
+                src={avatar || AVATAR_PRESETS[0]}
+                alt="Avatar"
+                fill
+                sizes="128px"
                 referrerPolicy="no-referrer"
                 unoptimized
                 className="object-cover"
               />
-              <button 
-                onClick={() => setShowAvatarSelector(!showAvatarSelector)}
-                className="absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Camera className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <div className="mt-5 text-center">
-              <div className="flex items-center justify-center gap-1.5">
-                <h3 className="text-xl font-bold text-slate">{name || "Mia Reyes"}</h3>
-                {profile.isVerified && <ShieldCheck className="w-4.5 h-4.5 text-ocean" />}
-              </div>
-              <p className="text-xs font-semibold text-slate/65 mt-1">@{username || "wanderer_mia"}</p>
+              {perms.canEditProfile && (
+                <button
+                  type="button"
+                  onClick={() => setShowAvatarSelector(!showAvatarSelector)}
+                  className="absolute inset-0 bg-black/45 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Change profile photo"
+                >
+                  <Camera className="w-6 h-6" />
+                </button>
+              )}
             </div>
 
-            {/* Avatar Preset Selector & Custom Upload */}
+            <div className="mt-4 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <h3 className="text-lg font-bold text-slate">{tier === "guest" ? "Guest Explorer" : (name || "Mia Reyes")}</h3>
+                {isVerifiedAccount && <ShieldCheck className="w-4 h-4 text-green-600" strokeWidth={2} />}
+              </div>
+              <p className="text-xs font-medium text-slate/60 mt-0.5">
+                {tier === "guest" ? "Preview mode" : `@${username || "wanderer_mia"}`}
+              </p>
+            </div>
+
+            {/* Avatar Preset Selector */}
             <AnimatePresence>
               {showAvatarSelector && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col justify-center items-center z-10"
                 >
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate/65 mb-4">Select Avatar</p>
-                  <div className="flex gap-3 justify-center mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate/65 mb-4">Choose Photo</p>
+                  <div className="flex gap-2.5 justify-center mb-4">
                     {AVATAR_PRESETS.map((p, idx) => (
                       <button
+                        type="button"
                         key={idx}
                         onClick={() => {
                           setAvatar(p);
                           setShowAvatarSelector(false);
                         }}
                         className={cn(
-                          "relative w-12 h-12 rounded-full overflow-hidden border-2 transition-all active:scale-90",
-                          avatar === p ? "border-sunset scale-110 shadow-md" : "border-slate/10 hover:border-slate/30"
+                          "relative w-11 h-11 rounded-full overflow-hidden border-2 transition-all",
+                          avatar === p ? "border-sunset scale-105" : "border-slate/10 hover:border-slate/30"
                         )}
                       >
                         <Image src={p} alt="Preset Option" fill className="object-cover" />
@@ -284,21 +313,17 @@ export function ProfileSettings() {
                     ))}
                   </div>
 
-                  <label className="mb-4 flex flex-col items-center gap-1 cursor-pointer group/upload">
-                    <span className="px-4 py-2 border border-slate/10 rounded-2xl text-xs font-bold uppercase tracking-widest text-slate/60 hover:text-slate hover:bg-slate/5 transition-all">
-                      Upload Custom Photo
+                  <label className="mb-3 cursor-pointer">
+                    <span className="px-4 py-2 border border-slate/15 rounded-xl text-xs font-bold text-slate hover:bg-slate/5 transition-all block">
+                      Upload Photo
                     </span>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handlePhotoUpload} 
-                      className="hidden" 
-                    />
+                    <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
                   </label>
 
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => setShowAvatarSelector(false)}
-                    className="px-4 py-2 bg-slate/5 text-slate text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-slate/10 transition-colors"
+                    className="px-4 py-1.5 text-slate/65 text-xs font-semibold hover:text-slate"
                   >
                     Cancel
                   </button>
@@ -307,129 +332,148 @@ export function ProfileSettings() {
             </AnimatePresence>
           </div>
 
-          {/* Verification Card */}
-          {profile.isVerified ? (
-            <div className="bg-gradient-to-br from-ocean/5 to-ocean/10 border border-ocean/10 rounded-2xl p-8 shadow-sm text-center relative overflow-hidden group">
-              <div className="p-3 w-fit bg-ocean text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
-                <ShieldCheck className="w-5 h-5" />
+          {/* Account Tier & Verification Card */}
+          {isVerifiedAccount ? (
+            <div className="bg-white border border-slate/10 rounded-2xl p-6 shadow-sm space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-green-50 text-green-700 rounded-xl">
+                  <ShieldCheck className="w-5 h-5" strokeWidth={2} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate">Verified Kin</h4>
+                  <p className="text-xs text-green-700 font-semibold">ID Confirmed · Full Access</p>
+                </div>
               </div>
-              <h4 className="text-lg font-bold text-slate">Passport Verified</h4>
-              <p className="text-slate/60 text-xs font-semibold mt-1">Identity checked on May 20, 2026</p>
-              <div className="mt-4 px-3 py-1 bg-white/60 border border-ocean/10 rounded-full text-xs font-bold uppercase tracking-wider text-ocean w-fit mx-auto">
-                Level 3 Security Active
-              </div>
+              <ul className="text-xs text-slate/70 space-y-1.5 pt-2 border-t border-slate/10 font-medium">
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-green-600" /> Edit &amp; create shared group plans</li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-green-600" /> Join &amp; split boat or van trips</li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-green-600" /> Share exact 2-hour meet-up location</li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-green-600" /> Live emergency SOS alerts</li>
+              </ul>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/10 rounded-2xl p-8 shadow-sm text-center relative overflow-hidden group">
-              <div className="p-3 w-fit bg-amber-500 text-white rounded-2xl mx-auto shadow-md mb-4 group-hover:scale-105 transition-transform">
-                <ShieldCheck className="w-5 h-5" />
+            <div className="bg-white border border-amber-500/30 rounded-2xl p-6 shadow-sm space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-amber-50 text-amber-700 rounded-xl">
+                  <ShieldCheck className="w-5 h-5" strokeWidth={2} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate">
+                    {tier === "guest" ? "Guest Access" : "Standard Member"}
+                  </h4>
+                  <p className="text-xs text-amber-700 font-semibold">ID Not Verified Yet</p>
+                </div>
               </div>
-              <h4 className="text-lg font-bold text-slate">Verification Required</h4>
-              <p className="text-slate/60 text-xs font-semibold mt-1">Please verify your new identity details</p>
+              <p className="text-xs text-slate/65 leading-relaxed font-medium">
+                Verify your ID to unlock group trip editing, shared boat splits, exact meet-up pins, and emergency SOS alerts.
+              </p>
               <Link
-                href="/verify"
-                className="mt-4 block w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 text-center cursor-pointer"
+                href={tier === "guest" ? "/onboarding" : "/verify"}
+                className="block w-full py-2.5 bg-sunset hover:bg-sunset-dark text-white font-bold rounded-xl text-xs transition-all text-center"
               >
-                Verify with New ID
+                {tier === "guest" ? "Sign Up & Verify ID" : "Verify My ID"}
               </Link>
             </div>
           )}
         </div>
 
         {/* Right Side: Settings Fields */}
-        <div className="md:col-span-2 space-y-8">
-          
-          {/* Section: Basic Info */}
-          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
-            <h3 className="text-lg font-bold text-slate border-b border-slate/5 pb-4">Basic Information</h3>
-            
-            {/* Warning Banner */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Basic Info */}
+          <div className="bg-white border border-slate/10 rounded-2xl p-7 shadow-sm space-y-5">
+            <h3 className="text-base font-bold text-slate border-b border-slate/10 pb-3.5">Basic Information</h3>
+
             <AnimatePresence>
               {isIdentityChanged && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-5 bg-amber-500/10 border border-amber-500/20 text-amber-800 rounded-2xl space-y-2 text-sm font-semibold overflow-hidden"
+                  className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl space-y-1 text-xs font-medium overflow-hidden"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 font-bold">
                     <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" strokeWidth={2} />
-                    <span className="font-bold">Identity Change Detected</span>
+                    <span>Name or Photo Changed</span>
                   </div>
-                  <p className="text-xs text-amber-900/80 leading-relaxed font-medium">
-                    Changing your Legal Name or Profile Photo will revoke your Passport Verified status. You will need to submit a new ID matching the updated details to recover your verified badge.
+                  <p className="text-amber-900/80 leading-relaxed">
+                    If you change your name or profile photo, you will need to check your ID again to keep your Verified Kin badge.
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Legal Name</label>
-                <input 
-                  type="text" 
-                  value={name} 
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Full Name</label>
+                <input
+                  type="text"
+                  disabled={!perms.canEditProfile}
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full p-4 pl-5 bg-[#F9F8F6] border border-slate/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm"
+                  className="w-full p-3.5 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm disabled:opacity-60"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Username</label>
                 <div className="relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/65 font-bold text-sm">@</span>
-                  <input 
-                    type="text" 
-                    value={username} 
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate/60 font-bold text-sm">@</span>
+                  <input
+                    type="text"
+                    disabled={!perms.canEditProfile}
+                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full p-4 pl-10 bg-[#F9F8F6] border border-slate/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm"
+                    className="w-full p-3.5 pl-8 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm disabled:opacity-60"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label className="text-xs uppercase font-bold tracking-wider text-slate/65 ml-1">Short Bio</label>
-              <textarea 
+              <textarea
                 rows={3}
-                value={bio} 
+                disabled={!perms.canEditProfile}
+                value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full p-4 pl-5 bg-[#F9F8F6] border border-slate/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm resize-none"
+                className="w-full p-3.5 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/20 transition-all font-medium text-slate text-sm resize-none disabled:opacity-60"
               />
             </div>
           </div>
 
-          {/* Section: Travel Style */}
-          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
-            <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate">Travel Style</h3>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+          {/* Travel Style */}
+          <div className="bg-white border border-slate/10 rounded-2xl p-7 shadow-sm space-y-5">
+            <div className="border-b border-slate/10 pb-3.5 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate">Travel Style</h3>
+              <span className="text-xs font-semibold text-slate/60">Choose all that fit</span>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
               {STYLES_LIST.map((style) => {
                 const isActive = styles.includes(style.id);
                 const StyleIcon = style.icon;
                 return (
                   <button
+                    type="button"
                     key={style.id}
+                    disabled={!perms.canEditProfile}
                     onClick={() => toggleStyle(style.id)}
                     className={cn(
-                      "p-5 border rounded-2xl text-center transition-all group active:scale-95 relative flex flex-col items-center",
+                      "p-4 border rounded-xl text-center transition-all group relative flex flex-col items-center disabled:opacity-60",
                       isActive
-                        ? "border-sunset bg-sunset/5 text-sunset scale-[1.02] shadow-sm font-bold"
-                        : "border-slate/10 hover:border-sunset/30 text-slate/70 hover:text-slate hover:bg-slate/5"
+                        ? "border-sunset bg-sunset/[0.04] text-slate shadow-sm font-bold"
+                        : "border-slate/10 hover:border-slate/25 text-slate/70 hover:text-slate hover:bg-[#F9F8F6]"
                     )}
                   >
                     <div className={cn(
-                      "w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 transition-all",
-                      isActive ? "bg-sunset text-white shadow-sm" : "bg-[#F9F8F6] text-slate/70 group-hover:text-sunset"
+                      "w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 transition-colors",
+                      isActive ? "bg-sunset text-white" : "bg-slate/5 text-slate/70 group-hover:text-slate"
                     )}>
                       <StyleIcon className="w-5 h-5" strokeWidth={1.75} />
                     </div>
-                    <span className="text-xs font-bold uppercase tracking-wider block leading-tight">{style.label}</span>
+                    <span className="text-xs font-bold leading-tight">{style.label}</span>
                     {isActive && (
                       <span className="absolute top-2.5 right-2.5 bg-sunset text-white p-0.5 rounded-full">
-                        <Check className="w-3 h-3" />
+                        <Check className="w-3 h-3" strokeWidth={2.5} />
                       </span>
                     )}
                   </button>
@@ -438,25 +482,27 @@ export function ProfileSettings() {
             </div>
           </div>
 
-          {/* Section: Vibes */}
-          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
-            <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate">Personal Vibes</h3>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+          {/* Interests */}
+          <div className="bg-white border border-slate/10 rounded-2xl p-7 shadow-sm space-y-5">
+            <div className="border-b border-slate/10 pb-3.5 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate">Your Interests</h3>
+              <span className="text-xs font-semibold text-slate/60">Choose multiple</span>
             </div>
-            
-            <div className="flex flex-wrap gap-2.5">
+
+            <div className="flex flex-wrap gap-2">
               {VIBES_LIST.map((vibe) => {
                 const isActive = vibes.includes(vibe);
                 return (
                   <button
+                    type="button"
                     key={vibe}
+                    disabled={!perms.canEditProfile}
                     onClick={() => toggleVibe(vibe)}
                     className={cn(
-                      "px-5 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all border",
+                      "px-4 py-2 rounded-full text-xs font-bold transition-all border disabled:opacity-60",
                       isActive
-                        ? "bg-sunset text-white border-sunset shadow-md shadow-sunset/10 scale-105"
-                        : "bg-[#F9F8F6] text-slate/60 border-slate/5 hover:border-sunset/30 hover:text-slate"
+                        ? "bg-slate text-white border-slate"
+                        : "bg-[#F9F8F6] text-slate/70 border-slate/10 hover:border-slate/25 hover:text-slate"
                     )}
                   >
                     {vibe}
@@ -466,38 +512,36 @@ export function ProfileSettings() {
             </div>
           </div>
 
-          {/* Section: Main Destinations */}
-          <div className="bg-white border border-slate/5 rounded-2xl p-8 md:p-10 shadow-sm space-y-6">
-            <div className="border-b border-slate/5 pb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate">Main Destinations</h3>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate/65 bg-[#F9F8F6] px-3 py-1 rounded-lg">Select Multiple</span>
+          {/* Main Destinations with Real Country Flags */}
+          <div className="bg-white border border-slate/10 rounded-2xl p-7 shadow-sm space-y-5">
+            <div className="border-b border-slate/10 pb-3.5 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate">Countries You Want to Visit</h3>
+              <span className="text-xs font-semibold text-slate/60">Choose multiple</span>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              {DESTINATIONS_LIST.map((dest) => {
-                const isActive = destinations.includes(dest.name);
-                const DestIcon = dest.icon;
+
+            <div className="grid grid-cols-2 gap-3.5">
+              {DESTINATIONS_LIST.map(({ name: destName, Flag }) => {
+                const isActive = destinations.includes(destName);
                 return (
                   <button
-                    key={dest.name}
-                    onClick={() => toggleDestination(dest.name)}
+                    type="button"
+                    key={destName}
+                    disabled={!perms.canEditProfile}
+                    onClick={() => toggleDestination(destName)}
                     className={cn(
-                      "p-4 border rounded-2xl flex items-center gap-3.5 transition-all font-bold group relative active:scale-95",
+                      "p-4 border rounded-xl flex items-center gap-3.5 transition-all font-bold group relative disabled:opacity-60",
                       isActive
-                        ? "bg-sunset/5 border-sunset text-slate scale-[1.02] shadow-sm"
-                        : "border-slate/10 text-slate/70 hover:text-slate hover:bg-slate/5"
+                        ? "bg-sunset/[0.04] border-sunset text-slate shadow-sm"
+                        : "border-slate/10 text-slate/75 hover:text-slate hover:bg-[#F9F8F6]"
                     )}
                   >
-                    <div className={cn(
-                      "w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105",
-                      isActive ? "bg-sunset text-white" : "bg-[#F9F8F6] text-slate/70 border border-slate/5 group-hover:text-sunset"
-                    )}>
-                      <DestIcon className="w-5 h-5" strokeWidth={1.75} />
+                    <div className="w-10 h-7 rounded-md overflow-hidden border border-slate/10 shadow-sm shrink-0 bg-white">
+                      <Flag title={destName} className="w-full h-full object-cover" />
                     </div>
-                    <span className="text-sm font-semibold">{dest.name}</span>
+                    <span className="text-sm font-bold text-slate">{destName}</span>
                     {isActive && (
-                      <span className="absolute right-4 bg-sunset text-white p-0.5 rounded-full">
-                        <Check className="w-3 h-3" />
+                      <span className="absolute right-3.5 bg-sunset text-white p-0.5 rounded-full">
+                        <Check className="w-3 h-3" strokeWidth={2.5} />
                       </span>
                     )}
                   </button>
@@ -505,11 +549,8 @@ export function ProfileSettings() {
               })}
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

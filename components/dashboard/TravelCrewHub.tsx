@@ -4,42 +4,60 @@ import React, { useState, useEffect } from "react";
 import {
   Users,
   Search,
-  Filter,
   MapPin,
   Star,
-  TrendingUp,
   Waves,
-  Radar,
+  Compass,
   Navigation,
   ShieldCheck,
   Heart,
   Calendar,
+  ArrowRight,
+  Lock
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Kin } from "@/lib/data/kins";
 import { VibeConsensus } from "@/components/dashboard/VibeConsensus";
+import { UserTier, getTierPermissions } from "@/lib/access";
 
 const HUBS = [
-  { id: "all", label: "All Island Hubs" },
-  { id: "siargao", label: "Siargao Island" },
-  { id: "el-nido", label: "El Nido, Palawan" },
+  { id: "all", label: "All Islands" },
+  { id: "siargao", label: "Siargao" },
+  { id: "el-nido", label: "El Nido" },
   { id: "cebu", label: "Cebu & Moalboal" },
-  { id: "coron", label: "Coron, Palawan" },
+  { id: "coron", label: "Coron" },
 ] as const;
+
+const MORE_HUBS_DIRECTORY = [
+  { id: "siargao", name: "Siargao Island", country: "Philippines", activeCount: 38, highlight: "Surf & lagoons" },
+  { id: "el-nido", name: "El Nido, Palawan", country: "Philippines", activeCount: 29, highlight: "Island boat trips" },
+  { id: "cebu", name: "Moalboal, Cebu", country: "Philippines", activeCount: 24, highlight: "Reef diving & waterfalls" },
+  { id: "coron", name: "Coron, Palawan", country: "Philippines", activeCount: 19, highlight: "Clear lakes & coral" },
+];
+
+type AvailabilityFilter = "all" | "online" | "away_offline";
 
 export function TravelCrewHub({
   kins,
   onChat,
+  tier = "verified",
 }: {
   kins: Kin[];
   onChat: (id: string) => void;
+  tier?: UserTier;
 }) {
+  const perms = getTierPermissions(tier);
+
   const [isScanning, setIsScanning] = useState(false);
-  const [hasScanned, setHasScanned] = useState(false);
+  const [hasScanned, setHasScanned] = useState(true);
   const [selectedHub, setSelectedHub] = useState<string>("all");
+  const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>("all");
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(false);
   const [likedIds, setLikedIds] = useState<Record<string, boolean>>({});
+  const [showHubDirectory, setShowHubDirectory] = useState<boolean>(false);
+  const [guestPrompt, setGuestPrompt] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -55,62 +73,95 @@ export function TravelCrewHub({
 
   const startScan = () => {
     setIsScanning(true);
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 5;
-      if (progress >= 100) {
-        clearInterval(interval);
-        setIsScanning(false);
-        setHasScanned(true);
-      }
-    }, 50);
+    setTimeout(() => {
+      setIsScanning(false);
+      setHasScanned(true);
+    }, 900);
   };
 
   const activeHubLabel =
-    HUBS.find((h) => h.id === selectedHub)?.label || "Siargao & Palawan Loop";
+    HUBS.find((h) => h.id === selectedHub)?.label || "All Islands";
+
+  const onlineCount = kins.filter((k) => k.status === "online").length;
+  const offlineOrAwayCount = kins.filter((k) => k.status !== "online").length;
 
   const filteredKins = kins.filter((k) => {
     const matchesHub = selectedHub === "all" || k.hubId === selectedHub;
     const matchesVerified = !verifiedOnly || k.verified;
-    return matchesHub && matchesVerified;
+    const matchesAvailability =
+      availabilityFilter === "all"
+        ? true
+        : availabilityFilter === "online"
+        ? k.status === "online"
+        : k.status !== "online";
+    return matchesHub && matchesVerified && matchesAvailability;
   });
 
-  const toggleLike = (id: string) => {
+  const handleLike = (id: string) => {
+    if (!perms.canBookmark) {
+      setGuestPrompt("Create a free account to save favourite travellers.");
+      setTimeout(() => setGuestPrompt(null), 3500);
+      return;
+    }
     setLikedIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const handleOpenChat = (kin: Kin) => {
+    if (!perms.canMessage) {
+      setGuestPrompt(`Sign in for free to message ${kin.name} and plan a trip together.`);
+      setTimeout(() => setGuestPrompt(null), 3500);
+      return;
+    }
+    onChat(kin.id);
+  };
+
   return (
-    <div className="space-y-16 relative">
+    <div className="space-y-10 relative">
+      {/* Inline Tier Notice */}
+      <AnimatePresence>
+        {guestPrompt && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[70] px-5 py-3 bg-slate text-white rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-3 border border-white/10"
+          >
+            <Lock className="w-4 h-4 text-sunset shrink-0" />
+            <span>{guestPrompt}</span>
+            <Link
+              href="/onboarding"
+              className="px-3 py-1 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0"
+            >
+              Join Free
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {!hasScanned && !isScanning && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center justify-center py-32 bg-white/60 backdrop-blur-xl border border-slate/5 rounded-3xl shadow-2xl space-y-10"
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center justify-center py-24 bg-white border border-slate/10 rounded-2xl shadow-sm space-y-6"
           >
-            <div className="relative">
-              <div className="w-32 h-32 rounded-full border border-ocean/20 flex items-center justify-center text-ocean">
-                <Radar className="w-12 h-12" />
-              </div>
-              <motion.div
-                animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 rounded-full border-4 border-ocean/10"
-              />
+            <div className="w-20 h-20 rounded-2xl bg-slate/5 flex items-center justify-center text-slate">
+              <Compass className="w-9 h-9" strokeWidth={1.75} />
             </div>
-            <div className="text-center space-y-3">
-              <h2 className="text-3xl text-slate font-bold">Discover Your Ring</h2>
-              <p className="text-slate/60 max-w-xs mx-auto font-medium">
-                Kin uses spatial discovery to connect ID-verified solo travellers within a 5km island radius.
+            <div className="text-center space-y-2 max-w-sm">
+              <h2 className="text-2xl text-slate font-bold">Find Travellers Near You</h2>
+              <p className="text-slate/65 text-sm font-medium">
+                See solo travellers nearby who are visiting the same islands on your dates.
               </p>
             </div>
             <button
+              type="button"
               onClick={startScan}
-              className="px-12 py-6 bg-slate text-white rounded-3xl font-bold uppercase tracking-wider shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4"
+              className="px-8 py-4 bg-sunset text-white rounded-full font-bold text-sm shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all flex items-center gap-2.5"
             >
-              <Navigation className="w-5 h-5 fill-white" />
-              Radar Sync Siargao &amp; Palawan
+              <Navigation className="w-4 h-4" />
+              Find Travellers Nearby
             </button>
           </motion.div>
         )}
@@ -121,36 +172,12 @@ export function TravelCrewHub({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center py-32 space-y-12"
+            className="flex flex-col items-center justify-center py-24 space-y-6 bg-white border border-slate/10 rounded-2xl"
           >
-            <div className="relative w-64 h-64 flex items-center justify-center">
-              {[1, 2, 3].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ scale: [0, 1.5], opacity: [0.6, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.6 }}
-                  className="absolute inset-0 rounded-full border-2 border-ocean"
-                />
-              ))}
-              <div className="relative z-10 w-24 h-24 bg-white shadow-2xl rounded-full flex items-center justify-center text-ocean border-8 border-slate/5">
-                <Radar className="w-8 h-8" />
-              </div>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 border-t-4 border-ocean/40 rounded-full"
-              />
-            </div>
-            <div className="text-center space-y-4">
-              <h3 className="text-2xl font-extrabold text-slate uppercase tracking-tighter">
-                Scanning for Kinetic Vibes...
-              </h3>
-              <div className="flex items-center gap-1.5 justify-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-widest text-slate/65">
-                  Searching 5km Coastal Radius
-                </span>
-              </div>
+            <div className="w-16 h-16 rounded-full border-4 border-slate/10 border-t-sunset animate-spin" />
+            <div className="text-center space-y-1">
+              <h3 className="text-lg font-bold text-slate">Looking for travellers nearby...</h3>
+              <p className="text-xs font-medium text-slate/60">Checking active island groups</p>
             </div>
           </motion.div>
         )}
@@ -160,225 +187,345 @@ export function TravelCrewHub({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="space-y-12"
+          className="space-y-8"
         >
-          {/* Dynamic Crew Stats */}
-          <div className="flex flex-col md:flex-row gap-6">
+          {/* Clean Monochrome Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                label: "Active In Hub",
+                label: "Travellers Nearby",
                 val: `${filteredKins.length * 14 + 16}`,
                 icon: Users,
-                color: "text-ocean bg-ocean/5",
               },
               {
-                label: "Verified Skippers",
+                label: "Trusted Boat Guides",
                 val: "6",
                 icon: Star,
-                color: "text-sunset bg-sunset/5",
               },
               {
-                label: "Dominant Vibe",
-                val: "Lagoon & Surf",
+                label: "Top Activity Today",
+                val: "Surf & Lagoons",
                 icon: Waves,
-                color: "text-purple-600 bg-purple-50",
               },
             ].map((stat, i) => (
               <div
                 key={i}
-                className="flex-1 flex items-center gap-6 p-8 bg-white border border-slate/5 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-slate/5 transition-all"
+                className="flex items-center gap-4 p-5 bg-white border border-slate/10 rounded-2xl shadow-sm"
               >
-                <div className={`p-4 rounded-3xl ${stat.color}`}>
-                  <stat.icon className="w-6 h-6" />
+                <div className="p-3 rounded-xl bg-slate/5 text-slate/75 shrink-0">
+                  <stat.icon className="w-5 h-5" strokeWidth={1.75} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate/65">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate/60">
                     {stat.label}
                   </p>
-                  <p className="text-3xl font-extrabold tracking-tight tabular-nums text-slate">{stat.val}</p>
+                  <p className="text-2xl font-extrabold tracking-tight tabular-nums text-slate">
+                    {stat.val}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3 text-ocean font-bold tracking-widest text-xs uppercase bg-ocean/5 rounded-full px-4 py-1.5 w-fit border border-ocean/10 shadow-sm">
-                <TrendingUp className="w-3.5 h-3.5" />
-                Spatial Discovery
-              </div>
-              <h2 className="text-4xl text-slate font-bold">
-                Wanderers in {activeHubLabel}
+          {/* Section Title + Controls */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+            <div className="space-y-1.5">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate/60">
+                Nearby Travellers
+              </p>
+              <h2 className="text-3xl text-slate font-bold">
+                Travellers in {activeHubLabel}
               </h2>
-              <p className="text-slate/60 font-medium">
-                Hand-picked solo companions matched to your pace, safety tier, and island loop.
+              <p className="text-slate/65 text-sm font-medium">
+                Filter by island, ID check, or who is available online right now.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               <button
                 type="button"
                 onClick={() => setVerifiedOnly((v) => !v)}
-                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold uppercase tracking-widest text-xs border transition-all ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border transition-all ${
                   verifiedOnly
-                    ? "bg-ocean text-white border-ocean shadow-lg shadow-ocean/20"
-                    : "bg-white text-slate border-slate/10 hover:bg-slate/5"
+                    ? "bg-slate text-white border-slate"
+                    : "bg-white text-slate border-slate/15 hover:bg-slate/5"
                 }`}
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>{verifiedOnly ? "ID-Verified Only" : "Filter Verified"}</span>
+                <ShieldCheck className="w-4 h-4" strokeWidth={1.75} />
+                <span>{verifiedOnly ? "ID Verified Only" : "Show ID Verified"}</span>
               </button>
               <button
                 type="button"
-                onClick={() => setSelectedHub("all")}
-                className="flex items-center gap-2 px-6 py-3.5 bg-slate text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
+                onClick={() => {
+                  setSelectedHub("all");
+                  setAvailabilityFilter("all");
+                  setVerifiedOnly(false);
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white text-slate/75 border border-slate/15 rounded-xl font-bold text-xs hover:text-slate hover:bg-slate/5 transition-all"
               >
-                <Search className="w-4 h-4" />
-                Reset Hub
+                <Search className="w-3.5 h-3.5" />
+                Reset Filters
               </button>
             </div>
           </div>
 
-          {/* Island Hub Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            {HUBS.map((hub) => (
+          {/* Filter Row: Island Hubs + Online Availability Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate/10">
+            {/* Island Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              {HUBS.map((hub) => (
+                <button
+                  key={hub.id}
+                  type="button"
+                  onClick={() => setSelectedHub(hub.id)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap border ${
+                    selectedHub === hub.id
+                      ? "bg-slate text-white border-slate"
+                      : "bg-white text-slate/70 border-slate/15 hover:text-slate"
+                  }`}
+                >
+                  {hub.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Online Availability Filter */}
+            <div className="inline-flex items-center p-1 bg-white border border-slate/15 rounded-xl w-fit">
               <button
-                key={hub.id}
                 type="button"
-                onClick={() => setSelectedHub(hub.id)}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${
-                  selectedHub === hub.id
-                    ? "bg-slate text-white border-slate shadow-md"
-                    : "bg-white text-slate/70 border-slate/10 hover:text-slate"
+                onClick={() => setAvailabilityFilter("all")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  availabilityFilter === "all"
+                    ? "bg-slate text-white"
+                    : "text-slate/70 hover:text-slate"
                 }`}
               >
-                {hub.label}
+                All ({kins.length})
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => setAvailabilityFilter("online")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1.5 ${
+                  availabilityFilter === "online"
+                    ? "bg-slate text-white"
+                    : "text-slate/70 hover:text-slate"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-green-500" />
+                Available ({onlineCount})
+              </button>
+              <button
+                type="button"
+                onClick={() => setAvailabilityFilter("away_offline")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1.5 ${
+                  availabilityFilter === "away_offline"
+                    ? "bg-slate text-white"
+                    : "text-slate/70 hover:text-slate"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-slate/40" />
+                Not Online ({offlineOrAwayCount})
+              </button>
+            </div>
           </div>
 
-          {/* Grid of Kins + NomadHer VibeConsensus */}
+          {/* Grid of Travellers */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredKins.map((kin) => (
-              <div key={kin.id} className="flex flex-col gap-3">
-                <motion.div
-                  layoutId={`card-${kin.id}`}
-                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate/5 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
-                >
-                  <Image
-                    src={kin.image}
-                    alt={kin.name}
-                    fill
-                    priority
-                    quality={100}
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+            {filteredKins.map((kin) => {
+              const statusLabel =
+                kin.status === "online"
+                  ? "Available"
+                  : kin.status === "away"
+                  ? "Away"
+                  : "Offline";
 
-                  {/* Status dot — top right */}
-                  <div className="absolute top-5 right-5">
-                    <span
-                      className={`block w-3 h-3 rounded-full ring-2 ring-white/60 ${
-                        kin.status === "online"
-                          ? "bg-green-400"
-                          : kin.status === "away"
-                          ? "bg-amber-400"
-                          : "bg-slate/40"
-                      }`}
+              return (
+                <div key={kin.id} className="flex flex-col gap-3">
+                  <div className="group relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate/5 shadow-md hover:shadow-xl transition-all duration-300">
+                    <Image
+                      src={kin.image}
+                      alt={kin.name}
+                      fill
+                      priority
+                      quality={95}
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
-                  </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
-                  {/* Vibe badge — top left */}
-                  <div className="absolute top-5 left-5">
-                    <span className="px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-white border border-white/25 truncate max-w-[175px] block">
-                      {kin.vibe}
-                    </span>
-                  </div>
+                    {/* Top Row: Travel Interest + Availability Status Pill */}
+                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
+                      <span className="px-2.5 py-1 bg-black/45 backdrop-blur-md rounded-full text-xs font-semibold text-white border border-white/15 truncate">
+                        {kin.vibe}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/55 backdrop-blur-md rounded-full text-xs font-bold text-white border border-white/15 shrink-0">
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            kin.status === "online"
+                              ? "bg-green-400"
+                              : kin.status === "away"
+                              ? "bg-amber-400"
+                              : "bg-white/40"
+                          }`}
+                        />
+                        {statusLabel}
+                      </span>
+                    </div>
 
-                  {/* Bottom content */}
-                  <div className="absolute inset-x-0 bottom-0 p-6 space-y-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-2xl font-bold text-white leading-none">
-                          {kin.name}
-                        </h3>
-                        {kin.verified ? (
-                          <span
-                            title="Biometric ID Verified"
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-ocean/90 text-white text-xs font-bold uppercase tracking-widest"
-                          >
-                            <ShieldCheck className="w-3 h-3" /> Verified
-                          </span>
-                        ) : (
-                          <span className="text-xs font-bold uppercase tracking-widest text-white/75">
-                            Pending ID
-                          </span>
+                    {/* Bottom Content */}
+                    <div className="absolute inset-x-0 bottom-0 p-5 space-y-3.5">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-xl font-bold text-white leading-none">
+                            {kin.name}
+                          </h3>
+                          {kin.verified ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-slate text-xs font-bold">
+                              <ShieldCheck className="w-3 h-3 text-green-600" />
+                              ID Verified
+                            </span>
+                          ) : (
+                            <span className="text-xs font-semibold text-white/75">
+                              Not Verified
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-white/80 text-xs font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-white/70 flex-shrink-0" />
+                          {kin.location}
+                        </div>
+                        {kin.tripDates && (
+                          <div className="inline-flex items-center gap-1.5 text-white/90 text-xs font-medium bg-white/15 px-2.5 py-0.5 rounded-md backdrop-blur-sm">
+                            <Calendar className="w-3 h-3" />
+                            <span>{kin.tripDates.label}</span>
+                          </div>
                         )}
                       </div>
-                      <div className="flex items-center gap-1.5 text-white/70 text-xs font-semibold">
-                        <MapPin className="w-3 h-3 text-sunset flex-shrink-0" />
-                        {kin.location}
-                      </div>
-                      {kin.tripDates && (
-                        <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium bg-white/10 px-2 py-0.5 rounded-md w-fit backdrop-blur-sm border border-white/10">
-                          <Calendar className="w-3 h-3 text-ocean" />
-                          <span>{kin.tripDates.label}</span>
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Action buttons */}
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onChat(kin.id)}
-                        className="flex-1 py-3 bg-white text-slate text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-sunset hover:text-white transition-colors active:scale-95"
-                      >
-                        Open Ring
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => toggleLike(kin.id)}
-                        aria-label={`Bookmark ${kin.name}`}
-                        className={`p-3 backdrop-blur-xl rounded-xl border transition-all ${
-                          likedIds[kin.id]
-                            ? "bg-sunset text-white border-sunset"
-                            : "bg-white/15 text-white border-white/20 hover:bg-white/25"
-                        }`}
-                      >
-                        <Heart className={`w-4 h-4 ${likedIds[kin.id] ? "fill-current" : ""}`} />
-                      </button>
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenChat(kin)}
+                          className="flex-1 py-2.5 bg-white text-slate text-xs font-bold rounded-xl hover:bg-sunset hover:text-white transition-colors inline-flex items-center justify-center gap-1.5"
+                        >
+                          {!perms.canMessage && <Lock className="w-3.5 h-3.5" />}
+                          Message
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleLike(kin.id)}
+                          aria-label={`Save ${kin.name}`}
+                          className={`p-2.5 backdrop-blur-md rounded-xl border transition-all ${
+                            likedIds[kin.id]
+                              ? "bg-sunset text-white border-sunset"
+                              : "bg-white/15 text-white border-white/20 hover:bg-white/25"
+                          }`}
+                        >
+                          <Heart className={`w-4 h-4 ${likedIds[kin.id] ? "fill-current" : ""}`} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </motion.div>
 
-                {/* NomadHer Peer Reference & Vibe Consensus Card */}
-                {kin.vibeStats && <VibeConsensus stats={kin.vibeStats} />}
-              </div>
-            ))}
+                  {/* Peer Reviews & Tags */}
+                  {kin.vibeStats && <VibeConsensus stats={kin.vibeStats} />}
+                </div>
+              );
+            })}
 
-            {/* "Join the Squad" Empty State */}
-            <div
-              onClick={() => {
-                setSelectedHub("all");
-                setVerifiedOnly(false);
-              }}
-              className="group aspect-[3/4] border-2 border-dashed border-slate/15 rounded-2xl flex flex-col items-center justify-center gap-5 p-8 text-center hover:border-sunset/40 hover:bg-sunset/5 transition-all cursor-pointer"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-slate/5 flex items-center justify-center group-hover:bg-sunset/10 transition-all text-slate/25 group-hover:text-sunset">
-                <Users className="w-7 h-7" />
+            {/* Working "Looking for more?" Card */}
+            <div className="aspect-[3/4] border border-dashed border-slate/20 bg-white rounded-2xl flex flex-col items-center justify-center gap-4 p-6 text-center">
+              <div className="w-12 h-12 rounded-xl bg-slate/5 flex items-center justify-center text-slate/70">
+                <Users className="w-6 h-6" strokeWidth={1.75} />
               </div>
-              <div className="space-y-2">
-                <h4 className="text-lg font-bold text-slate">Looking for more?</h4>
+              <div className="space-y-1.5">
+                <h4 className="text-base font-bold text-slate">Looking for more travellers?</h4>
                 <p className="text-xs font-medium text-slate/65 leading-relaxed">
-                  Switch island hubs to see verified solo travellers arriving in Siargao &amp; El Nido this week.
+                  Browse other islands or share your travel dates so nearby groups can find you.
                 </p>
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-sunset group-hover:underline">
-                Show All Hubs →
-              </span>
+              <div className="flex flex-col w-full gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowHubDirectory((v) => !v)}
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate text-white text-xs font-bold hover:bg-slate/90 transition-colors inline-flex items-center justify-center gap-1.5"
+                >
+                  {showHubDirectory ? "Hide Island Directory" : "Browse Island Hubs"}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <Link
+                  href="/destinations"
+                  className="w-full py-2.5 px-4 rounded-xl border border-slate/15 text-slate text-xs font-bold hover:bg-slate/5 transition-colors text-center"
+                >
+                  See All Destinations
+                </Link>
+              </div>
             </div>
           </div>
+
+          {/* Expandable "More Island Hubs" Section with Real Working Links */}
+          <AnimatePresence>
+            {showHubDirectory && (
+              <motion.section
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                className="p-7 bg-white border border-slate/10 rounded-2xl shadow-sm space-y-5"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate/10 pb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate">Active Island Hubs This Week</h3>
+                    <p className="text-xs text-slate/65 font-medium">
+                      Jump into an island guide or switch your dashboard view to see who is there.
+                    </p>
+                  </div>
+                  <Link
+                    href="/destinations"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-sunset hover:underline"
+                  >
+                    Explore All 16 Hubs
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {MORE_HUBS_DIRECTORY.map((hub) => (
+                    <div
+                      key={hub.id}
+                      className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 flex flex-col justify-between gap-4"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-sm font-bold text-slate">{hub.name}</span>
+                          <span className="text-xs font-bold text-slate/60 tabular-nums">{hub.activeCount} active</span>
+                        </div>
+                        <p className="text-xs text-slate/65 font-medium">{hub.highlight}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedHub(hub.id);
+                            setAvailabilityFilter("all");
+                          }}
+                          className="flex-1 py-2 rounded-lg bg-white border border-slate/15 text-xs font-bold text-slate hover:bg-slate/5 transition-colors"
+                        >
+                          Filter Here
+                        </button>
+                        <Link
+                          href={`/destinations/${hub.id}`}
+                          className="flex-1 py-2 rounded-lg bg-slate text-white text-xs font-bold hover:bg-slate/90 transition-colors text-center"
+                        >
+                          Open Guide
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </div>

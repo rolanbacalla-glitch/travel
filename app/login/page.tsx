@@ -229,15 +229,26 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p className="mt-10 text-center text-sm font-medium text-slate/70">
+        <p className="mt-8 text-center text-sm font-medium text-slate/70">
           {isSignUp ? "Already have an account?" : "New to Travel Kin?"}{" "}
           <button 
+            type="button"
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-sunset font-bold hover:underline ml-1"
           >
-            {isSignUp ? "Sign In" : "Sign Up"}
+            {isSignUp ? "Sign In" : "Create Account"}
           </button>
         </p>
+
+        <div className="mt-6 pt-6 border-t border-slate/10 text-center">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-slate/5 hover:bg-slate/10 text-slate text-sm font-semibold transition-colors"
+          >
+            Skip &amp; Explore as Guest
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </motion.div>
 
       <div className="mt-8 relative z-10">

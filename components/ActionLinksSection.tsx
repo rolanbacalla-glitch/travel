@@ -44,22 +44,19 @@ export function ActionLinksSection() {
                 className={`group block p-12 rounded-2xl bg-white border border-mist hover:shadow-2xl transition-all duration-500 overflow-hidden relative`}
               >
                 <div className="flex flex-col h-full relative z-10">
-                  <div className={`w-16 h-16 rounded-2xl ${action.color} text-white flex items-center justify-center mb-8 shadow-lg ${action.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
-                    <action.icon className="w-8 h-8" />
+                  <div className="w-14 h-14 rounded-2xl bg-slate/5 border border-slate/10 text-slate flex items-center justify-center mb-8 transition-colors duration-300 group-hover:bg-slate group-hover:text-white">
+                    <action.icon className="w-6 h-6" strokeWidth={1.75} />
                   </div>
-                  <h3 className="text-3xl font-bold text-slate mb-4 group-hover:text-ocean transition-colors">
+                  <h3 className="text-3xl font-bold text-slate mb-4">
                     {action.title}
                   </h3>
-                  <p className="text-slate/60 text-lg leading-relaxed mb-8 max-w-sm">
+                  <p className="text-slate/65 text-lg leading-relaxed mb-8 max-w-sm">
                     {action.desc}
                   </p>
-                  <div className="mt-auto flex items-center gap-3 text-slate font-bold uppercase tracking-widest text-xs">
+                  <div className="mt-auto flex items-center gap-3 text-sunset font-bold uppercase tracking-widest text-xs">
                     Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                   </div>
                 </div>
-                
-                {/* Abstract background element */}
-                <div className={`absolute -bottom-12 -right-12 w-48 h-48 ${action.color} opacity-[0.03] rounded-full blur-3xl group-hover:opacity-[0.08] transition-opacity duration-500`} />
               </Link>
             </motion.div>
           ))}

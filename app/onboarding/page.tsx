@@ -16,13 +16,12 @@ import {
   Sparkles,
   Leaf,
   Laptop,
-  Compass,
-  Utensils,
-  Waves,
-  Sun
+  ArrowRight
 } from "lucide-react";
+import { TH, VN, ID, PH } from "country-flag-icons/react/3x2";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useProfileStore } from "@/lib/stores/useProfile";
@@ -34,27 +33,27 @@ import { useProfileStore } from "@/lib/stores/useProfile";
 const steps = [
   {
     id: "identity",
-    title: "Basic Info",
+    title: "About You",
     icon: User,
-    desc: "Tell us about yourself"
+    desc: "Add your name and a short intro (optional)"
   },
   {
     id: "style",
     title: "Travel Style",
     icon: MapPin,
-    desc: "Your pace & preferences"
+    desc: "How you like to travel"
   },
   {
     id: "vibes",
-    title: "Personal Vibe",
+    title: "Your Interests",
     icon: Heart,
-    desc: "What drives your journey?"
+    desc: "What you enjoy most on a trip"
   },
   {
     id: "safety",
-    title: "Safety Sync",
+    title: "ID Check",
     icon: ShieldCheck,
-    desc: "Verification & trust"
+    desc: "Verify your ID to unlock all features"
   },
 ];
 
@@ -63,10 +62,10 @@ const steps = [
 /* ─────────────────────────────────────────────────────────── */
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDone, setIsDone] = useState(false);
 
-  // State for all onboarding data
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -123,6 +122,14 @@ export default function OnboardingPage() {
     }
   };
 
+  const skipStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
@@ -142,51 +149,60 @@ export default function OnboardingPage() {
           alt="Southeast Asia Background"
           fill
           priority
-          className="object-cover opacity-[0.15] scale-110 pointer-events-none animate-subtle-zoom"
+          className="object-cover opacity-[0.12] scale-110 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/60 to-background" />
       </div>
 
       {/* ── Navigation ── */}
-      <nav className="relative z-10 p-6 md:p-8 flex items-center justify-between">
+      <nav className="relative z-10 p-6 md:p-8 flex items-center justify-between gap-4">
         <Link href="/" className="text-2xl font-bold text-slate">
           Travel <span className="text-sunset">Kin</span>
         </Link>
-        <div className="px-4 py-1.5 bg-sunset/20 backdrop-blur-md rounded-full border border-sunset/30 text-xs font-bold tracking-widest text-sunset uppercase shadow-sm">
-          Step {currentStep + 1} of {steps.length}
+        <div className="flex items-center gap-3">
+          <span className="px-3.5 py-1.5 bg-white/80 backdrop-blur-md rounded-full border border-slate/10 text-xs font-bold tracking-wider text-slate/75 uppercase">
+            Step {currentStep + 1} of {steps.length}
+          </span>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white hover:bg-slate/5 rounded-full border border-slate/15 text-xs font-bold text-slate transition-colors"
+          >
+            <span>Skip &amp; Explore</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </nav>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-8">
-        <div className="glass w-full max-w-2xl rounded-2xl p-8 md:p-12 shadow-2xl">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-4">
+        <div className="bg-white/90 backdrop-blur-xl border border-slate/10 w-full max-w-2xl rounded-2xl p-8 md:p-12 shadow-xl">
           {/* ── Progress Bar ── */}
-          <div className="h-2 w-full bg-white/40 shadow-inner ring-1 ring-white/60 backdrop-blur-sm rounded-full mb-12 overflow-hidden">
+          <div className="h-1.5 w-full bg-slate/10 rounded-full mb-10 overflow-hidden">
             <motion.div
-              className="h-full bg-sunset shadow-[0_0_12px_rgba(255,140,66,0.5)] rounded-full"
+              className="h-full bg-sunset rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             />
           </div>
 
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-10"
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-8"
             >
               {/* Header */}
               <div className="text-center md:text-left">
-                <div className="inline-flex p-3.5 rounded-2xl bg-sunset shadow-xl shadow-sunset/20 mb-6 ring-4 ring-sunset/10 transition-transform hover:scale-105 active:scale-95 cursor-default">
-                  {React.createElement(steps[currentStep].icon, { className: "w-6 h-6 text-white" })}
+                <div className="inline-flex p-3 rounded-xl bg-slate/5 border border-slate/10 text-slate mb-5">
+                  {React.createElement(steps[currentStep].icon, { className: "w-5 h-5", strokeWidth: 1.75 })}
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-slate mb-3 tracking-tight">
+                <h1 className="text-3xl md:text-5xl font-bold text-slate mb-2 tracking-tight">
                   {steps[currentStep].title}
                 </h1>
-                <p className="text-slate/60 text-lg md:text-xl font-medium">{steps[currentStep].desc}</p>
+                <p className="text-slate/65 text-base md:text-lg font-medium">{steps[currentStep].desc}</p>
               </div>
 
               {/* Form Content */}
@@ -205,29 +221,47 @@ export default function OnboardingPage() {
               </div>
 
               {/* Navigation Actions */}
-              <div className="pt-10 flex items-center justify-between border-t border-white/40 mt-10">
+              <div className="pt-8 flex flex-wrap items-center justify-between gap-4 border-t border-slate/10 mt-8">
                 <button
+                  type="button"
                   onClick={prevStep}
                   disabled={currentStep === 0}
                   className={cn(
-                    "flex items-center gap-2 text-slate/70 font-bold tracking-widest uppercase text-xs hover:text-slate transition-colors duration-200",
+                    "flex items-center gap-1.5 text-slate/70 font-bold tracking-wider uppercase text-xs hover:text-slate transition-colors duration-200",
                     currentStep === 0 && "opacity-0 pointer-events-none"
                   )}
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </button>
-                <button
-                  onClick={nextStep}
-                  className="px-10 py-5 bg-sunset text-white font-bold rounded-full shadow-xl shadow-sunset/20 hover:bg-sunset-dark transition-all duration-300 flex items-center gap-3 active:scale-95 group"
-                >
-                  {currentStep === steps.length - 1 ? "Complete Setup" : "Next Step"}
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                <div className="flex items-center gap-3 ml-auto">
+                  <button
+                    type="button"
+                    onClick={skipStep}
+                    className="px-5 py-3.5 text-slate/70 hover:text-slate hover:bg-slate/5 rounded-full font-semibold text-sm transition-colors"
+                  >
+                    {currentStep === steps.length - 1 ? "Skip to Dashboard" : "Skip Step"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextStep}
+                    className="px-8 py-3.5 bg-sunset text-white font-bold rounded-full shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all duration-200 flex items-center gap-2 active:scale-95 group text-sm"
+                  >
+                    {currentStep === steps.length - 1 ? "Finish Setup" : "Next Step"}
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <p className="mt-6 text-xs text-slate/65 font-medium text-center">
+          Just looking around?{" "}
+          <Link href="/dashboard" className="text-slate font-bold underline hover:text-sunset transition-colors">
+            Preview the dashboard without signing up
+          </Link>
+        </p>
       </div>
     </div>
   );
@@ -239,29 +273,29 @@ function IdentityForm({
   data,
   update
 }: {
-  data: any,
-  update: (field: string, val: any) => void
+  data: any;
+  update: (field: string, val: any) => void;
 }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div className="space-y-2 font-sans">
-        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Legal Name</label>
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Full Name</label>
         <input
           value={data.name || ""}
           onChange={(e) => update("name", e.target.value)}
           placeholder="Ex: Mia Reyes"
-          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 focus:bg-white"
+          className="w-full p-4 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/25 focus:bg-white transition-all font-medium text-slate placeholder:text-slate/50"
         />
       </div>
       <div className="space-y-2">
         <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Username</label>
         <div className="relative">
-          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate/65 font-bold">@</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate/60 font-bold">@</span>
           <input
             value={data.username || ""}
             onChange={(e) => update("username", e.target.value)}
             placeholder="wanderer_mia"
-            className="w-full p-5 pl-10 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 focus:bg-white"
+            className="w-full p-4 pl-9 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/25 focus:bg-white transition-all font-medium text-slate placeholder:text-slate/50"
           />
         </div>
       </div>
@@ -270,9 +304,9 @@ function IdentityForm({
         <textarea
           value={data.bio || ""}
           onChange={(e) => update("bio", e.target.value)}
-          placeholder="What should we know about you? (Keep it fun)"
+          placeholder="Say hello and share what kind of trips you enjoy"
           rows={3}
-          className="w-full p-5 bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl shadow-sm focus-ring transition-all font-medium text-slate placeholder:text-slate/65 resize-none focus:bg-white"
+          className="w-full p-4 bg-[#F9F8F6] border border-slate/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset/25 focus:bg-white transition-all font-medium text-slate placeholder:text-slate/50 resize-none"
         />
       </div>
     </div>
@@ -283,17 +317,18 @@ function StyleForm({
   selected,
   toggle
 }: {
-  selected: string[],
-  toggle: (val: string) => void
+  selected: string[];
+  toggle: (val: string) => void;
 }) {
   const styles = [
-    { id: "slow", label: "Slow Wanderer", icon: Coffee },
-    { id: "fast", label: "Fast-Paced Action", icon: Zap },
-    { id: "budget", label: "Budget Backpacker", icon: Backpack },
-    { id: "luxury", label: "Luxury Nomad", icon: Sparkles },
-    { id: "eco", label: "Eco Adventurer", icon: Leaf },
-    { id: "remote", label: "Remote Pro", icon: Laptop },
+    { id: "slow", label: "Slow Traveller", icon: Coffee },
+    { id: "fast", label: "Active Explorer", icon: Zap },
+    { id: "budget", label: "Budget Friendly", icon: Backpack },
+    { id: "luxury", label: "Comfort & Stays", icon: Sparkles },
+    { id: "eco", label: "Nature Lover", icon: Leaf },
+    { id: "remote", label: "Remote Worker", icon: Laptop },
   ];
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {styles.map(s => {
@@ -301,32 +336,33 @@ function StyleForm({
         const isSelected = selected.includes(s.id);
         return (
           <button
+            type="button"
             key={s.id}
             onClick={() => toggle(s.id)}
             className={cn(
-              "p-6 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-md transition-all text-center group active:scale-95 flex flex-col items-center",
+              "relative p-6 bg-white border rounded-2xl transition-all text-center group active:scale-[0.98] flex flex-col items-center justify-center",
               isSelected
-                ? "border-sunset bg-sunset/10 ring-1 ring-sunset/30 scale-[1.02] shadow-md"
-                : "border-white/40 hover:bg-white/80 hover:border-sunset/50"
+                ? "border-sunset bg-sunset/[0.04] ring-1 ring-sunset/25 shadow-sm"
+                : "border-slate/10 hover:border-slate/25 hover:bg-[#F9F8F6]"
             )}
           >
+            {isSelected && (
+              <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-sunset text-white flex items-center justify-center">
+                <Check className="w-3 h-3" strokeWidth={2.5} />
+              </span>
+            )}
             <div className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center mb-3.5 transition-all duration-300",
+              "w-11 h-11 rounded-xl flex items-center justify-center mb-3 transition-colors",
               isSelected
-                ? "bg-sunset text-white shadow-md shadow-sunset/20 scale-105"
-                : "bg-slate/5 text-slate/70 group-hover:bg-sunset/10 group-hover:text-sunset"
+                ? "bg-sunset text-white"
+                : "bg-slate/5 text-slate/75 group-hover:bg-slate/10 group-hover:text-slate"
             )}>
-              <Icon className="w-6 h-6" strokeWidth={1.75} />
+              <Icon className="w-5 h-5" strokeWidth={1.75} />
             </div>
             <span className={cn(
-              "text-xs font-bold tracking-wider uppercase transition-colors",
-              isSelected ? "text-sunset-dark" : "text-slate/70 group-hover:text-slate"
+              "text-xs font-bold tracking-wide uppercase transition-colors",
+              isSelected ? "text-slate" : "text-slate/75 group-hover:text-slate"
             )}>{s.label}</span>
-            {isSelected && (
-              <motion.div layoutId="check" className="mt-3 flex justify-center">
-                <Check className="w-5 h-5 text-sunset" />
-              </motion.div>
-            )}
           </button>
         );
       })}
@@ -340,24 +376,44 @@ function VibeForm({
   selectedDest,
   toggleDest
 }: {
-  selectedVibes: string[],
-  toggleVibe: (val: string) => void,
-  selectedDest: string[],
-  toggleDest: (val: string) => void
+  selectedVibes: string[];
+  toggleVibe: (val: string) => void;
+  selectedDest: string[];
+  toggleDest: (val: string) => void;
 }) {
-  const vibes = ["Introvert", "Extrovert", "Night Owl", "Early Bird", "Foodie", "History Buff", "Action Junkie", "Zen Seeker", "Photographer", "Culture Vulture"];
+  const vibes = [
+    "Quiet & Relaxed",
+    "Social & Outgoing",
+    "Night Owl",
+    "Early Riser",
+    "Food Lover",
+    "History & Culture",
+    "Adventure Sports",
+    "Wellness & Yoga",
+    "Photography",
+    "Local Markets"
+  ];
+
+  const countries = [
+    { name: "Thailand", Flag: TH },
+    { name: "Vietnam", Flag: VN },
+    { name: "Indonesia", Flag: ID },
+    { name: "Philippines", Flag: PH }
+  ];
+
   return (
-    <div className="space-y-10">
-      <div className="flex flex-wrap gap-3">
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-2.5">
         {vibes.map(v => (
           <button
+            type="button"
             key={v}
             onClick={() => toggleVibe(v)}
             className={cn(
-              "px-6 py-3 rounded-full text-sm font-bold tracking-wide transition-all border shadow-sm hover:shadow-md",
+              "px-4 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all border",
               selectedVibes.includes(v)
-                ? "bg-sunset text-white border-sunset shadow-sunset/20 scale-105"
-                : "bg-white/60 backdrop-blur-sm text-slate/60 border-white/40 hover:bg-white/80 hover:border-sunset/50 hover:text-slate"
+                ? "bg-slate text-white border-slate shadow-sm"
+                : "bg-white text-slate/70 border-slate/10 hover:border-slate/25 hover:text-slate"
             )}
           >
             {v}
@@ -365,50 +421,33 @@ function VibeForm({
         ))}
       </div>
 
-      <div className="space-y-5">
-        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">Main Destinations</label>
-        <div className="grid grid-cols-2 gap-4">
-          {[
-            { name: "Thailand", icon: Compass },
-            { name: "Vietnam", icon: Utensils },
-            { name: "Indonesia", icon: Waves },
-            { name: "Philippines", icon: Sun }
-          ].map(dest => {
-            const DestIcon = dest.icon;
-            const isSelected = selectedDest.includes(dest.name);
+      <div className="space-y-4">
+        <label className="text-xs uppercase font-bold tracking-wider text-slate/70 ml-1">
+          Countries You Want to Visit
+        </label>
+        <div className="grid grid-cols-2 gap-3.5">
+          {countries.map(({ name, Flag }) => {
+            const isSelected = selectedDest.includes(name);
             return (
               <button
-                key={dest.name}
-                onClick={() => toggleDest(dest.name)}
+                type="button"
+                key={name}
+                onClick={() => toggleDest(name)}
                 className={cn(
-                  "p-5 bg-white/60 backdrop-blur-sm border rounded-2xl shadow-sm flex items-center gap-4 transition-all font-bold group relative overflow-hidden",
+                  "p-4 bg-white border rounded-2xl flex items-center gap-3.5 transition-all font-bold group relative",
                   isSelected
-                    ? "bg-sunset/10 border-sunset text-slate shadow-md scale-[1.02]"
-                    : "border-white/40 text-slate/70 hover:bg-white/80 hover:border-sunset/50"
+                    ? "bg-sunset/[0.04] border-sunset text-slate shadow-sm ring-1 ring-sunset/20"
+                    : "border-slate/10 text-slate/75 hover:bg-[#F9F8F6] hover:border-slate/25"
                 )}
               >
-                <div className={cn(
-                  "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300",
-                  isSelected
-                    ? "bg-sunset text-white shadow-md"
-                    : "bg-white text-slate/70 border border-white/60 shadow-sm group-hover:scale-105 group-hover:text-sunset"
-                )}>
-                  <DestIcon className="w-5 h-5" strokeWidth={1.75} />
+                <div className="w-10 h-7 rounded-md overflow-hidden border border-slate/10 shadow-sm shrink-0 bg-white">
+                  <Flag title={name} className="w-full h-full object-cover" />
                 </div>
-                <span className={cn(
-                  "transition-colors",
-                  isSelected ? "text-slate" : "group-hover:text-slate"
-                )}>{dest.name}</span>
-
+                <span className="text-sm font-bold text-slate">{name}</span>
                 {isSelected && (
-                  <motion.div
-                    layoutId="dest-check"
-                    className="absolute right-4"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                  >
-                    <Check className="w-5 h-5 text-sunset" />
-                  </motion.div>
+                  <span className="absolute right-3.5 w-5 h-5 rounded-full bg-sunset text-white flex items-center justify-center">
+                    <Check className="w-3 h-3" strokeWidth={2.5} />
+                  </span>
                 )}
               </button>
             );
@@ -421,34 +460,30 @@ function VibeForm({
 
 function SafetyForm({ onPersist }: { onPersist: () => void }) {
   return (
-    <div className="space-y-8">
-      <div className="p-10 glass-warm border border-white/40 rounded-2xl flex flex-col md:flex-row gap-8 relative overflow-hidden group shadow-sm">
-        <div className="absolute -top-12 -right-12 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-          <ShieldCheck className="w-48 h-48 text-ocean rotate-12" />
+    <div className="space-y-6">
+      <div className="p-8 bg-[#F9F8F6] border border-slate/10 rounded-2xl flex flex-col md:flex-row gap-6 relative overflow-hidden">
+        <div className="p-3.5 h-fit w-fit bg-slate text-white rounded-xl shrink-0">
+          <ShieldCheck className="w-6 h-6" strokeWidth={1.75} />
         </div>
 
-        <div className="p-5 h-fit w-fit bg-ocean text-white rounded-xl shadow-lg ring-8 ring-white/50 relative z-10 animate-float">
-          <ShieldCheck className="w-8 h-8" />
-        </div>
-
-        <div className="relative z-10 flex-1">
-          <h4 className="text-2xl text-slate font-bold mb-3 tracking-tight">Trust Verification</h4>
-          <p className="text-slate/60 text-base font-medium leading-relaxed max-w-md mb-10">
-            Join 12,000+ verified solo travellers. We use secure identity checks to ensure everyone in our community is who they say they are.
+        <div className="flex-1">
+          <h4 className="text-xl text-slate font-bold mb-2 tracking-tight">Verify Your ID to Unlock Full Access</h4>
+          <p className="text-slate/65 text-sm font-medium leading-relaxed max-w-md mb-6">
+            Verified Kins can join shared boat trips, edit group plans, share exact meet-up locations, and use live emergency SOS alerts.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/verify"
               onClick={onPersist}
-              className="px-10 py-5 bg-ocean text-white font-bold rounded-full shadow-xl hover:shadow-2xl hover:shadow-ocean/20 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 group/btn"
+              className="px-7 py-3.5 bg-sunset text-white font-bold rounded-full shadow-md shadow-sunset/20 hover:bg-sunset-dark transition-all flex items-center justify-center gap-2 text-sm"
             >
-              Verify with Passport
-              <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+              Verify with ID
+              <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               href="/dashboard"
               onClick={onPersist}
-              className="px-10 py-5 bg-white/60 backdrop-blur-sm text-slate font-bold rounded-full border border-white/40 hover:bg-white/80 transition-all text-center flex items-center justify-center shadow-sm"
+              className="px-7 py-3.5 bg-white text-slate font-semibold rounded-full border border-slate/15 hover:bg-slate/5 transition-all text-center flex items-center justify-center text-sm"
             >
               Skip for Now
             </Link>
@@ -456,9 +491,9 @@ function SafetyForm({ onPersist }: { onPersist: () => void }) {
         </div>
       </div>
 
-      <div className="flex items-start gap-4 p-6 glass border border-sunset/20 rounded-2xl text-sunset-dark text-sm font-medium">
-        <AlertTriangle className="w-6 h-6 text-sunset flex-shrink-0 mt-0.5" />
-        <p>Your privacy is our priority. ID verification data is processed by a certified third party and is never shared with other users or stored on our public servers.</p>
+      <div className="flex items-start gap-3.5 p-5 bg-white border border-slate/10 rounded-xl text-slate/75 text-xs font-medium leading-relaxed">
+        <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" strokeWidth={1.75} />
+        <p>Your ID details are checked securely and are never shown to other travellers.</p>
       </div>
     </div>
   );
@@ -467,38 +502,27 @@ function SafetyForm({ onPersist }: { onPersist: () => void }) {
 function OnboardingSuccess() {
   return (
     <div className="min-h-screen bg-background text-slate flex flex-col items-center justify-center relative overflow-hidden px-6">
-      {/* ── Background Decoration ── */}
-      <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <Image
-          src="https://images.unsplash.com/photo-1544526226-d4568090ffb8?auto=format&fit=crop&q=80&w=1920"
-          alt="Southeast Asia Background"
-          fill
-          priority
-          className="object-cover opacity-10 scale-110 pointer-events-none"
-        />
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-3xl" />
-      </div>
-
-      <div className="relative z-10 text-center">
+      <div className="relative z-10 text-center max-w-lg">
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", damping: 12, stiffness: 100 }}
-          className="w-24 h-24 bg-sunset rounded-full flex items-center justify-center shadow-xl shadow-sunset/40 mx-auto mb-10 ring-8 ring-sunset/10"
+          transition={{ type: "spring", damping: 14, stiffness: 120 }}
+          className="w-20 h-20 bg-sunset rounded-full flex items-center justify-center shadow-lg shadow-sunset/30 mx-auto mb-8"
         >
-          <Check className="w-12 h-12 text-white" />
+          <Check className="w-10 h-10 text-white" strokeWidth={2.5} />
         </motion.div>
-        <h2 className="text-5xl md:text-8xl font-bold text-slate mb-6 leading-tight tracking-tight">
+        <h2 className="text-4xl md:text-6xl font-bold text-slate mb-4 leading-tight tracking-tight">
           You&apos;re All <span className="text-sunset">Set!</span>
         </h2>
-        <p className="text-slate/60 text-xl md:text-2xl max-w-lg mx-auto mb-12 font-medium">
-          Welcome to the tribe. Your Southeast Asia journey starts now.
+        <p className="text-slate/65 text-lg mb-10 font-medium">
+          Your profile is ready. Start browsing travellers, shared day plans, and local safety tools.
         </p>
         <Link
           href="/dashboard"
-          className="px-12 py-6 bg-sunset text-white font-bold rounded-full shadow-xl shadow-sunset/20 hover:bg-sunset-dark transition-all active:scale-95 text-lg"
+          className="inline-flex items-center gap-2 px-10 py-4 bg-sunset text-white font-bold rounded-full shadow-lg shadow-sunset/20 hover:bg-sunset-dark transition-all text-base"
         >
-          Enter the Hub
+          Open Dashboard
+          <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </div>

@@ -8,8 +8,6 @@ import {
   UserPlus,
   Heart,
   MapPin,
-  MoreHorizontal,
-  Download,
   Share2,
   X,
   Cloud,
@@ -18,10 +16,13 @@ import {
   Image as ImageIcon,
   HardDrive,
   Link2,
+  Lock
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useMessagesStore } from "@/lib/stores/useMessages";
+import { UserTier, getTierPermissions } from "@/lib/access";
 
 interface Memory {
   id: string;
@@ -39,9 +40,9 @@ const SAMPLE_MEMORIES: Memory[] = [
     id: "1",
     url: "https://images.pexels.com/photos/3533659/pexels-photo-3533659.jpeg?auto=compress&cs=tinysrgb&w=800",
     location: "Cloud 9 Boardwalk, Siargao",
-    caption: "Dawn patrol waves and fresh coconut brew with the crew. Golden hour hits differently on this island.",
+    caption: "Early morning waves and fresh coconut coffee with the group.",
     taggedKins: ["Suki", "Liam"],
-    vibe: "Surf, Communal",
+    vibe: "Surf",
     likes: 34,
     date: "14 October 2026",
   },
@@ -49,19 +50,19 @@ const SAMPLE_MEMORIES: Memory[] = [
     id: "2",
     url: "https://images.pexels.com/photos/13874296/pexels-photo-13874296.jpeg?auto=compress&cs=tinysrgb&w=800",
     location: "Big Lagoon, El Nido",
-    caption: "Chartered the first outrigger at 6:00 AM with our Kin ring—had the entire emerald lagoon to ourselves.",
+    caption: "Took the 6:00 AM boat together and had the whole lagoon to ourselves.",
     taggedKins: ["Nara", "Liam"],
-    vibe: "Expedition",
+    vibe: "Boat Trip",
     likes: 52,
     date: "18 October 2026",
   },
   {
     id: "3",
     url: "https://images.pexels.com/photos/17263722/pexels-photo-17263722.jpeg?auto=compress&cs=tinysrgb&w=800",
-    location: "Kawasan Canyons, Cebu",
-    caption: "Turquoise canyon leaps followed by grilled kinilaw on Panagsama Beach with the Moalboal crew.",
+    location: "Kawasan Falls, Cebu",
+    caption: "Waterfall swim followed by grilled seafood on Panagsama Beach.",
     taggedKins: ["Nara", "Kevin"],
-    vibe: "Canyoning, Local",
+    vibe: "Waterfalls",
     likes: 29,
     date: "22 October 2026",
   },
@@ -69,28 +70,31 @@ const SAMPLE_MEMORIES: Memory[] = [
     id: "4",
     url: "https://images.pexels.com/photos/13518466/pexels-photo-13518466.jpeg?auto=compress&cs=tinysrgb&w=800",
     location: "Kayangan Lake, Coron",
-    caption: "Freediving between limestone cathedrals and thermal coral reefs. Zero solo travel awkwardness.",
+    caption: "Swimming in crystal-clear water surrounded by limestone cliffs.",
     taggedKins: ["Suki", "Kevin"],
-    vibe: "Freedive, Raw",
+    vibe: "Swimming",
     likes: 64,
     date: "27 October 2026",
   },
 ];
 
-export function MemoriesView() {
+export function MemoriesView({ tier = "verified" }: { tier?: UserTier }) {
   const store = useMessagesStore();
+  const perms = getTierPermissions(tier);
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isReelOpen, setIsReelOpen] = useState(false);
   const [reelIndex, setReelIndex] = useState(0);
   const [likedIds, setLikedIds] = useState<Record<string, boolean>>({});
+  const [notice, setNotice] = useState<string | null>(null);
 
   const allMemories = useMemo(() => {
     const chatMemories: Memory[] = store.archivedMemories.map((m) => ({
       id: m.id,
       url: "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=800&auto=format&fit=crop",
       location: m.location,
-      caption: `Ring session with ${m.kinName}: ${m.preview}`,
+      caption: `Saved chat with ${m.kinName}: ${m.preview}`,
       taggedKins: [m.kinName],
       vibe: m.vibe,
       likes: 8,
@@ -103,7 +107,6 @@ export function MemoriesView() {
     return [...chatMemories, ...SAMPLE_MEMORIES];
   }, [store.archivedMemories]);
 
-  // Auto-advance Stippl-style Trip Reel slideshow
   useEffect(() => {
     if (!isReelOpen) return;
     const timer = setInterval(() => {
@@ -115,57 +118,86 @@ export function MemoriesView() {
   const selectedMemory = allMemories.find((m) => m.id === selectedId);
   const activeReelMemory = allMemories[reelIndex] || allMemories[0];
 
-  const toggleLike = (id: string) => {
-    setLikedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  const handleOpenImport = () => {
+    if (!perms.canUploadMemories) {
+      setNotice(
+        tier === "guest"
+          ? "Sign up and verify your ID to upload and share trip photos."
+          : "Verify your ID to upload photos to shared trip albums."
+      );
+      setTimeout(() => setNotice(null), 3500);
+      return;
+    }
+    setIsImportModalOpen(true);
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 pb-32">
+    <div className="max-w-6xl mx-auto space-y-10 pb-24 relative">
+      <AnimatePresence>
+        {notice && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[70] px-5 py-3 bg-slate text-white rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-3 border border-white/10"
+          >
+            <Lock className="w-4 h-4 text-sunset shrink-0" />
+            <span>{notice}</span>
+            <Link
+              href={tier === "guest" ? "/onboarding" : "/verify"}
+              className="px-3 py-1 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0"
+            >
+              {tier === "guest" ? "Join Free" : "Verify ID"}
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 text-ocean font-bold tracking-widest text-xs uppercase bg-ocean/5 rounded-full px-4 py-1.5 w-fit border border-ocean/10 shadow-sm">
-            <Camera className="w-3.5 h-3.5" />
-            Memory Vault · Stippl Reel Ready
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-2 text-slate/70 font-bold tracking-wider text-xs uppercase bg-white rounded-full px-3.5 py-1 border border-slate/10">
+            <Camera className="w-3.5 h-3.5" strokeWidth={1.75} />
+            Shared Album
           </div>
-          <h2 className="text-4xl text-slate font-bold">The Collective Scrapbook</h2>
-          <p className="text-slate/60 font-medium italic">
-            Preserving every Philippine sunrise, boodle fight, and shared nautical mile.
+          <h2 className="text-3xl text-slate font-bold">Trip Photos</h2>
+          <p className="text-slate/65 text-sm font-medium">
+            Save and share favourite photos from every group trip.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => {
               setReelIndex(0);
               setIsReelOpen(true);
             }}
-            className="flex items-center gap-2 px-6 py-4 bg-sunset text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-sunset/20 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-5 py-3 bg-sunset text-white rounded-xl font-bold text-xs shadow-sm hover:bg-sunset-dark transition-all"
           >
             <Sparkles className="w-4 h-4" />
-            Play Trip Reel
+            Play Slideshow
           </button>
           <button
             type="button"
-            onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-4 bg-white text-ocean border border-ocean/10 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-sm hover:shadow-xl hover:bg-ocean/5 transition-all"
+            onClick={handleOpenImport}
+            className="flex items-center gap-2 px-5 py-3 bg-white text-slate border border-slate/15 rounded-xl font-bold text-xs hover:bg-slate/5 transition-all"
           >
-            <Cloud className="w-4 h-4" />
+            {perms.canUploadMemories ? <Cloud className="w-4 h-4 text-slate/70" /> : <Lock className="w-3.5 h-3.5 text-slate/60" />}
             Sync Cloud
           </button>
           <button
             type="button"
-            onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center gap-2 px-8 py-4 bg-slate text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-slate/20 hover:scale-105 active:scale-95 transition-all"
+            onClick={handleOpenImport}
+            className="flex items-center gap-2 px-5 py-3 bg-slate text-white rounded-xl font-bold text-xs hover:bg-slate/90 transition-all"
           >
-            <Plus className="w-4 h-4" />
-            Upload
+            {perms.canUploadMemories ? <Plus className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
+            Upload Photo
           </button>
         </div>
       </div>
 
-      {/* Stippl-Inspired Auto-Reel Modal */}
+      {/* Slideshow Modal */}
       <AnimatePresence>
         {isReelOpen && activeReelMemory && (
           <motion.div
@@ -174,25 +206,17 @@ export function MemoriesView() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[120] flex items-center justify-center p-6"
           >
-            <div
-              className="absolute inset-0 bg-slate/85 backdrop-blur-2xl"
-              onClick={() => setIsReelOpen(false)}
-            />
+            <div className="absolute inset-0 bg-slate/80 backdrop-blur-xl" onClick={() => setIsReelOpen(false)} />
             <motion.div
-              initial={{ scale: 0.92, y: 20 }}
+              initial={{ scale: 0.94, y: 16 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.92, y: 20 }}
-              className="relative w-full max-w-md aspect-[9/16] max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 bg-black"
+              exit={{ scale: 0.94, y: 16 }}
+              className="relative w-full max-w-md aspect-[9/16] max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-black"
             >
-              {/* Progress bars at top */}
-              <div className="absolute top-5 left-6 right-6 z-30 flex gap-1.5">
+              <div className="absolute top-5 left-5 right-5 z-30 flex gap-1.5">
                 {allMemories.map((m, idx) => (
                   <div key={m.id} className="flex-1 h-1 bg-white/25 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full bg-sunset transition-all duration-500 ${
-                        idx <= reelIndex ? "w-full" : "w-0"
-                      }`}
-                    />
+                    <div className={`h-full bg-white transition-all duration-500 ${idx <= reelIndex ? "w-full" : "w-0"}`} />
                   </div>
                 ))}
               </div>
@@ -200,41 +224,23 @@ export function MemoriesView() {
               <button
                 type="button"
                 onClick={() => setIsReelOpen(false)}
-                aria-label="Close Trip Reel"
-                className="absolute top-10 right-6 z-30 p-3 bg-black/40 backdrop-blur-md text-white rounded-full hover:bg-black/60 transition-all"
+                aria-label="Close slideshow"
+                className="absolute top-9 right-5 z-30 p-2.5 bg-black/45 text-white rounded-full hover:bg-black/65 transition-all"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeReelMemory.id}
-                  initial={{ opacity: 0, scale: 1.06 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="absolute inset-0"
-                >
-                  <Image
-                    src={activeReelMemory.url}
-                    alt={activeReelMemory.caption}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
-                </motion.div>
-              </AnimatePresence>
+              <Image src={activeReelMemory.url} alt={activeReelMemory.caption} fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
 
-              <div className="absolute bottom-8 left-8 right-8 z-20 space-y-4 text-white">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sunset/90 text-white text-xs font-bold uppercase tracking-widest">
+              <div className="absolute bottom-7 left-7 right-7 z-20 space-y-3 text-white">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold">
                   <MapPin className="w-3 h-3" /> {activeReelMemory.location}
                 </span>
-                <p className="text-xl italic leading-snug">
-                  &ldquo;{activeReelMemory.caption}&rdquo;
-                </p>
-                <div className="flex items-center justify-between pt-2 border-t border-white/15 text-xs text-white/70">
+                <p className="text-lg leading-snug font-medium">&ldquo;{activeReelMemory.caption}&rdquo;</p>
+                <div className="flex items-center justify-between pt-2 border-t border-white/15 text-xs text-white/75">
                   <span>{activeReelMemory.date}</span>
-                  <span>With @{activeReelMemory.taggedKins.join(", @")}</span>
+                  <span>With {activeReelMemory.taggedKins.join(", ")}</span>
                 </div>
               </div>
             </motion.div>
@@ -251,34 +257,29 @@ export function MemoriesView() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[110] flex items-center justify-center p-6"
           >
-            <div
-              className="absolute inset-0 bg-slate/40 backdrop-blur-md"
-              onClick={() => setIsImportModalOpen(false)}
-            />
+            <div className="absolute inset-0 bg-slate/45 backdrop-blur-sm" onClick={() => setIsImportModalOpen(false)} />
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.95, y: 12 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-10 space-y-8"
+              exit={{ scale: 0.95, y: 12 }}
+              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 space-y-6 border border-slate/10"
             >
-              <div className="space-y-2 text-center">
-                <h3 className="text-2xl font-extrabold text-slate">Import Memories</h3>
-                <p className="text-xs font-medium text-slate/60">
-                  Select a source to synchronise your Philippine loop shots.
-                </p>
+              <div className="space-y-1 text-center">
+                <h3 className="text-xl font-bold text-slate">Import Photos</h3>
+                <p className="text-xs font-medium text-slate/65">Choose where to bring in your trip photos from.</p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 <ImportSource icon={ImageIcon} label="Google Photos" status="Connected" />
                 <ImportSource icon={HardDrive} label="Amazon Photos" status="Ready" />
                 <ImportSource icon={Link2} label="Instagram Link" status="Ready" />
-                <ImportSource icon={Cloud} label="iCloud (Photos app)" status="Ready" />
+                <ImportSource icon={Cloud} label="iCloud Photos" status="Ready" />
               </div>
 
               <button
                 type="button"
                 onClick={() => setIsImportModalOpen(false)}
-                className="w-full py-5 bg-[#F9F8F6] text-slate/60 font-bold uppercase tracking-widest text-xs rounded-2xl hover:text-slate transition-all"
+                className="w-full py-3.5 bg-[#F9F8F6] text-slate/75 font-bold text-xs rounded-xl hover:text-slate transition-all"
               >
                 Close
               </button>
@@ -287,176 +288,126 @@ export function MemoriesView() {
         )}
       </AnimatePresence>
 
-      {/* Masonry Grid */}
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+      {/* Photo Grid */}
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
         {allMemories.map((memory) => {
           const isLiked = Boolean(likedIds[memory.id]);
           const displayLikes = memory.likes + (isLiked ? 1 : 0);
 
           return (
-            <motion.div
+            <div
               key={memory.id}
-              layoutId={memory.id}
               onClick={() => setSelectedId(memory.id)}
               className="break-inside-avoid cursor-pointer group"
             >
-              <div className="relative rounded-2xl overflow-hidden bg-white border border-slate/5 shadow-lg shadow-slate/5 group-hover:shadow-2xl transition-all duration-700">
+              <div className="relative rounded-2xl overflow-hidden bg-white border border-slate/10 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div className="relative aspect-[3/4]">
                   <Image
                     src={memory.url}
                     alt={memory.caption}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate/90 via-slate/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <div className="absolute bottom-8 left-8 right-8 space-y-4">
-                      <p className="text-white text-lg italic leading-tight">
-                        &ldquo;{memory.caption}&rdquo;
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-6 left-6 right-6 space-y-2.5">
+                      <p className="text-white text-sm leading-snug font-medium">&ldquo;{memory.caption}&rdquo;</p>
+                      <div className="flex flex-wrap gap-1.5">
                         {memory.taggedKins.map((kin) => (
-                          <span
-                            key={kin}
-                            className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white border border-white/20"
-                          >
-                            @{kin}
+                          <span key={kin} className="px-2.5 py-0.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold text-white">
+                            {kin}
                           </span>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Location Badge */}
-                  <div className="absolute top-6 left-6 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center gap-2">
+                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/45 backdrop-blur-md rounded-full flex items-center gap-1.5">
                     <MapPin className="w-3 h-3 text-white" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-white">
-                      {memory.location}
-                    </span>
+                    <span className="text-xs font-semibold text-white">{memory.location}</span>
                   </div>
 
-                  {/* Likes */}
-                  <div className="absolute top-6 right-6 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center gap-2">
-                    <Heart className="w-3 h-3 text-sunset fill-sunset" />
-                    <span className="text-xs font-bold text-white">{displayLikes}</span>
+                  <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/45 backdrop-blur-md rounded-full flex items-center gap-1.5">
+                    <Heart className="w-3 h-3 text-white fill-white" />
+                    <span className="text-xs font-bold text-white tabular-nums">{displayLikes}</span>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
 
-      {/* Expanded Memory Modal */}
+      {/* Expanded Photo Modal */}
       <AnimatePresence>
         {selectedId && selectedMemory && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6"
           >
-            <div
-              className="absolute inset-0 bg-slate/60 backdrop-blur-2xl"
-              onClick={() => setSelectedId(null)}
-            />
-            <motion.div
-              layoutId={selectedId}
-              className="relative w-full max-w-6xl h-[80vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
-            >
-              {/* Image Area */}
-              <div className="flex-1 relative bg-black flex items-center justify-center group/image">
-                <Image
-                  src={selectedMemory.url}
-                  alt={selectedMemory.caption}
-                  fill
-                  className="object-contain"
-                />
+            <div className="absolute inset-0 bg-slate/65 backdrop-blur-md" onClick={() => setSelectedId(null)} />
+            <div className="relative w-full max-w-5xl h-[78vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+              <div className="flex-1 relative bg-black flex items-center justify-center">
+                <Image src={selectedMemory.url} alt={selectedMemory.caption} fill className="object-contain" />
                 <button
                   type="button"
                   onClick={() => setSelectedId(null)}
-                  title="Close Memory"
-                  className="absolute top-8 left-8 p-4 bg-white/10 hover:bg-white/20 text-white rounded-3xl backdrop-blur-xl transition-all z-10"
+                  aria-label="Close photo"
+                  className="absolute top-5 left-5 p-3 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all z-10"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Info Area */}
-              <div className="w-full md:w-[400px] p-12 flex flex-col justify-between bg-[#F9F8F6]">
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-xs font-bold uppercase tracking-wider text-ocean">
-                        {selectedMemory.location}
-                      </p>
-                      <h3 className="text-2xl font-extrabold text-slate leading-none">
-                        Trip Moment
-                      </h3>
-                    </div>
-                    <button
-                      type="button"
-                      className="p-3 bg-white border border-slate/5 rounded-2xl shadow-sm hover:bg-slate/5 transition-all text-slate/60"
-                    >
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
+              <div className="w-full md:w-[360px] p-8 flex flex-col justify-between bg-[#F9F8F6]">
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate/60">{selectedMemory.location}</p>
+                    <h3 className="text-xl font-bold text-slate mt-1">Trip Photo</h3>
                   </div>
-
-                  <div className="space-y-4">
-                    <p className="text-lg italic text-slate/60 leading-relaxed">
-                      &ldquo;{selectedMemory.caption}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3 text-slate/60 text-xs font-bold uppercase tracking-widest">
-                      <Clock className="w-4 h-4" /> {selectedMemory.date}
-                    </div>
+                  <p className="text-sm text-slate/80 leading-relaxed font-medium">&ldquo;{selectedMemory.caption}&rdquo;</p>
+                  <div className="flex items-center gap-2 text-slate/60 text-xs font-semibold">
+                    <Clock className="w-4 h-4" /> {selectedMemory.date}
                   </div>
-
-                  <div className="space-y-4 pt-4 border-t border-slate/5">
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate/60">
-                      Tagged Kins
-                    </p>
+                  <div className="space-y-2 pt-4 border-t border-slate/10">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate/60">People in Photo</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedMemory.taggedKins.map((kin) => (
-                        <div
-                          key={kin}
-                          className="flex items-center gap-2 pl-2 pr-4 py-2 bg-white border border-slate/5 rounded-2xl shadow-sm"
-                        >
-                          <div className="w-6 h-6 rounded-full bg-ocean/10 flex items-center justify-center">
-                            <UserPlus className="w-3 h-3 text-ocean" />
-                          </div>
-                          <span className="text-xs font-bold text-slate">@{kin}</span>
-                        </div>
+                        <span key={kin} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate/10 rounded-full text-xs font-semibold text-slate">
+                          <UserPlus className="w-3 h-3 text-slate/60" />
+                          {kin}
+                        </span>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 pt-6">
                   <button
                     type="button"
-                    onClick={() => toggleLike(selectedMemory.id)}
-                    className="flex-1 py-5 bg-sunset text-white font-bold uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-sunset/20 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all"
+                    onClick={() => setLikedIds((prev) => ({ ...prev, [selectedMemory.id]: !prev[selectedMemory.id] }))}
+                    className="flex-1 py-3.5 bg-sunset text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 hover:bg-sunset-dark transition-all"
                   >
                     <Heart className="w-4 h-4 fill-white" />
-                    {likedIds[selectedMemory.id] ? "Loved by You" : "Love this Moment"}
+                    {likedIds[selectedMemory.id] ? "Liked" : "Like Photo"}
                   </button>
                   <button
                     type="button"
-                    className="p-5 bg-white border border-slate/5 text-slate rounded-2xl shadow-sm hover:bg-slate/5 transition-all"
+                    aria-label="Share photo"
+                    className="p-3.5 bg-white border border-slate/15 text-slate rounded-xl hover:bg-slate/5 transition-all"
                   >
                     <Share2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-
-/* ── HELPERS ── */
 
 function ImportSource({
   icon: Icon,
@@ -470,29 +421,27 @@ function ImportSource({
   return (
     <button
       type="button"
-      className="w-full flex items-center justify-between p-5 bg-[#F9F8F6] hover:bg-white border border-transparent hover:border-slate/5 rounded-2xl transition-all group shadow-sm hover:shadow-xl hover:shadow-slate/5"
+      className="w-full flex items-center justify-between p-4 bg-[#F9F8F6] hover:bg-white border border-slate/10 rounded-xl transition-all"
     >
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-white rounded-2xl border border-slate/5 group-hover:scale-110 transition-transform">
-          <Icon className="w-5 h-5 text-slate" />
+      <div className="flex items-center gap-3.5">
+        <div className="p-2.5 bg-white rounded-lg border border-slate/10">
+          <Icon className="w-5 h-5 text-slate" strokeWidth={1.75} />
         </div>
         <div className="text-left">
           <p className="text-sm font-bold text-slate">{label}</p>
-          <p className="text-xs font-bold uppercase tracking-widest text-slate/60">
-            Sync Photos
-          </p>
+          <p className="text-xs font-medium text-slate/60">Sync Photos</p>
         </div>
       </div>
-      <div
+      <span
         className={cn(
-          "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border",
+          "px-3 py-1 rounded-full text-xs font-bold border",
           status === "Connected"
-            ? "bg-green-50 text-green-500 border-green-100"
-            : "bg-white text-slate/60 border-slate/5"
+            ? "bg-green-50 text-green-700 border-green-200"
+            : "bg-white text-slate/65 border-slate/10"
         )}
       >
         {status}
-      </div>
+      </span>
     </button>
   );
 }
