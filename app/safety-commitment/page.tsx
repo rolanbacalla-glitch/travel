@@ -41,8 +41,8 @@ export default function SafetyCommitmentPage() {
   const pillars = [
     {
       icon: ShieldCheck,
-      title: "Verified Community",
-      desc: "Every single member undergoes a multi-step verification process, including government ID checks and social validation, ensuring you only travel with real, trusted people.",
+      title: "Verified Before Contact",
+      desc: "Anyone can explore destinations, but messaging a traveller or joining a trip strictly requires Verified Kin status — mobile OTP, government ID check, and live 3D selfie liveness matched to their profile photo.",
       color: "bg-blue-500",
       image: "/images/safety/community.png"
     },
@@ -64,23 +64,23 @@ export default function SafetyCommitmentPage() {
 
   const protocols = [
     {
-      title: "ID Verification",
-      detail: "Secure biometric verification integrated with government databases.",
+      title: "ID & Live Liveness",
+      detail: "UK DIATF-aligned KYC checks verify passport or UK driving licence authenticity alongside an ISO 30107-3 live selfie check and profile photo match.",
       icon: Lock
     },
     {
-      title: "Real-time Tracking",
-      detail: "Optional live location sharing with our response centre while on solo treks.",
-      icon: Zap
+      title: "Pre-Contact Trust Passport",
+      detail: "Inspect a traveller's verification checks, completed trips, mutual Kins, and peer safety score — or request a 2-minute video check before meeting.",
+      icon: ShieldCheck
     },
     {
-      title: "Emergency SOS",
-      detail: "One-tap emergency button that alerts local authorities and our team.",
+      title: "Emergency SOS & Check-ins",
+      detail: "One-tap SOS connects local emergency services, shares live GPS coordinates with your emergency contact, and alerts our 24/7 response desk.",
       icon: Bell
     },
     {
-      title: "Community Ratings",
-      detail: "Transparent, forced-feedback loop for all companions and guides.",
+      title: "UK Online Safety Controls",
+      detail: "Verified-only direct messaging by default, instant Block & Report, private post-trip safety feedback, and ban-evasion hashing aligned with the UK Online Safety Act 2023.",
       icon: Users
     }
   ];
@@ -163,7 +163,7 @@ export default function SafetyCommitmentPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-white">
               {[
                 { label: "Emergency Response", value: "< 5 Mins" },
-                { label: "Identity Verified", value: "100%" },
+                { label: "Verified to Message", value: "100%" },
                 { label: "Local Safety Zones", value: "1,200+" },
                 { label: "Global Coverage", value: "24/7" },
               ].map((stat, i) => (
@@ -279,17 +279,27 @@ export default function SafetyCommitmentPage() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center gap-20">
             <div className="lg:w-1/2">
-              <span className="inline-block px-4 py-2 bg-ocean/10 text-ocean rounded-full text-xs font-bold uppercase tracking-widest mb-6">Backend & Data</span>
-              <h2 className="text-5xl md:text-6xl font-bold text-slate mb-8">Bank-Grade Security for Your Identity.</h2>
+              <span className="inline-block px-4 py-2 bg-ocean/10 text-ocean rounded-full text-xs font-bold uppercase tracking-widest mb-6">UK Privacy &amp; Compliance</span>
+              <h2 className="text-5xl md:text-6xl font-bold text-slate mb-8">UK GDPR Built-In. Zero ID Retention.</h2>
               <p className="text-xl text-slate/70 leading-relaxed mb-10">
-                We take your privacy as seriously as your physical safety. Your data is encrypted using
-                AES-256 standards and hosted on dedicated, isolated servers in secure jurisdictions.
+                Operated by Travel Kin Ltd (England &amp; Wales), our safety architecture is built around the UK GDPR,
+                the Data Protection Act 2018 (ICO), and the UK Online Safety Act 2023 (Ofcom). We confirm who you are
+                without stockpiling your sensitive identity documents.
               </p>
               <div className="space-y-6">
                 {[
-                  { title: "Zero-Knowledge Proofs", desc: "We verify your identity without storing your sensitive documents." },
-                  { title: "Biometric Auth", desc: "FaceID and fingerprint integration for all app-based SOS features." },
-                  { title: "GDPR+ Compliance", desc: "We exceed global privacy standards to ensure your travel history is yours alone." }
+                  {
+                    title: "Zero-Retention ID Verification",
+                    desc: "Raw passport, UK driving licence, and selfie images are processed exclusively by our accredited KYC partner and automatically purged upon completion. We retain only your Verified status, issuing country, and a salted one-way safety hash to block banned accounts from re-registering."
+                  },
+                  {
+                    title: "Explicit Biometric Consent (UK GDPR Art. 9)",
+                    desc: "Live 3D liveness and profile-photo face matching are treated as special-category biometric data under UK GDPR Article 9(2)(a) and require your explicit, revocable consent before capture."
+                  },
+                  {
+                    title: "UK Online Safety Act 2023 Readiness",
+                    desc: "Proactive user-to-user risk protections including Verified-Only messaging by default, one-tap Block & Report, automatic EXIF GPS stripping on uploaded trip photos, and rapid moderation triage."
+                  }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-6 items-start">
                     <div className="mt-1 p-2 bg-white rounded-xl shadow-md">
@@ -326,8 +336,8 @@ export default function SafetyCommitmentPage() {
                       <Lock className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white/75 uppercase tracking-widest">Network Integrity</p>
-                      <p className="text-sm font-mono font-bold tracking-tighter">AES-256-GCM SECURE</p>
+                      <p className="text-xs font-bold text-white/75 uppercase tracking-widest">UK Compliance Standard</p>
+                      <p className="text-sm font-mono font-bold tracking-tighter">UK GDPR · ZERO ID RETENTION</p>
                     </div>
                   </div>
                   <Zap className="w-6 h-6 text-sunset animate-pulse" />

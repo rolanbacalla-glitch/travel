@@ -68,8 +68,8 @@ export default function PrivacyPolicyPage() {
       <div className="bg-slate-mid text-white/60 py-4 px-6 border-b border-white/5 text-center text-xs">
         <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-6">
           <span><strong>Effective Date:</strong> May 22, 2026</span>
-          <span><strong>Jurisdiction:</strong> United Kingdom (UK GDPR)</span>
-          <span><strong>Version:</strong> 2.1</span>
+          <span><strong>Jurisdiction:</strong> United Kingdom (UK GDPR, DPA 2018 &amp; Online Safety Act 2023)</span>
+          <span><strong>Version:</strong> 2.2</span>
         </div>
       </div>
 
@@ -85,10 +85,10 @@ export default function PrivacyPolicyPage() {
                 1. Data Controller & Compliance
               </h2>
               <p className="mb-4">
-                <strong>Travel Kin Ltd</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;) is a company registered in England and Wales under Company Registration Number 14782390, with its registered office in London, UK. We are the **Data Controller** in respect of your personal data processed through the Travel Kin platform under the <strong>UK General Data Protection Regulation (UK GDPR)</strong> and the <strong>Data Protection Act 2018</strong>.
+                <strong>Travel Kin Ltd</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;) is a company registered in England and Wales under Company Registration Number 14782390, with its registered office in London, UK. We are the <strong>Data Controller</strong> in respect of your personal data processed through the Travel Kin platform under the <strong>UK General Data Protection Regulation (UK GDPR)</strong> and the <strong>Data Protection Act 2018</strong>.
               </p>
               <p>
-                We are registered with the **Information Commissioner&rsquo;s Office (ICO)**, the UK supervisory authority for data protection issues. You can verify our registration on the ICO website using our registration certificate.
+                We are registered with the <strong>Information Commissioner&rsquo;s Office (ICO)</strong>, the UK supervisory authority for data protection issues, and design our user-to-user safety protections in alignment with the <strong>UK Online Safety Act 2023</strong> (regulated by Ofcom). You can verify our data protection registration on the ICO website using our registration certificate.
               </p>
             </div>
 
@@ -102,10 +102,10 @@ export default function PrivacyPolicyPage() {
                 To facilitate safe and vetted solo travel, we collect and process the following categories of data:
               </p>
               <ul className="list-disc pl-6 space-y-2 mb-4">
-                <li><strong>Identity & Verification Data:</strong> Government ID scans, biometric face matches (selfies), full legal names, and birth dates. This is processed securely via our UK-vetted biometric verification partner and is deleted within 30 days of verification.</li>
-                <li><strong>Location & Safety Data:</strong> Live GPS coordinates. While using our emergency SOS button, real-time tracking is enabled to guide local emergency teams (vital interest).</li>
-                <li><strong>Community Profile Data:</strong> Travel history, preferred destinations, verified social links, ratings, reviews, and crew communications.</li>
-                <li><strong>Technical & Usage Data:</strong> IP addresses, browser fingerprint, device type, cookie preferences, and interaction details.</li>
+                <li><strong>Identity &amp; Verification Data (Special Category Biometric Data):</strong> Mobile phone OTP verification, government ID document captures (passport, UK driving licence, or national ID), and live 3D selfie liveness matched against your profile photo. These checks are processed exclusively by our UK DIATF-aligned, ISO 30107-3 accredited KYC verification partner. Raw ID images and selfie captures are purged automatically immediately upon completion; Travel Kin retains only your Verified status, issuing country, verification timestamp, and an irreversible salted one-way safety hash solely to prevent banned accounts from re-registering.</li>
+                <li><strong>Location &amp; Safety Data:</strong> Live GPS coordinates when active trip check-ins or the Emergency SOS button are triggered (vital interest), plus emergency contact details you elect to store.</li>
+                <li><strong>Community Profile &amp; Media Data:</strong> Travel history, preferred destinations, Pre-Contact Trust Passport indicators (verification badges, completed trips, mutual Kins, and peer safety ratings), crew communications, and trip photos. Embedded EXIF GPS coordinates are stripped automatically from uploaded trip photos before posting.</li>
+                <li><strong>Technical &amp; Usage Data:</strong> IP addresses, device type, cookie preferences, and security interaction logs used to prevent fraud and abuse.</li>
               </ul>
               <div className="p-4 bg-mist rounded-2xl border border-ocean/10 text-xs">
                 <p className="font-semibold text-ocean mb-1">UK Case Context — Location Vetting:</p>
@@ -120,24 +120,28 @@ export default function PrivacyPolicyPage() {
                 3. Legal Bases under UK GDPR
               </h2>
               <p className="mb-4">
-                Under Article 6 of the UK GDPR, we rely on the following legal bases to process your information:
+                Under Articles 6 and 9 of the UK GDPR, we rely on the following legal bases to process your information:
               </p>
               <div className="space-y-4">
                 <div className="border-l-4 border-sunset pl-4">
-                  <h4 className="font-bold text-slate text-sm">A. Contractual Necessity (Art 6(1)(b))</h4>
-                  <p className="text-sm">To set up your account, process payments, and connect you with matching Crews and verified local guides for your booked trips.</p>
+                  <h4 className="font-bold text-slate text-sm">A. Explicit Consent for Biometric Verification (Art 6(1)(a) &amp; Art 9(2)(a))</h4>
+                  <p className="text-sm">For one-time 3D selfie liveness and facial comparison against your government ID and profile photo. This is strictly voluntary — you may browse Travel Kin without verifying — and is requested only when you choose to unlock Verified Kin messaging and trip-joining access. You may withdraw consent at any time.</p>
                 </div>
                 <div className="border-l-4 border-sunset pl-4">
-                  <h4 className="font-bold text-slate text-sm">B. Legitimate Interests (Art 6(1)(f))</h4>
-                  <p className="text-sm">To verify user profiles, monitor platform safety, moderate reviews, prevent fraudulent activities, and maintain community trust.</p>
+                  <h4 className="font-bold text-slate text-sm">B. Contractual Necessity (Art 6(1)(b))</h4>
+                  <p className="text-sm">To create and manage your account, process bookings or payments, and connect you with matching Crews and verified local guides for your trips.</p>
                 </div>
                 <div className="border-l-4 border-sunset pl-4">
-                  <h4 className="font-bold text-slate text-sm">C. Vital Interests (Art 6(1)(d))</h4>
-                  <p className="text-sm">To share location coordinates with regional search-and-rescue teams during critical, life-threatening safety events or SOS triggers.</p>
+                  <h4 className="font-bold text-slate text-sm">C. Legal Obligation &amp; Online Safety Duties (Art 6(1)(c))</h4>
+                  <p className="text-sm">To comply with UK law and our user-to-user safety duties under the UK Online Safety Act 2023 (Ofcom), including Verified-Only contact safeguards, Block &amp; Report triage, ban-evasion hashing, and lawful regulatory disclosures.</p>
                 </div>
                 <div className="border-l-4 border-sunset pl-4">
-                  <h4 className="font-bold text-slate text-sm">D. Consent (Art 6(1)(a))</h4>
-                  <p className="text-sm">For deploying non-essential analytics and marketing cookies, or when sharing optional media content within the travel feed.</p>
+                  <h4 className="font-bold text-slate text-sm">D. Vital Interests (Art 6(1)(d))</h4>
+                  <p className="text-sm">To share live location coordinates and emergency profile details with local emergency services or your designated emergency contact during an active SOS trigger.</p>
+                </div>
+                <div className="border-l-4 border-sunset pl-4">
+                  <h4 className="font-bold text-slate text-sm">E. Legitimate Interests (Art 6(1)(f))</h4>
+                  <p className="text-sm">To monitor platform integrity, moderate reviews and safety reports, prevent impersonation or fraudulent accounts, and protect solo traveller community trust.</p>
                 </div>
               </div>
             </div>
@@ -157,7 +161,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Other Community Members:</strong> Limited to profile details (first name, vetted badge, travel preferences) and reviews you choose to make public.</li>
               </ul>
               <p>
-                Because Travel Kin connects users for trips in Southeast Asia, some data transfers occur outside the UK. When transferring data to countries without an adequacy decision, we use **Standard Contractual Clauses (SCCs)** approved by the UK Government, alongside supplementary technical measures to ensure equivalent safeguards.
+                Because Travel Kin connects users for trips internationally, some data transfers occur outside the United Kingdom. When transferring personal data to countries without a UK adequacy regulation, we rely on the <strong>UK International Data Transfer Agreement (IDTA)</strong> or the <strong>UK Addendum to the EU Standard Contractual Clauses</strong> approved by the UK Parliament, alongside Transfer Risk Assessments (TRAs) and supplementary encryption safeguards.
               </p>
             </div>
 
@@ -185,7 +189,7 @@ export default function PrivacyPolicyPage() {
                 </div>
               </div>
               <p>
-                To make a **Subject Access Request (SAR)** or exercise any other right, contact our Data Protection Team at <a href="mailto:privacy@travelkin.co.uk" className="text-sunset hover:underline font-semibold">privacy@travelkin.co.uk</a>. We respond to all valid requests within one calendar month, free of charge.
+                To make a <strong>Subject Access Request (SAR)</strong>, withdraw biometric verification consent, or exercise any other right, contact our Data Protection Team at <a href="mailto:privacy@travelkin.co.uk" className="text-sunset hover:underline font-semibold">privacy@travelkin.co.uk</a>. We respond to all valid requests within one calendar month, free of charge.
               </p>
             </div>
 
@@ -205,7 +209,7 @@ export default function PrivacyPolicyPage() {
                 Email: <a href="mailto:dpo@travelkin.co.uk" className="text-sunset hover:underline font-semibold">dpo@travelkin.co.uk</a>
               </address>
               <p>
-                You also have the right to lodge a complaint at any time with the **Information Commissioner&rsquo;s Office (ICO)**. However, we appreciate the chance to address your concerns directly before you contact the regulator:
+                You also have the right to lodge a complaint at any time with the <strong>Information Commissioner&rsquo;s Office (ICO)</strong>. However, we appreciate the chance to address your concerns directly before you contact the regulator:
               </p>
               <p className="mt-2 text-xs font-semibold text-slate flex items-center gap-1">
                 ICO Helpline: 0303 123 1113 | Website: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-sunset hover:underline inline-flex items-center gap-0.5">ico.org.uk <ExternalLink className="w-3 h-3" /></a>

@@ -6,6 +6,18 @@ export interface KinVibeStats {
   lastDiscovery: string;
 }
 
+export interface KinTrustCheck {
+  idAndLivenessVerified: boolean;
+  verifiedDate?: string;
+  profileFaceMatched: boolean;
+  phoneVerified: boolean;
+  emergencyContactOnFile: boolean;
+  completedTrips: number;
+  mutualKins: string[];
+  safetyRating: number;
+  videoIntroAvailable: boolean;
+}
+
 export interface Kin {
   id: string;
   name: string;
@@ -23,16 +35,17 @@ export interface Kin {
     label: string;
   };
   vibeStats: KinVibeStats;
+  trustCheck: KinTrustCheck;
 }
 
 export const KINS: Kin[] = [
-  { 
-    id: "1", 
-    name: "Suki",  
-    location: "General Luna, Siargao", 
+  {
+    id: "1",
+    name: "Suki",
+    location: "General Luna, Siargao",
     hubId: "siargao",
-    vibe: "Dawn Surf & Secret Lagoon Explorer",  
-    status: "online",  
+    vibe: "Dawn Surf & Secret Lagoon Explorer",
+    status: "online",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=100&w=1600",
     lat: 9.7892,
     lng: 126.1558,
@@ -49,14 +62,25 @@ export const KINS: Kin[] = [
       tags: ["SurfCrew", "EarlyRiser", "Foodie"],
       lastDiscovery: "12m ago · Cloud 9",
     },
+    trustCheck: {
+      idAndLivenessVerified: true,
+      verifiedDate: "12 Oct 2026",
+      profileFaceMatched: true,
+      phoneVerified: true,
+      emergencyContactOnFile: true,
+      completedTrips: 7,
+      mutualKins: ["Liam", "Nara"],
+      safetyRating: 5.0,
+      videoIntroAvailable: true,
+    },
   },
-  { 
-    id: "2", 
-    name: "Liam",  
-    location: "Corong-Corong, El Nido",    
+  {
+    id: "2",
+    name: "Liam",
+    location: "Corong-Corong, El Nido",
     hubId: "el-nido",
-    vibe: "Kayak Expeditions & Sunset Rooftops",  
-    status: "away",    
+    vibe: "Kayak Expeditions & Sunset Rooftops",
+    status: "away",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=100&w=1600",
     lat: 11.1645,
     lng: 119.3926,
@@ -73,14 +97,25 @@ export const KINS: Kin[] = [
       tags: ["LagoonKayak", "DronePhoto", "Social"],
       lastDiscovery: "28m ago · Bacuit Bay",
     },
+    trustCheck: {
+      idAndLivenessVerified: true,
+      verifiedDate: "04 Oct 2026",
+      profileFaceMatched: true,
+      phoneVerified: true,
+      emergencyContactOnFile: true,
+      completedTrips: 5,
+      mutualKins: ["Suki", "Nara"],
+      safetyRating: 4.9,
+      videoIntroAvailable: true,
+    },
   },
-  { 
-    id: "3", 
-    name: "Nara",  
-    location: "Moalboal, Cebu",     
+  {
+    id: "3",
+    name: "Nara",
+    location: "Moalboal, Cebu",
     hubId: "cebu",
-    vibe: "Freediver & Kawasan Canyon Seeker",    
-    status: "online",  
+    vibe: "Freediver & Kawasan Canyon Seeker",
+    status: "online",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=100&w=1600",
     lat: 9.9438,
     lng: 123.3688,
@@ -97,14 +132,25 @@ export const KINS: Kin[] = [
       tags: ["Freedive", "Mindful", "ReefSafe"],
       lastDiscovery: "5m ago · Panagsama",
     },
+    trustCheck: {
+      idAndLivenessVerified: true,
+      verifiedDate: "28 Sep 2026",
+      profileFaceMatched: true,
+      phoneVerified: true,
+      emergencyContactOnFile: true,
+      completedTrips: 11,
+      mutualKins: ["Suki", "Liam"],
+      safetyRating: 5.0,
+      videoIntroAvailable: true,
+    },
   },
-  { 
-    id: "4", 
-    name: "Kevin", 
-    location: "Coron Town, Palawan",       
+  {
+    id: "4",
+    name: "Kevin",
+    location: "Coron Town, Palawan",
     hubId: "coron",
-    vibe: "Digital Nomad & Wreck Diver",   
-    status: "offline", 
+    vibe: "Digital Nomad & Wreck Diver",
+    status: "offline",
     image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=100&w=1600",
     lat: 11.9986,
     lng: 120.2043,
@@ -120,6 +166,16 @@ export const KINS: Kin[] = [
       reviews: 9,
       tags: ["RemoteWork", "Scuba", "HotSprings"],
       lastDiscovery: "1h ago · Kayangan",
+    },
+    trustCheck: {
+      idAndLivenessVerified: false,
+      profileFaceMatched: false,
+      phoneVerified: true,
+      emergencyContactOnFile: false,
+      completedTrips: 0,
+      mutualKins: [],
+      safetyRating: 4.7,
+      videoIntroAvailable: false,
     },
   },
 ];

@@ -16,6 +16,12 @@ import {
   Lock,
   Camera,
   X,
+  CheckCircle2,
+  AlertTriangle,
+  Phone,
+  Video,
+  Flag,
+  Shield,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -66,7 +72,13 @@ export function TravelCrewHub({
   const [likedIds, setLikedIds] = useState<Record<string, boolean>>({});
   const [showHubDirectory, setShowHubDirectory] = useState<boolean>(false);
   const [activePhotosKin, setActivePhotosKin] = useState<Kin | null>(null);
-  const [guestPrompt, setGuestPrompt] = useState<string | null>(null);
+  const [activeTrustKin, setActiveTrustKin] = useState<Kin | null>(null);
+  const [blockedKinIds, setBlockedKinIds] = useState<string[]>([]);
+  const [guestPrompt, setGuestPrompt] = useState<{
+    message: string;
+    ctaLabel?: string;
+    ctaHref?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -91,10 +103,11 @@ export function TravelCrewHub({
   const activeHubLabel =
     HUBS.find((h) => h.id === selectedHub)?.label || "All Islands";
 
-  const onlineCount = kins.filter((k) => k.status === "online").length;
-  const offlineOrAwayCount = kins.filter((k) => k.status !== "online").length;
+  const visibleKins = kins.filter((k) => !blockedKinIds.includes(k.id));
+  const onlineCount = visibleKins.filter((k) => k.status === "online").length;
+  const offlineOrAwayCount = visibleKins.filter((k) => k.status !== "online").length;
 
-  const filteredKins = kins.filter((k) => {
+  const filteredKins = visibleKins.filter((k) => {
     const matchesHub = selectedHub === "all" || k.hubId === selectedHub;
     const matchesVerified = !verifiedOnly || k.verified;
     const matchesAvailability =
@@ -106,10 +119,18 @@ export function TravelCrewHub({
     return matchesHub && matchesVerified && matchesAvailability;
   });
 
+  const showPrompt = (message: string, ctaLabel?: string, ctaHref?: string) => {
+    setGuestPrompt({ message, ctaLabel, ctaHref });
+    setTimeout(() => setGuestPrompt(null), 4000);
+  };
+
   const handleLike = (id: string) => {
     if (!perms.canBookmark) {
-      setGuestPrompt("Create a free account to save favourite travellers.");
-      setTimeout(() => setGuestPrompt(null), 3500);
+      showPrompt(
+        "Create a free account to save favourite travellers.",
+        "Join Free",
+        "/onboarding"
+      );
       return;
     }
     setLikedIds((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -117,32 +138,58 @@ export function TravelCrewHub({
 
   const handleOpenChat = (kin: Kin) => {
     if (!perms.canMessage) {
-      setGuestPrompt(`Sign in for free to message ${kin.name} and plan a trip together.`);
-      setTimeout(() => setGuestPrompt(null), 3500);
+      if (tier === "guest") {
+        showPrompt(
+          `Sign up and verify your ID to message ${kin.name} safely.`,
+          "Join Free",
+          "/onboarding"
+        );
+      } else {
+        showPrompt(
+          `Verified-Only safety rule: complete ID & live selfie verification to message ${kin.name}.`,
+          "Verify ID",
+          "/verify"
+        );
+      }
       return;
     }
+    setActiveTrustKin(null);
     onChat(kin.id);
+  };
+
+  const handleBlockOrReport = (kin: Kin) => {
+    setBlockedKinIds((prev) => [...prev, kin.id]);
+    setActiveTrustKin(null);
+    showPrompt(
+      `${kin.name} has been blocked and flagged for our UK Trust & Safety review.`
+    );
   };
 
   return (
     <div className="space-y-10 relative">
-      {/* Inline Tier Notice */}
+      {/* Inline Tier / Safety Notice */}
       <AnimatePresence>
         {guestPrompt && (
           <motion.div
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-[70] px-5 py-3 bg-slate text-white rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-3 border border-white/10"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[140] px-5 py-3 bg-slate text-white rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-3 border border-white/10 max-w-xl"
           >
-            <Lock className="w-4 h-4 text-sunset shrink-0" />
-            <span>{guestPrompt}</span>
-            <Link
-              href="/onboarding"
-              className="px-3 py-1 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0"
-            >
-              Join Free
-            </Link>
+            {guestPrompt.ctaHref ? (
+              <Lock className="w-4 h-4 text-sunset shrink-0" />
+            ) : (
+              <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" />
+            )}
+            <span>{guestPrompt.message}</span>
+            {guestPrompt.ctaHref && guestPrompt.ctaLabel && (
+              <Link
+                href={guestPrompt.ctaHref}
+                className="px-3 py-1 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0"
+              >
+                {guestPrompt.ctaLabel}
+              </Link>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -389,14 +436,25 @@ export function TravelCrewHub({
                             {kin.name}
                           </h3>
                           {kin.verified ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-slate text-xs font-bold">
+                            <button
+                              type="button"
+                              onClick={() => setActiveTrustKin(kin)}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 hover:bg-white text-slate text-xs font-bold transition-colors"
+                              title="Inspect Trust Passport"
+                            >
                               <ShieldCheck className="w-3 h-3 text-green-600" />
                               ID Verified
-                            </span>
+                            </button>
                           ) : (
-                            <span className="text-xs font-semibold text-white/75">
-                              Not Verified
-                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setActiveTrustKin(kin)}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/90 hover:bg-amber-500 text-white text-xs font-bold transition-colors"
+                              title="Inspect verification status"
+                            >
+                              <AlertTriangle className="w-3 h-3" />
+                              ID Pending
+                            </button>
                           )}
                         </div>
                         <div className="flex items-center gap-1.5 text-white/80 text-xs font-medium">
@@ -420,6 +478,16 @@ export function TravelCrewHub({
                         >
                           {!perms.canMessage && <Lock className="w-3.5 h-3.5" />}
                           Message
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTrustKin(kin)}
+                          aria-label={`Check ${kin.name}'s verification details`}
+                          title="View Trust Check"
+                          className="px-3 py-2.5 bg-white/15 hover:bg-white/25 text-white border border-white/20 backdrop-blur-md rounded-xl text-xs font-bold inline-flex items-center gap-1 transition-all"
+                        >
+                          <Shield className="w-3.5 h-3.5" />
+                          Check
                         </button>
                         <button
                           type="button"
@@ -724,6 +792,230 @@ export function TravelCrewHub({
                     </div>
                   );
                 })()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Pre-Contact Trust Passport Modal (Check Before You Message or Join) */}
+      <AnimatePresence>
+        {activeTrustKin && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6"
+          >
+            <div
+              className="absolute inset-0 bg-slate/50 backdrop-blur-sm"
+              onClick={() => setActiveTrustKin(null)}
+            />
+            <motion.div
+              initial={{ scale: 0.96, y: 12 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.96, y: 12 }}
+              className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate/10 overflow-hidden max-h-[88vh] flex flex-col"
+            >
+              {/* Top Bar */}
+              <div className="px-6 py-4 border-b border-slate/10 bg-[#F9F8F6] flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-11 h-11 rounded-full overflow-hidden border border-slate/15 shrink-0">
+                    <Image
+                      src={activeTrustKin.image}
+                      alt={activeTrustKin.name}
+                      fill
+                      referrerPolicy="no-referrer"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold text-slate">
+                        {activeTrustKin.name}&apos;s Trust Passport
+                      </h3>
+                      {activeTrustKin.verified ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 text-[11px] font-bold">
+                          <ShieldCheck className="w-3 h-3" />
+                          Verified Kin
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold">
+                          <AlertTriangle className="w-3 h-3" />
+                          ID Pending
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs font-medium text-slate/60">
+                      {activeTrustKin.location} · Safety check before messaging or joining
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTrustKin(null)}
+                  aria-label="Close Trust Passport"
+                  className="p-2 hover:bg-slate/10 rounded-full transition-colors text-slate/70"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 overflow-y-auto space-y-5">
+                {!activeTrustKin.verified && (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="space-y-1 text-xs">
+                      <p className="font-bold">Government ID &amp; live selfie check not completed yet</p>
+                      <p className="text-amber-800/90 leading-relaxed font-medium">
+                        For your safety, keep conversations inside Travel Kin and avoid sharing private meeting locations or joining boat splits until {activeTrustKin.name} completes verification.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Verification Checklist */}
+                <div className="space-y-2.5">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate/60">
+                    Identity &amp; Safety Checks
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {[
+                      {
+                        label: "Gov ID + 3D Liveness",
+                        sub: activeTrustKin.trustCheck.idAndLivenessVerified
+                          ? `Checked ${activeTrustKin.trustCheck.verifiedDate}`
+                          : "Not completed yet",
+                        passed: activeTrustKin.trustCheck.idAndLivenessVerified,
+                      },
+                      {
+                        label: "Profile Photo Face Match",
+                        sub: activeTrustKin.trustCheck.profileFaceMatched
+                          ? "Matches live selfie"
+                          : "Pending face match",
+                        passed: activeTrustKin.trustCheck.profileFaceMatched,
+                      },
+                      {
+                        label: "Mobile Phone OTP",
+                        sub: activeTrustKin.trustCheck.phoneVerified
+                          ? "Verified phone number"
+                          : "Not verified",
+                        passed: activeTrustKin.trustCheck.phoneVerified,
+                      },
+                      {
+                        label: "Emergency Contact Set",
+                        sub: activeTrustKin.trustCheck.emergencyContactOnFile
+                          ? "Active safety circle"
+                          : "Not added yet",
+                        passed: activeTrustKin.trustCheck.emergencyContactOnFile,
+                      },
+                    ].map((row) => (
+                      <div
+                        key={row.label}
+                        className="p-3.5 rounded-xl bg-[#F9F8F6] border border-slate/10 flex items-start gap-2.5"
+                      >
+                        {row.passed ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate">{row.label}</p>
+                          <p className="text-[11px] font-medium text-slate/60">{row.sub}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Behavioural Proof (ID ≠ Behaviour) */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3.5 rounded-xl bg-white border border-slate/10 text-center">
+                    <p className="text-lg font-extrabold text-slate tabular-nums">
+                      {activeTrustKin.trustCheck.completedTrips}
+                    </p>
+                    <p className="text-[11px] font-semibold text-slate/60">Completed Trips</p>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white border border-slate/10 text-center">
+                    <p className="text-lg font-extrabold text-slate tabular-nums">
+                      {activeTrustKin.trustCheck.safetyRating.toFixed(1)} / 5
+                    </p>
+                    <p className="text-[11px] font-semibold text-slate/60">Peer Safety Score</p>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white border border-slate/10 text-center">
+                    <p className="text-lg font-extrabold text-slate tabular-nums">
+                      {activeTrustKin.vibeStats.reviews}
+                    </p>
+                    <p className="text-[11px] font-semibold text-slate/60">Trip Reviews</p>
+                  </div>
+                </div>
+
+                {activeTrustKin.trustCheck.mutualKins.length > 0 && (
+                  <div className="p-3.5 rounded-xl bg-[#F9F8F6] border border-slate/10 flex items-center gap-2.5 text-xs font-medium text-slate/75">
+                    <Users className="w-4 h-4 text-slate/60 shrink-0" />
+                    <span>
+                      Travelled previously with Verified Kins:{" "}
+                      <strong className="text-slate">
+                        {activeTrustKin.trustCheck.mutualKins.join(", ")}
+                      </strong>
+                    </span>
+                  </div>
+                )}
+
+                {/* UK Compliance Note */}
+                <p className="text-[11px] font-medium text-slate/55 leading-relaxed">
+                  Verified under UK GDPR &amp; Data Protection Act 2018 zero-retention rules. Raw identity documents are purged immediately after check; only verification status is shown here.
+                </p>
+
+                {/* Actions */}
+                <div className="pt-3 border-t border-slate/10 space-y-2.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenChat(activeTrustKin)}
+                      className="flex-1 py-3 px-4 rounded-xl bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-all inline-flex items-center justify-center gap-1.5"
+                    >
+                      {!perms.canMessage && <Lock className="w-3.5 h-3.5" />}
+                      {perms.canMessage
+                        ? `Message ${activeTrustKin.name}`
+                        : "Verify Your ID to Message"}
+                    </button>
+                    {activeTrustKin.trustCheck.videoIntroAvailable && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!perms.canMessage) {
+                            handleOpenChat(activeTrustKin);
+                            return;
+                          }
+                          setActiveTrustKin(null);
+                          showPrompt(
+                            `2-minute safety video check requested with ${activeTrustKin.name}.`
+                          );
+                        }}
+                        className="px-4 py-3 rounded-xl bg-white border border-slate/15 text-slate text-xs font-bold hover:bg-slate/5 transition-colors inline-flex items-center gap-1.5"
+                      >
+                        <Video className="w-3.5 h-3.5 text-slate/70" />
+                        2-Min Video Check
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[11px] text-slate/55 inline-flex items-center gap-1 font-medium">
+                      <Phone className="w-3 h-3" />
+                      UK Online Safety Act reporting protected
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleBlockOrReport(activeTrustKin)}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:underline"
+                    >
+                      <Flag className="w-3.5 h-3.5" />
+                      Block &amp; Report
+                    </button>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
