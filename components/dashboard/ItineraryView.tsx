@@ -369,6 +369,51 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
     }
   };
 
+  const getCategoryTheme = (cat: ItineraryItem["category"]) => {
+    switch (cat) {
+      case "food":
+        return {
+          headerBg: "bg-gradient-to-r from-sunset/18 via-sand/85 to-[#FFFDF9]",
+          orb: "bg-sunset/20",
+          stopBadge: "bg-terra text-white shadow-sm shadow-terra/25",
+          categoryPill: "bg-sunset/15 text-terra border-sunset/25",
+        };
+      case "activity":
+        return {
+          headerBg: "bg-gradient-to-r from-ocean/15 via-mist/90 to-[#FFFDF9]",
+          orb: "bg-ocean/15",
+          stopBadge: "bg-ocean text-white shadow-sm shadow-ocean/25",
+          categoryPill: "bg-ocean/12 text-ocean-dark border-ocean/20",
+        };
+      case "nature":
+        return {
+          headerBg: "bg-gradient-to-r from-emerald-500/15 via-sand/70 to-[#FFFDF9]",
+          orb: "bg-emerald-500/15",
+          stopBadge: "bg-emerald-700 text-white shadow-sm shadow-emerald-700/25",
+          categoryPill: "bg-emerald-600/12 text-emerald-800 border-emerald-600/20",
+        };
+      case "photos":
+        return {
+          headerBg: "bg-gradient-to-r from-terra/15 via-sand/80 to-[#FFFDF9]",
+          orb: "bg-terra/15",
+          stopBadge: "bg-slate text-white shadow-sm shadow-slate/25",
+          categoryPill: "bg-terra/12 text-terra border-terra/20",
+        };
+    }
+  };
+
+  const getAvatarStyle = (name: string) => {
+    const palette = [
+      "bg-ocean text-white",
+      "bg-sunset text-white",
+      "bg-terra text-white",
+      "bg-emerald-600 text-white",
+      "bg-slate text-white",
+    ];
+    const hash = name.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+    return palette[hash % palette.length];
+  };
+
   const completedCount = items.filter((i) => i.isDone).length;
   const completionPercentage = Math.round((completedCount / items.length) * 100) || 0;
   const activeStop = items.find((i) => i.id === selectedStopId) || items[0];
@@ -607,367 +652,438 @@ export function ItineraryView({ tier = "verified" }: { tier?: UserTier }) {
 
       {/* Stop Details & Edit Modal */}
       <AnimatePresence>
-        {detailStop && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setDetailStopId(null);
-                setIsEditingDetail(false);
-                setEditDraft(null);
-              }}
-              className="absolute inset-0 bg-slate/45 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 16 }}
-              className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate/10 overflow-hidden max-h-[88vh] flex flex-col"
-            >
-              {/* Modal Top Bar */}
-              <div className="px-7 py-5 border-b border-slate/10 flex items-center justify-between gap-4 bg-[#F9F8F6]">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-7 h-7 rounded-full bg-slate text-white text-xs font-bold flex items-center justify-center">
-                    {detailStopIndex + 1}
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate/70">
-                    Stop #{detailStopIndex + 1} · {detailStop.category}
-                  </span>
-                  {detailStop.isDone && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 text-xs font-bold">
-                      Done
+        {detailStop && (() => {
+          const theme = getCategoryTheme(detailStop.category);
+          return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => {
+                  setDetailStopId(null);
+                  setIsEditingDetail(false);
+                  setEditDraft(null);
+                }}
+                className="absolute inset-0 bg-slate/50 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 16 }}
+                className="relative w-full max-w-xl bg-[#FFFDF9] rounded-3xl shadow-[0_24px_70px_-16px_rgba(30,45,53,0.28)] ring-1 ring-slate/10 overflow-hidden max-h-[88vh] flex flex-col"
+              >
+                {/* Category-Themed Hero Top Bar */}
+                <div className={`relative px-7 py-5 border-b border-slate/10 flex items-center justify-between gap-4 overflow-hidden ${theme.headerBg}`}>
+                  <div
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl ${theme.orb}`}
+                  />
+                  <div className="relative flex items-center gap-2.5 flex-wrap">
+                    <span className={`w-8 h-8 rounded-full text-xs font-extrabold flex items-center justify-center ${theme.stopBadge}`}>
+                      {detailStopIndex + 1}
                     </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5">
-                  {!isEditingDetail && perms.canEditItinerary && (
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider ${theme.categoryPill}`}>
+                      {getIcon(detailStop.category)}
+                      Stop #{detailStopIndex + 1} · {detailStop.category}
+                    </span>
+                    {detailStop.isDone && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                        <Check className="w-3 h-3" strokeWidth={2.5} />
+                        Done
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative flex items-center gap-1.5 shrink-0">
+                    {!isEditingDetail && perms.canEditItinerary && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditDraft({ ...detailStop });
+                          setIsEditingDetail(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/85 backdrop-blur-sm border border-slate/15 text-xs font-bold text-slate hover:bg-white hover:border-slate/25 shadow-sm transition-all"
+                      >
+                        <Pencil className="w-3.5 h-3.5 text-ocean" />
+                        Edit
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
-                        setEditDraft({ ...detailStop });
-                        setIsEditingDetail(true);
+                        setDetailStopId(null);
+                        setIsEditingDetail(false);
+                        setEditDraft(null);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white border border-slate/15 text-xs font-bold text-slate hover:bg-slate/5 transition-colors"
+                      aria-label="Close stop details"
+                      className="p-2 bg-white/75 hover:bg-white rounded-full border border-slate/10 transition-colors shadow-sm"
                     >
-                      <Pencil className="w-3.5 h-3.5" />
-                      Edit
+                      <X className="w-4 h-4 text-slate/75" />
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDetailStopId(null);
-                      setIsEditingDetail(false);
-                      setEditDraft(null);
-                    }}
-                    aria-label="Close stop details"
-                    className="p-2 hover:bg-slate/10 rounded-full transition-colors"
-                  >
-                    <X className="w-5 h-5 text-slate/70" />
-                  </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Modal Body */}
-              <div className="p-7 overflow-y-auto space-y-6">
-                {isEditingDetail && editDraft ? (
-                  <form onSubmit={handleSaveEdit} className="space-y-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Stop Name</label>
-                      <input
-                        required
-                        value={editDraft.title}
-                        onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Modal Body */}
+                <div className="p-7 overflow-y-auto space-y-6 flex-1">
+                  {isEditingDetail && editDraft ? (
+                    <form onSubmit={handleSaveEdit} className="space-y-4">
                       <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Location</label>
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Stop Name</label>
                         <input
                           required
-                          value={editDraft.location}
-                          onChange={(e) => setEditDraft({ ...editDraft, location: e.target.value })}
+                          value={editDraft.title}
+                          onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })}
                           className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
                         />
                       </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Location</label>
+                          <input
+                            required
+                            value={editDraft.location}
+                            onChange={(e) => setEditDraft({ ...editDraft, location: e.target.value })}
+                            className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Meeting Point</label>
+                          <input
+                            value={editDraft.meetingPoint || ""}
+                            onChange={(e) => setEditDraft({ ...editDraft, meetingPoint: e.target.value })}
+                            className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Time</label>
+                          <input
+                            required
+                            value={editDraft.time}
+                            onChange={(e) => setEditDraft({ ...editDraft, time: e.target.value })}
+                            className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Duration</label>
+                          <input
+                            value={editDraft.duration || ""}
+                            onChange={(e) => setEditDraft({ ...editDraft, duration: e.target.value })}
+                            className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Est. Cost</label>
+                          <input
+                            value={editDraft.splitCost || ""}
+                            onChange={(e) => setEditDraft({ ...editDraft, splitCost: e.target.value })}
+                            className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
+                          />
+                        </div>
+                      </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Meeting Point</label>
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Description</label>
+                        <textarea
+                          rows={3}
+                          value={editDraft.description || ""}
+                          onChange={(e) => setEditDraft({ ...editDraft, description: e.target.value })}
+                          className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none resize-none"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Group Notes</label>
                         <input
-                          value={editDraft.meetingPoint || ""}
-                          onChange={(e) => setEditDraft({ ...editDraft, meetingPoint: e.target.value })}
+                          value={editDraft.notes || ""}
+                          onChange={(e) => setEditDraft({ ...editDraft, notes: e.target.value })}
                           className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
                         />
                       </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Time</label>
-                        <input
-                          required
-                          value={editDraft.time}
-                          onChange={(e) => setEditDraft({ ...editDraft, time: e.target.value })}
-                          className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Duration</label>
-                        <input
-                          value={editDraft.duration || ""}
-                          onChange={(e) => setEditDraft({ ...editDraft, duration: e.target.value })}
-                          className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Est. Cost</label>
-                        <input
-                          value={editDraft.splitCost || ""}
-                          onChange={(e) => setEditDraft({ ...editDraft, splitCost: e.target.value })}
-                          className="w-full px-3.5 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Description</label>
-                      <textarea
-                        rows={3}
-                        value={editDraft.description || ""}
-                        onChange={(e) => setEditDraft({ ...editDraft, description: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none resize-none"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate/65">Group Notes</label>
-                      <input
-                        value={editDraft.notes || ""}
-                        onChange={(e) => setEditDraft({ ...editDraft, notes: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F9F8F6] border border-slate/15 rounded-xl text-sm font-medium text-slate focus:bg-white outline-none"
-                      />
-                    </div>
 
-                    <div className="pt-4 border-t border-slate/10 flex items-center justify-between gap-3">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteStop(editDraft.id)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Delete Stop
-                      </button>
-                      <div className="flex items-center gap-2.5">
+                      <div className="pt-4 border-t border-slate/10 flex items-center justify-between gap-3">
                         <button
                           type="button"
-                          onClick={() => {
-                            setIsEditingDetail(false);
-                            setEditDraft(null);
-                          }}
-                          className="px-4 py-2.5 rounded-xl border border-slate/15 text-xs font-bold text-slate/75 hover:bg-slate/5"
+                          onClick={() => handleDeleteStop(editDraft.id)}
+                          className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
                         >
-                          Cancel
+                          <Trash2 className="w-4 h-4" />
+                          Delete Stop
                         </button>
-                        <button
-                          type="submit"
-                          className="px-6 py-2.5 rounded-xl bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors"
-                        >
-                          Save Changes
-                        </button>
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsEditingDetail(false);
+                              setEditDraft(null);
+                            }}
+                            className="px-4 py-2.5 rounded-xl border border-slate/15 text-xs font-bold text-slate/75 hover:bg-slate/5"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-6 py-2.5 rounded-xl bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </form>
-                ) : (
-                  <>
-                    <div>
-                      <h3 className="text-2xl font-bold text-slate mb-2">{detailStop.title}</h3>
-                      <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate/70">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Clock className="w-4 h-4 text-slate/60" />
-                          {detailStop.time}{detailStop.duration ? ` · ${detailStop.duration}` : ""}
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-slate/60" />
-                          {detailStop.location}
-                        </span>
-                        {detailStop.splitCost && (
-                          <span className="px-2.5 py-0.5 rounded-full bg-slate/5 border border-slate/10 text-slate font-bold">
-                            {detailStop.splitCost}
+                    </form>
+                  ) : (
+                    <>
+                      {/* Title & Scannable Metadata Pills */}
+                      <div className="space-y-3">
+                        <h3 className="text-2xl sm:text-[26px] font-extrabold tracking-tight text-slate leading-snug">
+                          {detailStop.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand/70 text-slate border border-sunset/20">
+                            <Clock className="w-3.5 h-3.5 text-sunset-dark shrink-0" />
+                            {detailStop.time}{detailStop.duration ? ` · ${detailStop.duration}` : ""}
                           </span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-mist text-slate border border-ocean/15">
+                            <MapPin className="w-3.5 h-3.5 text-ocean shrink-0" />
+                            {detailStop.location}
+                          </span>
+                          {detailStop.splitCost && (
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-sunset/15 border border-sunset/30 text-terra font-bold">
+                              {detailStop.splitCost}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Editorial Description */}
+                      <p className="text-[15px] text-slate/80 leading-relaxed font-medium">
+                        {detailStop.description || "Shared group stop along today's island route."}
+                      </p>
+
+                      {/* Logistics Bento Cards */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div className="p-4 rounded-2xl bg-sand/55 border border-sunset/20 flex items-start gap-3">
+                          <span className="w-9 h-9 rounded-xl bg-white/90 border border-sunset/20 text-terra flex items-center justify-center shrink-0 shadow-sm">
+                            <Navigation className="w-4 h-4" strokeWidth={2} />
+                          </span>
+                          <div className="space-y-0.5 min-w-0">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-terra/80">
+                              Meeting Point
+                            </p>
+                            <p className="text-sm font-semibold text-slate leading-snug">
+                              {detailStop.meetingPoint || detailStop.location}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="p-4 rounded-2xl bg-mist/80 border border-ocean/15 flex items-start gap-3">
+                          <span className="w-9 h-9 rounded-xl bg-white/90 border border-ocean/15 text-ocean flex items-center justify-center shrink-0 shadow-sm">
+                            <Compass className="w-4 h-4" strokeWidth={2} />
+                          </span>
+                          <div className="space-y-0.5 min-w-0">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-ocean-dark/80">
+                              Map Coordinates
+                            </p>
+                            <p className="text-sm font-bold text-ocean-dark tabular-nums tracking-tight">
+                              {detailStop.coords.lat} · {detailStop.coords.lng}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* What to Bring */}
+                      {detailStop.whatToBring && detailStop.whatToBring.length > 0 && (
+                        <div className="space-y-2.5">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60">
+                            What to Bring
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {detailStop.whatToBring.map((gear) => (
+                              <span
+                                key={gear}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sand/50 text-slate text-xs font-semibold border border-terra/15"
+                              >
+                                <span className="w-4 h-4 rounded-full bg-terra/12 text-terra flex items-center justify-center shrink-0">
+                                  <Check className="w-2.5 h-2.5" strokeWidth={2.75} />
+                                </span>
+                                {gear}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Social Group Container: Going */}
+                      {detailStop.attendees && detailStop.attendees.length > 0 && (
+                        <div className="p-4 rounded-2xl bg-mist/55 border border-ocean/12 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-ocean-dark/85 inline-flex items-center gap-1.5">
+                              <Users className="w-3.5 h-3.5 text-ocean" />
+                              Going ({detailStop.attendees.length})
+                            </p>
+                            <span className="text-[11px] font-semibold text-ocean-dark/65">
+                              Confirmed crew
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {detailStop.attendees.map((person) => (
+                              <span
+                                key={person}
+                                className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white border border-slate/10 shadow-sm text-xs font-semibold text-slate"
+                              >
+                                <span
+                                  className={`w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center ${getAvatarStyle(person)}`}
+                                >
+                                  {person[0]}
+                                </span>
+                                {person}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Dietary & Group Notes Callout */}
+                      {detailStop.notes && (
+                        <div className="p-4 rounded-2xl bg-gradient-to-r from-sunset/12 via-sand/65 to-sand/30 border border-sunset/25 border-l-4 border-l-terra flex items-start gap-3">
+                          <span className="w-7 h-7 rounded-lg bg-terra/12 text-terra flex items-center justify-center shrink-0 mt-0.5">
+                            <Info className="w-4 h-4" strokeWidth={2} />
+                          </span>
+                          <div className="space-y-0.5">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-terra">
+                              Good to know
+                            </p>
+                            <p className="text-xs text-slate/85 font-medium leading-relaxed">
+                              {detailStop.notes}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tagged Event Photos Automatically Routed Here */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-slate/60 inline-flex items-center gap-1.5">
+                            <Camera className="w-3.5 h-3.5 text-ocean" />
+                            Photos from this Stop ({detailStopPhotos.length})
+                          </p>
+                        </div>
+                        {detailStopPhotos.length > 0 ? (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                            {detailStopPhotos.map((photo) => (
+                              <div
+                                key={photo.id}
+                                className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate/5 border border-slate/10"
+                              >
+                                <Image
+                                  src={photo.url}
+                                  alt={photo.caption}
+                                  fill
+                                  referrerPolicy="no-referrer"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                  <p className="text-[11px] font-semibold text-white truncate">
+                                    {photo.caption}
+                                  </p>
+                                  {photo.taggedKinIds.length > 0 && (
+                                    <p className="text-[10px] text-white/75 truncate">
+                                      With {photo.taggedKinIds.map(getKinName).join(", ")}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="rounded-2xl bg-gradient-to-br from-mist/75 via-white to-sand/45 border-2 border-dashed border-ocean/25 px-5 py-6 text-center space-y-2">
+                            <span className="w-10 h-10 mx-auto rounded-2xl bg-ocean/10 text-ocean flex items-center justify-center">
+                              <Camera className="w-5 h-5" strokeWidth={1.75} />
+                            </span>
+                            <p className="text-xs font-bold text-slate">
+                              Capture the moment
+                            </p>
+                            <p className="text-xs font-medium text-slate/60 max-w-sm mx-auto leading-relaxed">
+                              No photos tagged for this stop yet. Upload a photo in Trip Photos and link it to this stop so everyone sees it here.
+                            </p>
+                          </div>
                         )}
                       </div>
-                    </div>
 
-                    <p className="text-sm text-slate/80 leading-relaxed font-medium">
-                      {detailStop.description || "Shared group stop along today's island route."}
-                    </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 space-y-1">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate/55">Meeting Point</p>
-                        <p className="text-sm font-semibold text-slate">
-                          {detailStop.meetingPoint || detailStop.location}
-                        </p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 space-y-1">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate/55">Map Coordinates</p>
-                        <p className="text-sm font-semibold text-slate tabular-nums">
-                          {detailStop.coords.lat} · {detailStop.coords.lng}
-                        </p>
-                      </div>
-                    </div>
-
-                    {detailStop.whatToBring && detailStop.whatToBring.length > 0 && (
-                      <div className="space-y-2">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate/60">What to Bring</p>
-                        <div className="flex flex-wrap gap-2">
-                          {detailStop.whatToBring.map((gear) => (
-                            <span
-                              key={gear}
-                              className="px-3 py-1.5 rounded-lg bg-slate/5 text-slate/80 text-xs font-semibold border border-slate/10"
-                            >
-                              {gear}
+                      {!perms.canEditItinerary && (
+                        <div className="p-4 rounded-2xl bg-sand/60 border border-sunset/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5 text-xs font-medium text-slate/80">
+                            <Lock className="w-4 h-4 text-terra shrink-0" />
+                            <span>
+                              {tier === "guest"
+                                ? "Sign up and verify your ID to edit shared group stops."
+                                : "Verify your ID to edit or add stops on shared group plans."}
                             </span>
-                          ))}
+                          </div>
+                          <Link
+                            href={tier === "guest" ? "/onboarding" : "/verify"}
+                            className="px-4 py-2 rounded-xl bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0 text-center shadow-sm"
+                          >
+                            {tier === "guest" ? "Join Free" : "Verify ID"}
+                          </Link>
                         </div>
-                      </div>
-                    )}
-
-                    {detailStop.attendees && detailStop.attendees.length > 0 && (
-                      <div className="space-y-2">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate/60">
-                          Going ({detailStop.attendees.length})
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {detailStop.attendees.map((person) => (
-                            <span
-                              key={person}
-                              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate/15 text-xs font-semibold text-slate"
-                            >
-                              <span className="w-5 h-5 rounded-full bg-slate/10 text-slate text-xs font-bold flex items-center justify-center">
-                                {person[0]}
-                              </span>
-                              {person}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {detailStop.notes && (
-                      <div className="p-4 rounded-xl bg-white border border-slate/10 flex items-start gap-3">
-                        <Info className="w-4 h-4 text-slate/60 shrink-0 mt-0.5" />
-                        <p className="text-xs text-slate/75 font-medium leading-relaxed">{detailStop.notes}</p>
-                      </div>
-                    )}
-
-                    {/* Tagged Event Photos Automatically Routed Here */}
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate/60 inline-flex items-center gap-1.5">
-                          <Camera className="w-3.5 h-3.5" />
-                          Photos from this Stop ({detailStopPhotos.length})
-                        </p>
-                      </div>
-                      {detailStopPhotos.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                          {detailStopPhotos.map((photo) => (
-                            <div
-                              key={photo.id}
-                              className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate/5 border border-slate/10"
-                            >
-                              <Image
-                                src={photo.url}
-                                alt={photo.caption}
-                                fill
-                                referrerPolicy="no-referrer"
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-                                <p className="text-[11px] font-semibold text-white truncate">
-                                  {photo.caption}
-                                </p>
-                                {photo.taggedKinIds.length > 0 && (
-                                  <p className="text-[10px] text-white/75 truncate">
-                                    With {photo.taggedKinIds.map(getKinName).join(", ")}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-xs font-medium text-slate/55 bg-[#F9F8F6] border border-slate/10 rounded-xl px-4 py-3">
-                          No photos tagged for this stop yet. Upload a photo in Trip Photos and link it to this stop so everyone sees it here.
-                        </p>
                       )}
-                    </div>
+                    </>
+                  )}
+                </div>
 
-                    {!perms.canEditItinerary && (
-                      <div className="p-4 rounded-xl bg-[#F9F8F6] border border-slate/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="flex items-center gap-2.5 text-xs font-medium text-slate/75">
-                          <Lock className="w-4 h-4 text-slate/60 shrink-0" />
-                          <span>
-                            {tier === "guest"
-                              ? "Sign up and verify your ID to edit shared group stops."
-                              : "Verify your ID to edit or add stops on shared group plans."}
-                          </span>
-                        </div>
-                        <Link
-                          href={tier === "guest" ? "/onboarding" : "/verify"}
-                          className="px-4 py-2 rounded-lg bg-sunset text-white text-xs font-bold hover:bg-sunset-dark transition-colors shrink-0 text-center"
-                        >
-                          {tier === "guest" ? "Join Free" : "Verify ID"}
-                        </Link>
-                      </div>
-                    )}
-
-                    <div className="pt-4 border-t border-slate/10 flex flex-wrap items-center justify-between gap-3">
-                      <span className="text-xs font-medium text-slate/65">
-                        Suggested by <strong className="text-slate">{detailStop.suggestedBy}</strong>
+                {/* Anchored Coastal Footer Bar (Read-Only View) */}
+                {!isEditingDetail && (
+                  <div className="px-7 py-4 bg-sand/65 border-t border-slate/10 flex flex-wrap items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2 text-xs font-medium text-slate/70">
+                      <span
+                        className={`w-6 h-6 rounded-full text-[11px] font-bold flex items-center justify-center shadow-sm ${getAvatarStyle(detailStop.suggestedBy)}`}
+                      >
+                        {detailStop.suggestedBy[0]}
                       </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => toggleVote(detailStop.id)}
-                          aria-pressed={votedIds.includes(detailStop.id)}
-                          title={
-                            votedIds.includes(detailStop.id)
-                              ? "Click to remove your vote"
-                              : "Vote for this stop"
-                          }
-                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${
-                            votedIds.includes(detailStop.id)
-                              ? "bg-sunset/10 text-sunset border-sunset/25 hover:bg-sunset/15"
-                              : "bg-slate/5 hover:bg-slate/10 text-slate border-transparent"
-                          }`}
-                        >
-                          <ThumbsUp
-                            className={`w-3.5 h-3.5 ${
-                              votedIds.includes(detailStop.id) ? "fill-current" : ""
-                            }`}
-                          />
-                          {votedIds.includes(detailStop.id) ? "Voted" : "Vote"} ({detailStop.votes})
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => toggleDone(detailStop.id)}
-                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                            detailStop.isDone
-                              ? "bg-green-600 text-white"
-                              : "bg-white border border-slate/15 text-slate hover:bg-slate/5"
-                          }`}
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          {detailStop.isDone ? "Completed" : "Mark Done"}
-                        </button>
-                      </div>
+                      <span>
+                        Suggested by <strong className="text-slate font-bold">{detailStop.suggestedBy}</strong>
+                      </span>
                     </div>
-                  </>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleVote(detailStop.id)}
+                        aria-pressed={votedIds.includes(detailStop.id)}
+                        title={
+                          votedIds.includes(detailStop.id)
+                            ? "Click to remove your vote"
+                            : "Vote for this stop"
+                        }
+                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 border ${
+                          votedIds.includes(detailStop.id)
+                            ? "bg-sunset/15 text-terra border-sunset/35 shadow-sm"
+                            : "bg-white hover:bg-white/90 text-slate border-slate/15 hover:border-ocean/30 shadow-sm"
+                        }`}
+                      >
+                        <ThumbsUp
+                          className={`w-3.5 h-3.5 ${
+                            votedIds.includes(detailStop.id) ? "fill-current text-sunset-dark" : "text-ocean"
+                          }`}
+                        />
+                        {votedIds.includes(detailStop.id) ? "Voted" : "Vote"} ({detailStop.votes})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleDone(detailStop.id)}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm ${
+                          detailStop.isDone
+                            ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                            : "bg-sunset hover:bg-sunset-dark text-white shadow-sunset/25"
+                        }`}
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        {detailStop.isDone ? "Completed" : "Mark Done"}
+                      </button>
+                    </div>
+                  </div>
                 )}
-              </div>
-            </motion.div>
-          </div>
-        )}
+              </motion.div>
+            </div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Tomorrow's Boat Trip Details Modal */}
